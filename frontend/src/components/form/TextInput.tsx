@@ -1,0 +1,96 @@
+import React from "react";
+
+interface TextInputProps {
+  id?: string;
+  label?: string;
+  value: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onKeyUp?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onInput?: (e: React.FormEvent<HTMLInputElement>) => void;
+  type?: string;
+  required?: boolean;
+  error?: string;
+  placeholder?: string;
+  className?: string;
+  labelClassName?: string;
+  showLabel?: boolean;
+  iconLeft?: React.ReactNode;
+  disabled?: boolean;
+  readOnly?: boolean;
+  autoComplete?: string;
+}
+
+const TextInput: React.FC<TextInputProps> = ({
+  id,
+  label = "",
+  value,
+  onChange,
+  onBlur,
+  onFocus,
+  onKeyDown,
+  onKeyUp,
+  onInput,
+  type = "text",
+  required = false,
+  error,
+  placeholder,
+  className = "",
+  labelClassName = "",
+  showLabel = true,
+  iconLeft,
+  disabled = false,
+  readOnly = false,
+  autoComplete = "off",
+}) => {
+  const inputClasses = ` input focus:outline-none ring-1 focus:ring-2 w-full ${
+    iconLeft ? "pl-10" : ""
+  } ${
+    error
+      ? "ring-red-500 focus:ring-red-500"
+      : "ring-gray-300 focus:ring-accent"
+  } ${
+    disabled ? "opacity-50 cursor-not-allowed bg-muted/10" : ""
+  } ${className} `;
+
+  return (
+    <div className="form-group relative">
+      {showLabel && (
+        <label htmlFor={id} className={`form-label ${labelClassName}`}>
+          {label}
+          {required && " *"}
+        </label>
+      )}
+
+      {iconLeft && (
+        <div className="absolute top-3 left-3 text-muted pointer-events-none">
+          {iconLeft}
+        </div>
+      )}
+
+      <input
+        id={id}
+        type={type}
+        value={value}
+        placeholder={placeholder}
+        required={required}
+        disabled={disabled}
+        readOnly={readOnly}
+        onChange={onChange}
+        onBlur={onBlur}
+        onFocus={onFocus}
+        onKeyDown={onKeyDown}
+        onKeyUp={onKeyUp}
+        onInput={onInput}
+        autoComplete={autoComplete}
+        className={inputClasses}
+      />
+
+      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+    </div>
+  );
+};
+
+export default TextInput;

@@ -1,0 +1,256 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import useApi from "@/lib/useApi";
+import { apiClient } from "@/lib/axios";
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  contact_number: string;
+  role_id?: number[];
+}
+
+interface Role {
+  id: number;
+  name: string;
+}
+
+interface Meta {
+  total: number;
+  totalPages: number;
+}
+
+export default function UserFormPage() {
+  const params = useParams();
+  const router = useRouter();
+  const type = Number(params?.type); // 1=create, 2=edit, 3=show
+  const id = Number(params?.id);
+
+  const api = useApi();
+
+  const [user, setUser] = useState<User | null>(null);
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+    role_id: [],
+  });
+
+  useEffect(() => {
+    fetchRoles();
+
+    if (type === 2 || type === 3) {
+      fetchUser();
+    } else {
+      setLoading(false);
+    }
+  }, [id, type]);
+
+  const fetchRoles = async () => {
+    try {
+      const { data } = await apiClient.get<{ data: Role[]; meta: Meta }>(
+        "/roles"
+      );
+      setRoles(data.data);
+    } catch (err) {
+      console.error("Failed to fetch roles", err);
+    }
+  };
+
+  const fetchUser = async () => {
+    try {
+      const { data } = await api.get<User>(`/users/${id}`);
+      setUser(data);
+      setFormData({
+        name: data.name,
+        email: data.email,
+        phone: data.contact_number,
+        password: "",
+        confirmPassword: "",
+        role_id: data.role_id || [],
+      });
+    } catch (err) {
+      console.error("Failed to fetch user", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value, multiple, selectedOptions } =
+      e.target as HTMLSelectElement;
+
+    if (multiple) {
+      // collect all selected values into number[]
+      const values = Array.from(selectedOptions).map((opt) =>
+        Number(opt.value)
+      );
+      setFormData((prev) => ({ ...prev, [name.replace("[]", "")]: values }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
+    try {
+      if (type === 1) {
+        await api.post("/users", {
+          name: formData.name,
+          email: formData.email,
+          contact_number: formData.phone,
+          password: formData.password,
+          role_id: formData.role_id,
+        });
+      } else if (type === 2 && user) {
+        await api.put(`/users/${id}`, {
+          name: formData.name,
+          email: formData.email,
+          contact_number: formData.phone,
+          password: formData.password || undefined, // allow empty password (no change)
+          role_id: formData.role_id,
+        });
+      }
+
+      router.push("/admin/users");
+    } catch (err) {
+      console.error("Failed to save user", err);
+      alert("Something went wrong!");
+    }
+  };
+
+  if (loading) return <div className="p-6">Loading...</div>;
+
+  if (type === 3 && user) {
+    return (
+      <div className="p-6 space-y-2">
+        <h2 className="text-xl font-bold">👀 User Details</h2>
+        <p>
+          <strong>ID:</strong> {user.id}
+        </p>
+        <p>
+          <strong>Name:</strong> {user.name}
+        </p>
+        <p>
+          <strong>Email:</strong> {user.email}
+        </p>
+        <p>
+          <strong>Phone:</strong> {user.contact_number}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6">
+      <h2 className="text-xl font-bold mb-4">
+        {type === 1 ? "🔹 Create User" : "✏️ Edit User"}
+      </h2>
+
+      <form onSubmit={handleSubmit} className="space-y-4 max-w-lg">
+        <div>
+          <label className="block font-medium">Name</label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block font-medium">Email</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block font-medium">Phone</label>
+          <input
+            type="text"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+
+        <div>
+          <label className="block font-medium">Password</label>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+            placeholder={
+              type === 2 ? "Leave blank to keep current password" : ""
+            }
+            {...(type === 1 ? { required: true } : {})}
+          />
+        </div>
+
+        <div>
+          <label className="block font-medium">Confirm Password</label>
+          <input
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+            {...(type === 1 ? { required: true } : {})}
+          />
+        </div>
+
+        <div>
+          <label className="block font-medium">Assign Role</label>
+          <select
+            name="role_id[]"
+            value={formData.role_id.map(String)}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+            required
+            multiple
+          >
+            <option value="">Select Role</option>
+            {roles.map((role) => (
+              <option key={role.id} value={role.id}>
+                {role.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <button
+          type="submit"
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          {type === 1 ? "Create User" : "Update User"}
+        </button>
+      </form>
+    </div>
+  );
+}

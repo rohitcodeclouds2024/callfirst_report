@@ -1,0 +1,76 @@
+# ------------------------------------------------------
+# Global ignores
+# ------------------------------------------------------
+# OS files
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.local
+.env.*.local
+*.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Build artifacts
+dist/
+build/
+.tmp/
+.temp/
+.cache/
+coverage/
+
+# Node modules (both frontend & backend)
+node_modules/
+**/node_modules/
+
+# Editor / IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+
+# ------------------------------------------------------
+# Frontend (Next.js)
+# ------------------------------------------------------
+# Next.js build output
+.next/
+out/
+
+# Next.js static export
+.next/static/
+
+# Next.js serverless build output
+.vercel/
+
+# ------------------------------------------------------
+# Backend (Fastify)
+# ------------------------------------------------------
+# PM2 / nodemon / process logs
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# TypeScript build output (if you’re using TS)
+*.tsbuildinfo
+
+# ------------------------------------------------------
+# Optional: Test & Temp files
+# ------------------------------------------------------
+coverage/
+__tests__/
+__pycache__/
+*.spec.*
+*.test.*
+tmp/
+temp/

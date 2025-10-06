@@ -1,0 +1,117 @@
+{
+  "common": {
+    "success": "Success!",
+    "error": "Something went wrong. Please contact administrator.",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "update": "Update",
+    "create": "Create",
+    "view": "View",
+    "actions": "Actions",
+    "yes": "Yes",
+    "no": "No",
+    "confirm": "Are you sure?",
+    "search": "Search",
+    "reset": "Reset",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous"
+  },
+
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "forgotPassword": "Forgot your password?",
+    "resetPassword": "Reset Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "invalidCredentials": "Invalid email or password",
+    "loggedIn": "You have successfully logged in",
+    "loggedOut": "You have been logged out",
+	"forgotPasswordSuccess":"Password reset link sent to your email!"
+  },
+
+  "dashboard": {
+    "welcome": "Welcome back!",
+    "overview": "Overview",
+    "stats": "Statistics",
+    "recentActivity": "Recent Activity",
+    "totalUsers": "Total Users",
+    "totalRoles": "Total Roles",
+    "totalPermissions": "Total Permissions"
+  },
+
+  "users": {
+    "title": "Users",
+    "list": "User List",
+    "create": "Create User",
+    "edit": "Edit User",
+    "delete": "Delete User",
+    "details": "User Details",
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "created": "User has been created",
+    "updated": "User has been updated",
+    "deleted": "User has been deleted"
+  },
+
+  "roles": {
+    "title": "Roles",
+    "list": "Role List",
+    "create": "Create Role",
+    "edit": "Edit Role",
+    "delete": "Delete Role",
+    "details": "Role Details",
+    "name": "Role Name",
+    "permissions": "Permissions",
+    "created": "Role has been created",
+    "updated": "Role has been updated",
+    "deleted": "Role has been deleted"
+  },
+
+  "permissions": {
+    "title": "Permissions",
+    "list": "Permission List",
+    "assign": "Assign Permission",
+    "name": "Permission Name",
+    "created": "Permission has been created",
+    "updated": "Permission has been updated",
+    "deleted": "Permission has been deleted"
+  },
+
+  "settings": {
+    "title": "Settings",
+    "general": "General Settings",
+    "profile": "Profile Settings",
+    "security": "Security Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "updated": "Settings have been updated successfully"
+  },
+
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "noNotifications": "No notifications available",
+    "newNotification": "You have a new notification"
+  },
+
+  "errors": {
+    "notFound": "Page not found",
+    "unauthorized": "Unauthorized access",
+    "forbidden": "You do not have permission to view this page",
+    "serverError": "Internal server error"
+  }
+}
