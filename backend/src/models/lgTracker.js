@@ -7,6 +7,10 @@ export const LgTracker = sequelize.define("lg_tracker", {
     primaryKey: true,
     autoIncrement: true,
   },
+  client_id: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
   campaign_name: {
     type: DataTypes.STRING(255),
     allowNull: false,

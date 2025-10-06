@@ -214,4 +214,49 @@ export default async function registerUsersRoutes(fastify) {
     	}
   	);
 
+  	fastify.get(
+    	"/clients",
+    	// { preValidation: [fastify.authenticate] },
+    	async (request, reply) => {
+      		try {
+        		const keyword = (request.query.keyword || "").trim();
+
+        		//  Search condition
+        		const where = {};
+        		if (keyword) {
+          			where[Op.or] = [
+            			{ email: { [Op.like]: `%${keyword}%` } },
+            			{ name: { [Op.like]: `%${keyword}%` } },
+            			{ contact_number: { [Op.like]: `%${keyword}%` } },
+          			];
+        		}
+
+        		// Join User → Roles through RolesUser
+        		const users = await User.findAll({
+          			where,
+          			include: [
+	            		{
+	              			model: Role,
+	              			through: RolesUser,
+	              			where: { name: "Client" }, // Only users having role "client"
+	              			attributes: ["id", "name"],
+	           	 		},
+          			],
+          			attributes: { exclude: ["password"] },
+          			order: [["id", "ASC"]],
+        		});
+
+        		return reply.send({
+          			data: users,
+          			meta: {
+            			total: users.length,
+          			},
+        		});
+      		} catch (err) {
+        		fastify.log.error(err);
+        		return reply.status(500).send({ error: "list_failed" });
+      		}
+    	}
+    );
 }
+

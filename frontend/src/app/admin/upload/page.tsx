@@ -1,10 +1,38 @@
 "use client";
-import { useState } from "react";
+import { apiClient } from "@/lib/axios";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+
+interface User {
+  id: number;
+  email: string;
+  contact_number: string;
+}
 
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
   const [client, setClient] = useState("");
+  const [clientList, setClientList] = useState([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchClientList = async (page, searchTerm) => {
+      try {
+        const { data } = await apiClient.get<{
+          data: User[];
+        }>("/clients", {
+          params: { page, keyword: searchTerm },
+        });
+
+        setClientList(data.data || []);
+      } catch (err) {
+        console.error("Failed to fetch users", err);
+      }
+    };
+
+    fetchClientList(1, "");
+  }, []);
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,17 +46,14 @@ export default function UploadPage() {
     formData.append("client_id", client);
 
     try {
-      const res = await fetch("http://localhost:5010/upload", {
-        method: "POST",
-        body: formData,
+      const res = await apiClient.post("/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // explicitly tell axios
+        },
       });
 
-      if (res.ok) {
-        toast.success("File uploaded successfully!");
-        window.location.href = "/admin/dashboard";
-      } else {
-        toast.error("Upload failed!");
-      }
+      toast.success("File uploaded successfully!");
+      router.push("/admin/dashboard");
     } catch {
       toast.error("Something went wrong!");
     }
@@ -45,9 +70,11 @@ export default function UploadPage() {
           onChange={(e) => setClient(e.target.value)}
         >
           <option value="">Select Client</option>
-          <option value="1">Client 1</option>
-          <option value="2">Client 2</option>
-          <option value="3">Client 3</option>
+          {clientList.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
         </select>
 
         {/* File upload */}

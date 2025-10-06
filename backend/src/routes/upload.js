@@ -46,6 +46,7 @@ export default async function uploadRoutes(fastify, opts) {
               if (row["Customer Name"] && row["Phone number"] && row["Status"]) {
                 results.push({
                   upload_log_id: log.id,
+                  client_id:client_id,
                   customer_name: row["Customer Name"],
                   phone_number: row["Phone number"],
                   status: row["Status"],
@@ -75,8 +76,6 @@ export default async function uploadRoutes(fastify, opts) {
     }
   );
 
-  
-
   // Download sample CSV route
   fastify.get("/upload/sample", async (req, reply) => {
     const sample =
@@ -84,5 +83,38 @@ export default async function uploadRoutes(fastify, opts) {
     reply.header("Content-Type", "text/csv");
     reply.header("Content-Disposition", "attachment; filename=upload_sample.csv");
     reply.send(sample);
+  });
+
+  fastify.get("/report/uploaded-data", async (req, reply) => {
+    try {
+      const { client_id, start_date, end_date } = req.query;
+
+      if (!client_id) {
+        return reply.status(400).send({ error: "Client ID is required" });
+      }
+
+      const where = { client_id };
+
+      // Optional date filter
+      if (start_date && end_date) {
+        where.createdAt = {
+          [Op.between]: [new Date(start_date), new Date(end_date)],
+        };
+      } else if (start_date) {
+        where.createdAt = { [Op.gte]: new Date(start_date) };
+      } else if (end_date) {
+        where.createdAt = { [Op.lte]: new Date(end_date) };
+      }
+
+      const data = await UploadedData.findAll({
+        where,
+        order: [["createdAt", "DESC"]],
+      });
+
+      return reply.send({ data });
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.status(500).send({ error: "Failed to fetch report data" });
+    }
   });
 }
