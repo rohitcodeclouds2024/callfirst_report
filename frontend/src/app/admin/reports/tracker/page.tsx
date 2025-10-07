@@ -2,13 +2,9 @@
 
 import TrackerDataReport from "@/components/ui/reports/TrackerDataReport";
 import { apiClient } from "@/lib/axios";
+import { Client } from "@/types/client";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-
-interface Client {
-  id: number;
-  name: string;
-}
 
 export default function TrackeReport() {
   const [clientList, setClientList] = useState<Client[]>([]);

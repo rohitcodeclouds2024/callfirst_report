@@ -2,13 +2,9 @@
 
 import UploadDataReport from "@/components/ui/reports/UploadDataReport";
 import { apiClient } from "@/lib/axios";
+import { Client } from "@/types/client";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-
-interface Client {
-  id: number;
-  name: string;
-}
 
 export default function UploadReport() {
   const [clientList, setClientList] = useState<Client[]>([]);
