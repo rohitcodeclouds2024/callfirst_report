@@ -72,7 +72,7 @@ export default function Dashboard() {
     <div className="dashboard-content">
       <h3 className="text-2xl font-semibold mb-4">Dashboard</h3>
       <div className="grid grid-cols-12 gap-6">
-        <Card className="col-span-6" title="Conversion Percentage">
+        <Card className="col-span-12 lg:col-span-6" title="Conversion Percentage">
           <ResponsiveContainer width="100%" height={ 260 }>
             <BarChart data={ conversionPercentage } margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -83,7 +83,7 @@ export default function Dashboard() {
             </BarChart>
           </ResponsiveContainer>
         </Card>
-        <Card className="col-span-6" title="Number of Contacts">
+        <Card className="col-span-12 lg:col-span-6" title="Number of Contacts">
           <ResponsiveContainer width="100%" height={ 260 }>
             <LineChart data={ numberOfContacts } margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -94,7 +94,7 @@ export default function Dashboard() {
             </LineChart>
           </ResponsiveContainer>
         </Card>
-        <Card className="col-span-8" title="Number of Dials">
+        <Card className="col-span-12 lg:col-span-6 xl:col-span-8" title="Number of Dials">
           <ResponsiveContainer width="100%" height={ 260 }>
             <AreaChart data={ numberOfDial } margin={ { top: 0, right: 0, left: 0, bottom: 0 } }>
               <CartesianGrid strokeDasharray="3 3" />
@@ -105,9 +105,10 @@ export default function Dashboard() {
             </AreaChart>
           </ResponsiveContainer>
         </Card>
-        <Card className="col-span-4" title="Number of Uploads">
+        <Card className="col-span-12 lg:col-span-6 xl:col-span-4" title="Number of Uploads">
           <ResponsiveContainer width="100%" height={ 260 }>
             <PieChart margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+              <Tooltip />
               <Pie data={ numberOfUploads } dataKey="value" nameKey="name" cx="50%" innerRadius={ 80 } outerRadius={ 96 } fill="#ef4444" label />
             </PieChart>
           </ResponsiveContainer>
