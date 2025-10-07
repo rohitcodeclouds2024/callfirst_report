@@ -93,7 +93,7 @@ export default function TrackerForm() {
 
     try {
       await apiClient.post("/tracker", formData);
-      router.push("/admin/dashboard");
+      router.push("/admin/reports/tracker");
     } catch (err) {
       console.error("Failed to submit tracker", err);
       alert("Something went wrong!");

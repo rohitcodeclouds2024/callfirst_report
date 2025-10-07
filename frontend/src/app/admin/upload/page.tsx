@@ -53,7 +53,7 @@ export default function UploadPage() {
       });
 
       toast.success("File uploaded successfully!");
-      router.push("/admin/dashboard");
+      router.push("/admin/reports/upload");
     } catch {
       toast.error("Something went wrong!");
     }

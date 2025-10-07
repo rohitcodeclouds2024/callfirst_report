@@ -3,15 +3,19 @@
 import Link from "next/link";
 import clsx from "clsx";
 import {
-  FaHome,
   FaUsers,
-  FaUpload,
-  FaClock,
-  FaAngleDoubleLeft,
-  FaAngleDoubleRight,
-} from "react-icons/fa";
+  FaUserShield,
+  FaChartBar,
+  FaRegClipboard,
+  FaClockRotateLeft,
+} from "react-icons/fa6";
 
-import { FaUsersGear } from "react-icons/fa6"; // Roles
+import {
+  FaHome,
+  FaFileUpload,
+  FaAngleDoubleRight,
+  FaAngleDoubleLeft,
+} from "react-icons/fa";
 
 interface SideBarSectionProps {
   sidebarOpen: boolean;
@@ -24,9 +28,19 @@ interface SideBarSectionProps {
 const menuItems = [
   { name: "Dashboard", icon: <FaHome />, href: "/admin/dashboard" },
   { name: "Users", icon: <FaUsers />, href: "/admin/users" },
-  { name: "Roles", icon: <FaUsersGear />, href: "/admin/roles" },
-  { name: "Upload", icon: <FaUpload />, href: "/admin/upload" },
-  { name: "Tracker", icon: <FaClock />, href: "/admin/tracker" },
+  { name: "Roles", icon: <FaUserShield />, href: "/admin/roles" },
+  { name: "Upload", icon: <FaFileUpload />, href: "/admin/upload" },
+  {
+    name: "Upload Report",
+    icon: <FaChartBar />,
+    href: "/admin/reports/upload",
+  },
+  { name: "Tracker Form", icon: <FaRegClipboard />, href: "/admin/tracker" },
+  {
+    name: "Tracker Report",
+    icon: <FaClockRotateLeft />,
+    href: "/admin/reports/tracker",
+  },
 ];
 
 export default function SideBarSection({
