@@ -20,30 +20,8 @@ const staticTitles: Record<string, string> = {
 function formatTitle(name: string) {
   return `${siteName} || ${name}`;
 }
-
-export async function generateMetadata({
-  params,
-  pathname,
-}: {
-  params: any;
-  pathname?: string;
-}): Promise<Metadata> {
-  // Dynamic route handling
-  const slug = params?.slug
-    ? Array.isArray(params.slug)
-      ? params.slug
-      : [params.slug]
-    : [];
-
-  if (slug.length > 0) {
-    const pageName = slug
-      .map((s) => s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()))
-      .join(" / ");
-    return { title: formatTitle(pageName) };
-  }
-
-  // Static route handling
-  const path = pathname ?? "/";
+export async function generateMetadata(): Promise<Metadata> {
+  const path = "/";
   const staticPageName = staticTitles[path] ?? "Home";
   return { title: formatTitle(staticPageName) };
 }
