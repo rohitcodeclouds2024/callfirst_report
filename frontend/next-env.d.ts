@@ -1,5 +1,12 @@
-/// <reference types="next" />
-/// <reference types="next/image-types/global" />
+import NextAuth from "next-auth";
 
-// NOTE: This file should not be edited
-// see https://nextjs.org/docs/app/building-your-application/configuring/typescript for more information.
+declare module "next-auth" {
+  interface Session {
+    user: {
+      name?: string;
+      email?: string;
+      image?: string;
+      token?: string; //add your custom token here
+    };
+  }
+}
