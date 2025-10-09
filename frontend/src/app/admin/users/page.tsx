@@ -8,6 +8,7 @@ import {
   FaPlus,
   FaEdit,
   FaEye,
+  FaPhoneAlt,
 } from "react-icons/fa";
 import Pagination from "../../../components/form/Pagination"; // adjust path
 import RowSkeleton from "../../../components/skeleton/RowSkeleton";
@@ -17,6 +18,7 @@ import TextInput from "../../../components/form/TextInput";
 import { apiClient } from "../../../lib/axios";
 import MySwal from "@/lib/swal";
 import Link from "next/link";
+import { FaEnvelope } from "react-icons/fa6";
 
 // Define user type (based on API response)
 interface User {
@@ -134,133 +136,119 @@ export default function Users() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-neutral px-6 py-10 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header and Search Bar */}
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-semibold flex items-center gap-2 text-primary-dark">
-            <FaUsers className="text-accent" /> Users
-          </h1>
-          <div className="flex items-center gap-4">
-            <Link href="/admin/users/1/0">
-              <FormButton
-                icon={<FaPlus />}
-                label="Create User"
-                showLabel
-                variant="primary"
-              />
-            </Link>
-            {selected.length > 0 && (
-              <FormButton
-                icon={<FaTrash className="text-error text-xl text-primary" />}
-                iconOnly
-                showLabel={false}
-                variant="deleteAll"
-                label={`Delete Selected (${selected.length})`}
-                onClick={handleBulkDelete}
-              />
-            )}
-          </div>
-        </div>
-
-        {/* Search Bar */}
-        <div className="relative w-72 mb-4">
+    <div className="users-wrapper">
+      <h3 className="text-2xl font-semibold mb-4">Users</h3>
+      <div className="flex justify-between gap-4 mb-4">
+        <div className="relative w-72">
           <TextInput
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setCurrentPage(1);
+            value={ search }
+            onChange={ ( e ) => {
+              setSearch( e.target.value );
+              setCurrentPage( 1 );
             }}
             placeholder="Search user..."
-            showLabel={false}
-            iconLeft={<FaSearch className="text-muted" />}
-            className="py-2 pl-10 pr-4 rounded-md bg-surface text-neutral border border-border focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
+            showLabel={ false }
+            iconLeft={ <FaSearch className="block" />}
           />
         </div>
-
-        {/* Data Table */}
-        <div className="overflow-auto rounded-lg shadow bg-surface transition-colors">
-          <table className="min-w-full text-sm text-neutral">
-            <thead className="uppercase text-xs bg-surface border-b border-border text-muted">
-              <tr>
-                <th className="px-6 py-3">
-                  <div className="flex items-center justify-center">
+        <div className="flex items-center gap-2">
+          <Link href="/admin/users/1/0" className="flex items-center gap-2 px-4 py-2 text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition-all duration-300">
+            <FaPlus size={ 14 } className="block" />
+            <span className="block">Create User</span>
+            {/* <FormButton icon={ <FaPlus className="block" /> } label="Create User" showLabel variant="primary" /> */}
+          </Link>
+          { selected.length > 0 && (
+            <a href="#" className="p-3 text-red-500 border border-red-500 rounded-md" onClick={ handleBulkDelete }>
+              <FaTrash className="block" size={ 16 } />
+            </a>
+            // <FormButton icon={ <FaTrash className="text-error text-xl text-primary" /> } iconOnly showLabel={ false } variant="deleteAll" label={ `Delete Selected (${selected.length})` } onClick={ handleBulkDelete } />
+          ) }
+        </div>
+      </div>
+      <div className="overflow-x-auto rounded-lg shadow">
+        <table className="w-full text-sm text-left">
+          <thead className="uppercase">
+            <tr>
+              <th className="p-4 bg-white w-[50px]">
+                <CheckboxInput
+                  checked={
+                    selected.length === users.length && users.length > 0
+                  }
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelected(users.map((u) => u.id));
+                    } else {
+                      setSelected([]);
+                    }
+                  }}
+                />
+              </th>
+              <th className="p-4 bg-white">#</th>
+              <th className="p-4 bg-white">Email</th>
+              <th className="p-4 bg-white">Contact Number</th>
+              <th className="p-4 bg-white">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-500">
+            { loading ? (
+              <RowSkeleton count={5} columns={5} withCheckbox />
+            ) : users.length > 0 ? (
+              users.map((user) => (
+                <tr key={ user.id }>
+                  <td className="px-4 py-3 bg-white border-t border-border">
                     <CheckboxInput
-                      checked={
-                        selected.length === users.length && users.length > 0
-                      }
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelected(users.map((u) => u.id));
-                        } else {
-                          setSelected([]);
-                        }
-                      }}
+                      checked={selected.includes(user.id)}
+                      onChange={() => toggleSelect(user.id)}
+                      label=""
+                      className="checkbox"
                     />
-                  </div>
-                </th>
-                <th className="px-6 py-3">#</th>
-                <th className="px-6 py-3">Email</th>
-                <th className="px-6 py-3">Contact Number</th>
-                <th className="px-6 py-3">Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {loading ? (
-                <RowSkeleton count={5} columns={5} withCheckbox />
-              ) : users.length > 0 ? (
-                users.map((user) => (
-                  <tr
-                    key={user.id}
-                    className="border-b border-border hover:bg-background transition-colors"
-                  >
-                    <td className="px-6 py-3">
-                      <div className="flex items-center justify-center">
-                        <CheckboxInput
-                          checked={selected.includes(user.id)}
-                          onChange={() => toggleSelect(user.id)}
-                          label=""
-                          className="checkbox"
-                        />
-                      </div>
-                    </td>
-                    <td className="px-6 py-3">{user.id}</td>
-                    <td className="px-6 py-3">{user.email}</td>
-                    <td className="px-6 py-3">{user.contact_number}</td>
-                    <td className="px-6 py-4 flex items-center gap-4">
-                      <Link href={`/admin/users/3/${user.id}`}>
-                        <FaEye className="cursor-pointer text-blue-500" />
+                  </td>
+                  <td className="px-4 py-3 bg-white border-t border-border">{ user.id }</td>
+                  <td className="px-4 py-3 bg-white border-t border-border">
+                    <p className="flex items-center gap-2">
+                      <FaEnvelope size={ 14 } className="block text-primary" />
+                      <span className="block">{ user.email }</span>
+                    </p>
+                  </td>
+                  <td className="px-4 py-3 bg-white border-t border-border">
+                    <p className="flex items-center gap-2">
+                      <FaPhoneAlt size={ 14 } className="block text-primary" />
+                      <span className="block">{ user.contact_number }</span>
+                    </p>
+                  </td>
+                  <td className="px-4 py-3 bg-white border-t border-border">
+                    <div className="flex gap-2">
+                      <Link href={ `/admin/users/3/${user.id}` } className="p-2 text-blue-500 border border-blue-500 rounded hover:bg-blue-100 transition-all duration-300">
+                        <FaEye size={ 14 } className="block" />
                       </Link>
-                      <Link href={`/admin/users/2/${user.id}`}>
-                        <FaEdit className="cursor-pointer text-green-500" />
+                      <Link href={ `/admin/users/2/${user.id}` } className="p-2 text-green-500 border border-green-500 rounded hover:bg-green-100 transition-all duration-300">
+                        <FaEdit size={ 14 } className="block" />
                       </Link>
-                      <FaTrash
-                        className="cursor-pointer text-red-500"
-                        onClick={() => handleDelete(user.id)}
-                      />
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={5} className="text-center py-6 text-muted">
-                    No users found.
+                      <a href="#" className="p-2 text-red-500 border border-red-500 rounded hover:bg-red-100 transition-all duration-300" onClick={ () => handleDelete( user.id ) }>
+                        <FaTrash size={ 14 } className="block" />
+                      </a>
+                    </div>
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="px-4 py-2 border-t border-border">
+                  No users found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
-          {!loading && users.length > 0 && (
-            <Pagination
-              total={total}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
-          )}
-        </div>
+        {!loading && users.length > 0 && (
+          <Pagination
+            total={total}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
     </div>
   );

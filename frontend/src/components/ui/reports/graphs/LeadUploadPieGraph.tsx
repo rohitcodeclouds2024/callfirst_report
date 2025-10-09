@@ -37,7 +37,7 @@ export default function LeadUploadPieGraph({
     };
 
     fetchConversion();
-  }, [selectedClientId]);
+  }, [selectedClientId, dateFilter, customRange]);
 
   return (
     <Card className="col-span-4" title="Number of Lead Uploads">
@@ -50,7 +50,8 @@ export default function LeadUploadPieGraph({
             cx="50%"
             innerRadius={80}
             outerRadius={96}
-            fill="#ef4444"
+            fill="currentColor"
+            className="text-primary"
             label={({ value }) => `${value}`}
           />
           <Tooltip

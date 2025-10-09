@@ -66,26 +66,26 @@ export default function TrackerForm() {
       notify("Client Name is required", "error");
       return;
     }
-    if (!formData.campaign_name) {
-      notify("Campaign Name is required", "error");
-      return;
-    }
-    if (!formData.no_of_dials) {
-      notify("Campaign Name is required", "error");
-      return;
-    }
-    if (!formData.no_of_contacts) {
-      notify("No of Contacts is required", "error");
-      return;
-    }
-    if (!formData.gross_transfer) {
-      notify("Campaign Name is required", "error");
-      return;
-    }
-    if (!formData.net_transfer) {
-      notify("Net Transfer is required", "error");
-      return;
-    }
+    // if (!formData.campaign_name) {
+    //   notify("Campaign Name is required", "error");
+    //   return;
+    // }
+    // if (!formData.no_of_dials) {
+    //   notify("Campaign Name is required", "error");
+    //   return;
+    // }
+    // if (!formData.no_of_contacts) {
+    //   notify("No of Contacts is required", "error");
+    //   return;
+    // }
+    // if (!formData.gross_transfer) {
+    //   notify("Campaign Name is required", "error");
+    //   return;
+    // }
+    // if (!formData.net_transfer) {
+    //   notify("Net Transfer is required", "error");
+    //   return;
+    // }
     if (!formData.date) {
       notify("Date is required", "error");
       return;
@@ -121,7 +121,7 @@ export default function TrackerForm() {
             ))}
           </select>
         </div>
-        <div>
+        {/* <div>
           <label className="block font-medium">Campaign Name</label>
           <input
             type="text"
@@ -131,7 +131,7 @@ export default function TrackerForm() {
             className="w-full border p-2 rounded"
             required
           />
-        </div>
+        </div> */}
 
         <div>
           <label className="block font-medium">No of Dials</label>

@@ -30,6 +30,7 @@ export default function Dashboard() {
 
   // Handle Apply button click
   const handleApply = () => {
+    // console.log("clicked");
     setAppliedClientId(selectedClientId);
     setAppliedDateFilter(dateFilter);
     setAppliedCustomRange(customRange);
@@ -124,19 +125,16 @@ export default function Dashboard() {
           dateFilter={appliedDateFilter}
           customRange={appliedCustomRange}
         />
-
         <NumberContacts
           selectedClientId={appliedClientId}
           dateFilter={appliedDateFilter}
           customRange={appliedCustomRange}
         />
-
         <DialedNumber
           selectedClientId={appliedClientId}
           dateFilter={appliedDateFilter}
           customRange={appliedCustomRange}
         />
-
         <LeadUploadPieGraph
           selectedClientId={appliedClientId}
           dateFilter={appliedDateFilter}

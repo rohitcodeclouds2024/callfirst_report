@@ -139,131 +139,109 @@ export default function Roles() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-neutral px-6 py-10 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header and Search Bar */}
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-semibold flex items-center gap-2 text-primary-dark">
-            <FaUsers className="text-accent" /> Roles
-          </h1>
-          <div className="flex items-center gap-4">
-            <Link href="/admin/roles/1/0">
-              <FormButton
-                icon={<FaPlus />}
-                label="Create Role"
-                showLabel
-                variant="primary"
-              />
-            </Link>
-            {selected.length > 0 && (
-              <FormButton
-                icon={<FaTrash className="text-error text-xl text-primary" />}
-                iconOnly
-                showLabel={false}
-                variant="deleteAll"
-                label={`Delete Selected (${selected.length})`}
-                onClick={handleBulkDelete}
-              />
-            )}
-          </div>
-        </div>
-
-        {/* Search Bar */}
-        <div className="relative w-72 mb-4">
+    <div className="roles-wrapper">
+      <h3 className="text-2xl font-semibold mb-4">Roles</h3>
+      <div className="flex justify-between gap-4 mb-4">
+        <div className="relative w-72">
           <TextInput
             value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setCurrentPage(1);
+            onChange={ ( e ) => {
+              setSearch( e.target.value );
+              setCurrentPage( 1 );
             }}
             placeholder="Search role..."
             showLabel={false}
-            iconLeft={<FaSearch className="text-muted" />}
-            className="py-2 pl-10 pr-4 rounded-md bg-surface text-neutral border border-border focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
+            iconLeft={ <FaSearch className="block" />}
           />
         </div>
-
-        {/* Data Table */}
-        <div className="overflow-auto rounded-lg shadow bg-surface transition-colors">
-          <table className="min-w-full text-sm text-neutral">
-            <thead className="uppercase text-xs bg-surface border-b border-border text-muted">
-              <tr>
-                <th className="px-6 py-3">
-                  <div className="flex items-center justify-center">
-                    <CheckboxInput
-                      checked={
-                        selected.length === roles.length && roles.length > 0
+        <div className="flex items-center gap-2">
+          <Link href="/admin/roles/1/0" className="flex items-center gap-2 px-4 py-2 text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition-all duration-300">
+            <FaPlus size={ 14 } className="block" />
+            <span className="block">Create User</span>
+            {/* <FormButton icon={ <FaPlus /> } label="Create Role" showLabel variant="primary" /> */}
+          </Link>
+          { selected.length > 0 && (
+            <a href="#" className="p-3 text-red-500 border border-red-500 rounded-md" onClick={ handleBulkDelete }>
+              <FaTrash className="block" size={ 16 } />
+            </a>
+            // <FormButton icon={ <FaTrash className="text-error text-xl text-primary" /> } iconOnly showLabel={false } variant="deleteAll" label={ `Delete Selected (${ selected.length })` } onClick={ handleBulkDelete } />
+          ) }
+        </div>
+      </div>
+      <div className="overflow-x-auto rounded-lg shadow">
+        <table className="w-full text-sm text-left">
+          <thead className="uppercase">
+            <tr>
+              <th className="p-4 bg-white w-[50px]">
+                <div className="flex items-center justify-center">
+                  <CheckboxInput
+                    checked={
+                      selected.length === roles.length && roles.length > 0
+                    }
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelected(roles.map((u) => u.id));
+                      } else {
+                        setSelected([]);
                       }
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelected(roles.map((u) => u.id));
-                        } else {
-                          setSelected([]);
-                        }
-                      }}
+                    }}
+                  />
+                </div>
+              </th>
+              <th className="p-4 bg-white">#</th>
+              <th className="p-4 bg-white">Name</th>
+              <th className="p-4 bg-white">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-500">
+            {loading ? (
+              <RowSkeleton count={5} columns={5} withCheckbox />
+            ) : roles.length > 0 ? (
+              roles.map((role) => (
+                <tr key={ role.id }>
+                  <td className="px-4 py-3 bg-white border-t border-border">
+                    <CheckboxInput
+                      checked={selected.includes(role.id)}
+                      onChange={() => toggleSelect(role.id)}
+                      label=""
+                      className="checkbox"
                     />
-                  </div>
-                </th>
-                <th className="px-6 py-3">#</th>
-                <th className="px-6 py-3">Name</th>
-                <th className="px-6 py-3">Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {loading ? (
-                <RowSkeleton count={5} columns={5} withCheckbox />
-              ) : roles.length > 0 ? (
-                roles.map((role) => (
-                  <tr
-                    key={role.id}
-                    className="border-b border-border hover:bg-background transition-colors"
-                  >
-                    <td className="px-6 py-3">
-                      <div className="flex items-center justify-center">
-                        <CheckboxInput
-                          checked={selected.includes(role.id)}
-                          onChange={() => toggleSelect(role.id)}
-                          label=""
-                          className="checkbox"
-                        />
-                      </div>
-                    </td>
-                    <td className="px-6 py-3">{role.id}</td>
-                    <td className="px-6 py-3">{role.name}</td>
-                    <td className="px-6 py-4 flex items-center gap-4">
-                      <Link href={`/admin/roles/3/${role.id}`}>
-                        <FaEye className="cursor-pointer text-blue-500" />
+                  </td>
+                  <td className="px-4 py-3 bg-white border-t border-border">{role.id}</td>
+                  <td className="px-4 py-3 bg-white border-t border-border">{role.name}</td>
+                  <td className="px-4 py-3 bg-white border-t border-border">
+                    <div className="flex gap-2">
+                      <Link href={ `/admin/roles/3/${role.id}` } className="p-2 text-blue-500 border border-blue-500 rounded hover:bg-blue-100 transition-all duration-300">
+                        <FaEye size={ 14 } className="block" />
                       </Link>
-                      <Link href={`/admin/roles/2/${role.id}`}>
-                        <FaEdit className="cursor-pointer text-green-500" />
+                      <Link href={ `/admin/roles/2/${role.id}` } className="p-2 text-green-500 border border-green-500 rounded hover:bg-green-100 transition-all duration-300">
+                        <FaEdit size={ 14 } className="block" />
                       </Link>
-                      <FaTrash
-                        className="cursor-pointer text-red-500"
-                        onClick={() => handleDelete(role.id)}
-                      />
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={5} className="text-center py-6 text-muted">
-                    No Roles found.
+                      <a href="#" className="p-2 text-red-500 border border-red-500 rounded hover:bg-red-100 transition-all duration-300" onClick={ () => handleDelete( role.id ) }>
+                        <FaTrash size={ 14 } className="block" />
+                      </a>
+                    </div>
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="text-center py-6 text-muted">
+                  No Roles found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
-          {!loading && roles.length > 0 && (
-            <Pagination
-              total={total}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
-          )}
-        </div>
+        {!loading && roles.length > 0 && (
+          <Pagination
+            total={total}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
     </div>
   );

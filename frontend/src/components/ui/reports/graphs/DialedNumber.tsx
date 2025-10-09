@@ -44,7 +44,7 @@ export default function DialedNumber({
     };
 
     fetchConversion();
-  }, [selectedClientId]);
+  }, [selectedClientId, dateFilter, customRange]);
 
   return (
     <Card className="col-span-8" title="Number of Dials">
@@ -60,8 +60,9 @@ export default function DialedNumber({
           <Area
             type="monotone"
             dataKey="dials"
-            stroke="#ef4444"
-            fill="#ef444433"
+            stroke="currentColor"
+            className="text-primary"
+            fill="#0c3c604d"
             name="Dials"
           />
         </AreaChart>

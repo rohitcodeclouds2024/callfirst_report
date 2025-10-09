@@ -28,9 +28,9 @@ export function getDateRange(dateFilter, customRange = null) {
     endDate = new Date(customRange.end);
 
     const diffDays = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-    if (diffDays < 5 || diffDays > 31) {
-      throw new Error("Custom range must be between 5 and 31 days");
-    }
+    // if (diffDays < 5 || diffDays > 31) {
+    //   throw new Error("Custom range must be between 5 and 31 days");
+    // }
   } else {
     throw new Error("Invalid dateFilter value");
   }

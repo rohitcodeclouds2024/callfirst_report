@@ -46,7 +46,7 @@ export default function NumberContacts({
     };
 
     fetchConversion();
-  }, [selectedClientId]);
+  }, [selectedClientId, dateFilter, customRange]);
 
   return (
     <Card className="col-span-6" title="Number of Contacts">
@@ -62,7 +62,8 @@ export default function NumberContacts({
           <Line
             type="monotone"
             dataKey="contacts"
-            stroke="#ef4444"
+            stroke="currentColor"
+            className="text-primary"
             strokeWidth={2}
             dot={{ r: 4 }}
             activeDot={{ r: 6 }}
