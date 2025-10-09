@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 
 interface CardProps {
     className?: string;
-    title: string;
+    title?: string;
     titleClass?: string;
     children: ReactNode;
 }
