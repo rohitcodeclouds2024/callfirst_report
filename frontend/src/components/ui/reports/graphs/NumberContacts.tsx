@@ -46,7 +46,7 @@ export default function NumberContacts({
     };
 
     fetchConversion();
-  }, [selectedClientId]);
+  }, [selectedClientId, dateFilter, customRange]);
 
   return (
     <Card className="col-span-6" title="Number of Contacts">

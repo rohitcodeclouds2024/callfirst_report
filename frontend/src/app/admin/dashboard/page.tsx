@@ -30,6 +30,7 @@ export default function Dashboard() {
 
   // Handle Apply button click
   const handleApply = () => {
+    // console.log("clicked");
     setAppliedClientId(selectedClientId);
     setAppliedDateFilter(dateFilter);
     setAppliedCustomRange(customRange);

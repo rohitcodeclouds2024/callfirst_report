@@ -44,7 +44,7 @@ export default function ConversionPercentage({
     };
 
     fetchConversion();
-  }, [selectedClientId]);
+  }, [selectedClientId, dateFilter, customRange]);
 
   return (
     <Card className="col-span-6" title="Conversion Percentage">
@@ -57,7 +57,12 @@ export default function ConversionPercentage({
           <XAxis dataKey="name" />
           <YAxis tickFormatter={(value) => `${value}%`} />
           <Tooltip formatter={(value) => `${value}%`} />
-          <Bar dataKey="conversion" fill="currentColor" className="text-primary" radius={[8, 8, 0, 0]} />
+          <Bar
+            dataKey="conversion"
+            fill="currentColor"
+            className="text-primary"
+            radius={[8, 8, 0, 0]}
+          />
         </BarChart>
       </ResponsiveContainer>
     </Card>

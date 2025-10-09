@@ -44,7 +44,7 @@ export default function DialedNumber({
     };
 
     fetchConversion();
-  }, [selectedClientId]);
+  }, [selectedClientId, dateFilter, customRange]);
 
   return (
     <Card className="col-span-8" title="Number of Dials">

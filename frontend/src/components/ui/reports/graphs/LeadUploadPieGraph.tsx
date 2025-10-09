@@ -37,7 +37,7 @@ export default function LeadUploadPieGraph({
     };
 
     fetchConversion();
-  }, [selectedClientId]);
+  }, [selectedClientId, dateFilter, customRange]);
 
   return (
     <Card className="col-span-4" title="Number of Lead Uploads">
