@@ -60,8 +60,9 @@ export default function DialedNumber({
           <Area
             type="monotone"
             dataKey="dials"
-            stroke="#ef4444"
-            fill="#ef444433"
+            stroke="currentColor"
+            className="text-primary"
+            fill="#0c3c604d"
             name="Dials"
           />
         </AreaChart>
