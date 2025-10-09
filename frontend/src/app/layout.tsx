@@ -5,6 +5,7 @@ import SessionWrapper from "./../components/SessionWrapper";
 import { ThemeProvider } from "./context/ThemeContext";
 import ThemeToggle from "./../components/ThemeComponent";
 import { LoaderProvider } from "./context/LoaderContext";
+import { AppProvider } from "./context/AppProvider";
 
 const siteName = "DatastarPro";
 
@@ -20,30 +21,8 @@ const staticTitles: Record<string, string> = {
 function formatTitle(name: string) {
   return `${siteName} || ${name}`;
 }
-
-export async function generateMetadata({
-  params,
-  pathname,
-}: {
-  params: any;
-  pathname?: string;
-}): Promise<Metadata> {
-  // Dynamic route handling
-  const slug = params?.slug
-    ? Array.isArray(params.slug)
-      ? params.slug
-      : [params.slug]
-    : [];
-
-  if (slug.length > 0) {
-    const pageName = slug
-      .map((s) => s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()))
-      .join(" / ");
-    return { title: formatTitle(pageName) };
-  }
-
-  // Static route handling
-  const path = pathname ?? "/";
+export async function generateMetadata(): Promise<Metadata> {
+  const path = "/";
   const staticPageName = staticTitles[path] ?? "Home";
   return { title: formatTitle(staticPageName) };
 }
@@ -68,7 +47,9 @@ export default function RootLayout({
         />
         <ThemeProvider>
           <SessionWrapper>
-            <LoaderProvider> {children}</LoaderProvider>
+            <LoaderProvider>
+              <AppProvider> {children}</AppProvider>
+            </LoaderProvider>
           </SessionWrapper>
           <ThemeToggle />
         </ThemeProvider>
