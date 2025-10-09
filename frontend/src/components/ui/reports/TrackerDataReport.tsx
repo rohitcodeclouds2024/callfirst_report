@@ -118,8 +118,8 @@ export default function TrackerDataReport({ clientList }) {
                     ? `${(
                         (100 * item.gross_transfer) /
                         item.no_of_contacts
-                      ).toFixed(2)}%`
-                    : "0.00%"}
+                      ).toFixed(2)}`
+                    : "0.00"}
                 </td>
               </tr>
             ))}
