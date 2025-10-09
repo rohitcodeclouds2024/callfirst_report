@@ -165,93 +165,91 @@ export default function Users() {
           ) }
         </div>
       </div>
-        <div className="overflow-x-auto rounded-lg shadow">
-          <table className="w-full text-sm text-left">
-            <thead className="uppercase">
-              <tr>
-                <th className="p-4 bg-white w-[50px]">
-                  <CheckboxInput
-                    checked={
-                      selected.length === users.length && users.length > 0
+      <div className="overflow-x-auto rounded-lg shadow">
+        <table className="w-full text-sm text-left">
+          <thead className="uppercase">
+            <tr>
+              <th className="p-4 bg-white w-[50px]">
+                <CheckboxInput
+                  checked={
+                    selected.length === users.length && users.length > 0
+                  }
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSelected(users.map((u) => u.id));
+                    } else {
+                      setSelected([]);
                     }
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setSelected(users.map((u) => u.id));
-                      } else {
-                        setSelected([]);
-                      }
-                    }}
-                  />
-                </th>
-                <th className="p-4 bg-white">#</th>
-                <th className="p-4 bg-white">Email</th>
-                <th className="p-4 bg-white">Contact Number</th>
-                <th className="p-4 bg-white">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-500">
-              { loading ? (
-                <RowSkeleton count={5} columns={5} withCheckbox />
-              ) : users.length > 0 ? (
-                users.map((user) => (
-                  <tr key={ user.id }>
-                    <td className="px-4 py-3 bg-white border-t border-border">
-                      <div className="flex items-center justify-center">
-                        <CheckboxInput
-                          checked={selected.includes(user.id)}
-                          onChange={() => toggleSelect(user.id)}
-                          label=""
-                          className="checkbox"
-                        />
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 bg-white border-t border-border">{ user.id }</td>
-                    <td className="px-4 py-3 bg-white border-t border-border">
-                      <p className="flex items-center gap-2">
-                        <FaEnvelope size={ 14 } className="block text-primary" />
-                        <span className="block">{ user.email }</span>
-                      </p>
-                    </td>
-                    <td className="px-4 py-3 bg-white border-t border-border">
-                      <p className="flex items-center gap-2">
-                        <FaPhoneAlt size={ 14 } className="block text-primary" />
-                        <span className="block">{ user.contact_number }</span>
-                      </p>
-                    </td>
-                    <td className="px-4 py-3 bg-white border-t border-border">
-                      <div className="flex gap-2">
-                        <Link href={ `/admin/users/3/${user.id}` } className="p-2 text-blue-500 border border-blue-500 rounded hover:bg-blue-100 transition-all duration-300">
-                          <FaEye size={ 14 } className="block" />
-                        </Link>
-                        <Link href={ `/admin/users/2/${user.id}` } className="p-2 text-green-500 border border-green-500 rounded hover:bg-green-100 transition-all duration-300">
-                          <FaEdit size={ 14 } className="block" />
-                        </Link>
-                        <a href="#" className="p-2 text-red-500 border border-red-500 rounded hover:bg-red-100 transition-all duration-300" onClick={ () => handleDelete( user.id ) }>
-                          <FaTrash className="block" />
-                        </a>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={5} className="px-4 py-2 border-t border-border">
-                    No users found.
+                  }}
+                />
+              </th>
+              <th className="p-4 bg-white">#</th>
+              <th className="p-4 bg-white">Email</th>
+              <th className="p-4 bg-white">Contact Number</th>
+              <th className="p-4 bg-white">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-500">
+            { loading ? (
+              <RowSkeleton count={5} columns={5} withCheckbox />
+            ) : users.length > 0 ? (
+              users.map((user) => (
+                <tr key={ user.id }>
+                  <td className="px-4 py-3 bg-white border-t border-border">
+                    <CheckboxInput
+                      checked={selected.includes(user.id)}
+                      onChange={() => toggleSelect(user.id)}
+                      label=""
+                      className="checkbox"
+                    />
+                  </td>
+                  <td className="px-4 py-3 bg-white border-t border-border">{ user.id }</td>
+                  <td className="px-4 py-3 bg-white border-t border-border">
+                    <p className="flex items-center gap-2">
+                      <FaEnvelope size={ 14 } className="block text-primary" />
+                      <span className="block">{ user.email }</span>
+                    </p>
+                  </td>
+                  <td className="px-4 py-3 bg-white border-t border-border">
+                    <p className="flex items-center gap-2">
+                      <FaPhoneAlt size={ 14 } className="block text-primary" />
+                      <span className="block">{ user.contact_number }</span>
+                    </p>
+                  </td>
+                  <td className="px-4 py-3 bg-white border-t border-border">
+                    <div className="flex gap-2">
+                      <Link href={ `/admin/users/3/${user.id}` } className="p-2 text-blue-500 border border-blue-500 rounded hover:bg-blue-100 transition-all duration-300">
+                        <FaEye size={ 14 } className="block" />
+                      </Link>
+                      <Link href={ `/admin/users/2/${user.id}` } className="p-2 text-green-500 border border-green-500 rounded hover:bg-green-100 transition-all duration-300">
+                        <FaEdit size={ 14 } className="block" />
+                      </Link>
+                      <a href="#" className="p-2 text-red-500 border border-red-500 rounded hover:bg-red-100 transition-all duration-300" onClick={ () => handleDelete( user.id ) }>
+                        <FaTrash size={ 14 } className="block" />
+                      </a>
+                    </div>
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="px-4 py-2 border-t border-border">
+                  No users found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
-          {!loading && users.length > 0 && (
-            <Pagination
-              total={total}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
-          )}
-        </div>
+        {!loading && users.length > 0 && (
+          <Pagination
+            total={total}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        )}
+      </div>
     </div>
   );
 }
