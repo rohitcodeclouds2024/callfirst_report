@@ -1,5 +1,7 @@
 import LgTracker from '../models/lgTracker.js';
+import { getDateRange } from "../utils/dateRange.js";
 import bcrypt from 'bcrypt';
+import { Op } from "sequelize";
 
 export default async function trackerRoutes(fastify) {
 	fastify.post("/tracker", async (request, reply) => {
@@ -61,5 +63,116 @@ export default async function trackerRoutes(fastify) {
       		fastify.log.error(err);
       		return reply.status(500).send({ error: "Failed to fetch tracker data" });
     	}
+  	});
+
+  	fastify.post("/conversion-percentage", async (request, reply) => {
+  		const { clientId, dateFilter, customRange } = request.body;
+
+  		if (!clientId) return reply.status(400).send({ message: "clientId is required" });
+
+  		let startDate, endDate, dateArray;
+  		try {
+    		({ startDate, endDate, dateArray } = getDateRange(dateFilter, customRange));
+  		} catch (err) {
+    		return reply.status(400).send({ message: err.message });
+  		}
+
+  		const data = await LgTracker.findAll({
+    		where: {
+      			client_id: clientId,
+      			date: {
+        			[Op.between]: [startDate, endDate],
+      			},
+    		},
+    		order: [["date", "ASC"]],
+    		attributes: ["date", "no_of_contacts", "gross_transfer"],
+  		});
+
+  		const chartData = dateArray.map((date) => {
+    		const record = data.find((d) => d.date === date);
+    		const conversion = record && record.no_of_contacts
+      			? (100 * record.gross_transfer) / record.no_of_contacts
+      			: 0;	
+
+    		return {
+      			name: new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+      			conversion: parseFloat(conversion.toFixed(2)),
+    		};
+  		});
+
+  		return reply.send(chartData);
+	});
+
+
+  	fastify.post("/contacts-number", async (request, reply) => {
+    	const { clientId, dateFilter, customRange } = request.body;
+
+    	if (!clientId) return reply.status(400).send({ message: "clientId is required" });
+
+  		let startDate, endDate, dateArray;
+  		try {
+    		({ startDate, endDate, dateArray } = getDateRange(dateFilter, customRange));
+  		} catch (err) {
+    		return reply.status(400).send({ message: err.message });
+  		}
+
+  		const data = await LgTracker.findAll({
+    		where: {
+      			client_id: clientId,
+      			date: {
+        			[Op.between]: [startDate, endDate],
+      			},
+    		},
+    		order: [["date", "ASC"]],
+    		attributes: ["date", "no_of_contacts"],
+  		});
+
+    	// Map data to chart format
+    	const chartData = dateArray.map((date) => {
+	      	const record = data.find((d) => d.date === date);
+	      	const no_of_contacts = (record && record.no_of_contacts) || 0;
+	      	return {
+	        	name: new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric" }), // e.g., Oct 1
+	        	contacts: no_of_contacts,
+	      	};
+	    });
+
+    	return reply.send(chartData);
+  	});
+
+  	fastify.post("/dials-number", async (request, reply) => {
+    	const { clientId, dateFilter, customRange } = request.body;
+
+    	if (!clientId) return reply.status(400).send({ message: "clientId is required" });
+
+  		let startDate, endDate, dateArray;
+  		try {
+    		({ startDate, endDate, dateArray } = getDateRange(dateFilter, customRange));
+  		} catch (err) {
+    		return reply.status(400).send({ message: err.message });
+  		}
+
+  		const data = await LgTracker.findAll({
+    		where: {
+      			client_id: clientId,
+      			date: {
+        			[Op.between]: [startDate, endDate],
+      			},
+    		},
+    		order: [["date", "ASC"]],
+    		attributes: ["date", "no_of_dials"],
+  		});
+
+    	// Map data to chart format
+    	const chartData = dateArray.map((date) => {
+	      	const record = data.find((d) => d.date === date);
+	      	const no_of_dials = (record && record.no_of_dials) || 0;
+	      	return {
+	        	name: new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric" }), // e.g., Oct 1
+	        	dials: no_of_dials,
+	      	};
+	    });
+
+    	return reply.send(chartData);
   	});
 }

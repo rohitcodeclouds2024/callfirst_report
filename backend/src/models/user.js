@@ -20,3 +20,4 @@ export const User = sequelize.define('user', {
 export default User;
 
 User.belongsToMany(Role, { through: RolesUser, foreignKey: "user_id" ,otherKey: "role_id"});
+Role.belongsToMany(User, { through: RolesUser, foreignKey: "role_id",otherKey: "role_id" });

@@ -5,6 +5,7 @@ import SessionWrapper from "./../components/SessionWrapper";
 import { ThemeProvider } from "./context/ThemeContext";
 import ThemeToggle from "./../components/ThemeComponent";
 import { LoaderProvider } from "./context/LoaderContext";
+import { AppProvider } from "./context/AppProvider";
 
 const siteName = "DatastarPro";
 
@@ -46,7 +47,9 @@ export default function RootLayout({
         />
         <ThemeProvider>
           <SessionWrapper>
-            <LoaderProvider> {children}</LoaderProvider>
+            <LoaderProvider>
+              <AppProvider> {children}</AppProvider>
+            </LoaderProvider>
           </SessionWrapper>
           <ThemeToggle />
         </ThemeProvider>

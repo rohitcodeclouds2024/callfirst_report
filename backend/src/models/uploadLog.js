@@ -6,7 +6,9 @@ export const UploadLog = sequelize.define('uploadLog', {
 	id: { type: DataTypes.INTEGER.UNSIGNED, primaryKey: true, autoIncrement: true },
 	client_id: { type: DataTypes.INTEGER, allowNull: false },
   	file_name: { type: DataTypes.STRING, allowNull: false },
+  	count: { type: DataTypes.INTEGER, allowNull: false },
   	status: { type: DataTypes.STRING, allowNull: false },
+  	date: { type: DataTypes.DATEONLY, allowNull: true,},
 }, {
  tableName: 'upload_log',
  timestamps: true,

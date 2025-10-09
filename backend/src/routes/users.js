@@ -1,6 +1,8 @@
 import User from '../models/user.js';
 import Role from "../models/role.js";
 import RolesUser from '../models/roleUser.js';
+import Permission from "../models/permission.js";
+import PermissionsRole from '../models/permissionRole.js';
 import bcrypt from 'bcrypt';
 
 export default async function registerUsersRoutes(fastify) {
@@ -258,5 +260,44 @@ export default async function registerUsersRoutes(fastify) {
       		}
     	}
     );
+
+    fastify.get("/user/permissions", { preValidation: [fastify.authenticate] }, async (req, reply) => {
+    	try {
+      		const userId = req.user.id;
+
+      		// Fetch user with roles and their permissions
+      		const user = await User.findByPk(userId, {
+        		include: [
+          			{
+            			model: Role,
+            			include: [
+	              			{
+	                			model: Permission,
+	                			attributes: ["id", "name"],
+	                			through: { attributes: [] }, // hide pivot table data
+	              			},
+            			],
+          			},
+        		],
+      		});
+
+      		if (!user) return reply.status(404).send({ message: "User not found" });
+      		// console.log(user.roles);
+
+      		// Flatten permissions from roles
+      		const allPermissions = user.roles.flatMap((role) => role.permissions);
+      		// Remove duplicates
+      		const uniquePermissions = Array.from(
+        		new Map(allPermissions.map((p) => [p.id, p])).values()
+      		);
+
+      		const uniquePermissionsMap = uniquePermissions.map((p) => p.name);
+
+      		return reply.send({ data: uniquePermissions, dataMap:uniquePermissionsMap });
+    	} catch (err) {
+      		console.error("Error fetching permissions:", err);
+      		return reply.status(500).send({ message: "Internal server error" });
+    	}
+  	});
 }
 
