@@ -3,145 +3,229 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/lib/axios";
-import { notify } from "../../../components/Toaster";
+import { toast } from "react-hot-toast";
 import Card from "@/components/ui/card/Card";
 
 interface User {
   id: number;
+  name: string;
   email: string;
   contact_number: string;
 }
 
-export default function TrackerForm() {
+export default function TrackerAndUploadPage() {
   const router = useRouter();
   const today = new Date().toISOString().split("T")[0];
-  const [clientList, setClientList] = useState([]);
+  const [clientList, setClientList] = useState<User[]>([]);
 
-  const [formData, setFormData] = useState({
-    client_id: 0,
-    campaign_name: "",
-    no_of_dials: 0,
-    no_of_contacts: 0,
-    gross_transfer: 0,
-    net_transfer: 0,
+  // --- Tracker Form State ---
+  const [trackerForm, setTrackerForm] = useState({
+    client_id: "",
+    no_of_dials: "",
+    no_of_contacts: "",
+    gross_transfer: "",
+    net_transfer: "",
     date: today,
   });
 
-  useEffect(() => {
-    const fetchClientList = async (page, searchTerm) => {
-      try {
-        const { data } = await apiClient.get<{
-          data: User[];
-        }>("/clients", {
-          params: { page, keyword: searchTerm },
-        });
+  // --- Upload Form State ---
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadClient, setUploadClient] = useState("");
 
+  // --- Fetch Clients ---
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const { data } = await apiClient.get<{ data: User[] }>("/clients", {
+          params: { page: 1, keyword: "" },
+        });
         setClientList(data.data || []);
       } catch (err) {
-        console.error("Failed to fetch users", err);
+        console.error("Failed to fetch clients", err);
+        toast.error("Failed to load clients");
       }
     };
 
-    fetchClientList(1, "");
+    fetchClients();
   }, []);
 
-  const handleChange = (
+  // --- Tracker Form Change Handler ---
+  const handleTrackerChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    // console.log(name, value);
-
-    setFormData((prev) => ({
+    setTrackerForm((prev) => ({
       ...prev,
-      [name]: name === "campaign_name" ? value : Number(value),
+      [name]: value,
     }));
   };
 
-  // console.log(formData);
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleTrackerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation before API call
-    if (!formData.client_id) {
-      notify("Client Name is required", "error");
+    // --- Basic validation ---
+    if (!trackerForm.client_id) {
+      toast.error("Client Name is required");
       return;
     }
-    // if (!formData.campaign_name) {
-    //   notify("Campaign Name is required", "error");
-    //   return;
-    // }
-    // if (!formData.no_of_dials) {
-    //   notify("Campaign Name is required", "error");
-    //   return;
-    // }
-    // if (!formData.no_of_contacts) {
-    //   notify("No of Contacts is required", "error");
-    //   return;
-    // }
-    // if (!formData.gross_transfer) {
-    //   notify("Campaign Name is required", "error");
-    //   return;
-    // }
-    // if (!formData.net_transfer) {
-    //   notify("Net Transfer is required", "error");
-    //   return;
-    // }
-    if (!formData.date) {
-      notify("Date is required", "error");
+
+    if (!trackerForm.date) {
+      toast.error("Date is required");
       return;
     }
 
     try {
-      await apiClient.post("/tracker", formData);
+      const formData = new FormData();
+
+      // Append tracker fields
+      Object.entries(trackerForm).forEach(([key, value]) => {
+        formData.append(key, String(value));
+      });
+
+      // Append upload file if provided
+      if (uploadFile) {
+        formData.append("file", uploadFile);
+      }
+
+      // --- API Request ---
+      await apiClient.post("/tracker/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      toast.success("Tracker and file saved successfully!");
       router.push("/admin/reports/tracker");
     } catch (err) {
-      console.error("Failed to submit tracker", err);
-      alert("Something went wrong!");
+      console.error(err);
+      toast.error("Failed to save tracker or upload file");
     }
   };
 
   return (
-    <div className="tracker-form-wrapper">
-      <h3 className="text-2xl font-semibold mb-4">Tracker Form</h3>
-      <Card>
-        <form onSubmit={ handleSubmit } className="grid grid-cols-12 gap-6">
-          <div className="col-span-6">
-            <label className="block text-sm font-medium mb-2">Client Name</label>
-            <select className="w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" name="client_id" value={ formData.client_id } onChange={ handleChange }>
-              <option value="">Select Client</option>
-              { clientList.map( ( c ) => (
-                <option key={ c.id } value={ c.id }>
-                  { c.name }
-                </option>
-              ) ) }
-            </select>
-          </div>
-          <div className="col-span-6">
-            <label className="block text-sm font-medium mb-2">No of Dials</label>
-            <input type="number" name="no_of_dials" value={ formData.no_of_dials } onChange={ handleChange } className="w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" min="0" />
-          </div>
-          <div className="col-span-6">
-            <label className="block text-sm font-medium mb-2">No of Contacts</label>
-            <input type="number" name="no_of_contacts" value={ formData.no_of_contacts } onChange={ handleChange } className="w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" min="0" />
-          </div>
-          <div className="col-span-6">
-            <label className="block text-sm font-medium mb-2">Gross Transfer</label>
-            <input type="number" name="gross_transfer" value={ formData.gross_transfer } onChange={ handleChange } className="w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" min="0" />
-          </div>
-          <div className="col-span-6">
-            <label className="block text-sm font-medium mb-2">Net Transfer</label>
-            <input type="number" name="net_transfer" value={ formData.net_transfer } onChange={ handleChange } className="w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" min="0" />
-          </div>
-          <div className="col-span-6">
-            <label className="block text-sm font-medium mb-2">Date</label>
-            <input type="date" name="date" value={ formData.date } onChange={ handleChange } className="w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" required />
-          </div>
-          <div className="col-span-12 flex justify-end">
-            <button type="submit" className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300">Save Tracker</button>
-          </div>
-        </form>
-      </Card>
+    <div className="tracker-upload-page space-y-12">
+      {/* Tracker Form Section */}
+      <div className="tracker-form-section">
+        <h3 className="text-2xl font-semibold mb-4">📊 Tracker Form</h3>
+        <Card>
+          <form
+            onSubmit={handleTrackerSubmit}
+            className="grid grid-cols-12 gap-6"
+          >
+            <div className="col-span-6">
+              <label className="block text-sm font-medium mb-2">
+                Client Name
+              </label>
+              <select
+                name="client_id"
+                value={trackerForm.client_id}
+                onChange={handleTrackerChange}
+                className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+              >
+                <option value="">Select Client</option>
+                {clientList.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="col-span-6">
+              <label className="block text-sm font-medium mb-2">
+                No of Dials
+              </label>
+              <input
+                type="number"
+                name="no_of_dials"
+                value={trackerForm.no_of_dials}
+                onChange={handleTrackerChange}
+                className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+                min="0"
+              />
+            </div>
+
+            <div className="col-span-6">
+              <label className="block text-sm font-medium mb-2">
+                No of Contacts
+              </label>
+              <input
+                type="number"
+                name="no_of_contacts"
+                value={trackerForm.no_of_contacts}
+                onChange={handleTrackerChange}
+                className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+                min="0"
+              />
+            </div>
+
+            <div className="col-span-6">
+              <label className="block text-sm font-medium mb-2">
+                Gross Transfer
+              </label>
+              <input
+                type="number"
+                name="gross_transfer"
+                value={trackerForm.gross_transfer}
+                onChange={handleTrackerChange}
+                className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+                min="0"
+              />
+            </div>
+
+            <div className="col-span-6">
+              <label className="block text-sm font-medium mb-2">
+                Net Transfer
+              </label>
+              <input
+                type="number"
+                name="net_transfer"
+                value={trackerForm.net_transfer}
+                onChange={handleTrackerChange}
+                className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+                min="0"
+              />
+            </div>
+
+            <div className="col-span-6">
+              <label className="block text-sm font-medium mb-2">Date</label>
+              <input
+                type="date"
+                name="date"
+                value={trackerForm.date}
+                onChange={handleTrackerChange}
+                className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+              />
+            </div>
+            <div className="col-span-6">
+              <label className="block text-sm font-medium mb-2">
+                Upload File
+              </label>
+              <input
+                type="file"
+                accept=".csv,.xlsx"
+                onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
+                className="w-full px-4 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+              />
+            </div>
+            <div className="col-span-12 flex justify-between items-center">
+              <a
+                href="http://localhost:5010/upload/sample"
+                className="text-primary underline"
+              >
+                Download Sample File
+              </a>
+            </div>
+
+            <div className="col-span-12 flex justify-end">
+              <button
+                type="submit"
+                className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
+              >
+                Save
+              </button>
+            </div>
+          </form>
+        </Card>
+      </div>
     </div>
   );
 }

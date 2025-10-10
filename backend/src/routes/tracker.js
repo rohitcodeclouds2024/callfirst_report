@@ -1,7 +1,16 @@
 import LgTracker from '../models/lgTracker.js';
+import UploadedData from "../models/uploadedData.js";
 import { getDateRange } from "../utils/dateRange.js";
 import bcrypt from 'bcrypt';
 import { Op } from "sequelize";
+import { sequelize } from '../lib/db.js';
+
+import multer from "fastify-multer";
+import csvParser from "csv-parser";
+import fs from "fs";
+
+// Configure multer to store uploaded files temporarily
+const upload = multer({ dest: "uploads/" });
 
 export default async function trackerRoutes(fastify) {
 	fastify.post("/tracker", async (request, reply) => {
@@ -175,4 +184,98 @@ export default async function trackerRoutes(fastify) {
 
     	return reply.send(chartData);
   	});
+
+  	fastify.post(
+    	"/tracker/upload",
+    	{ preHandler: upload.single("file") },
+    	async (req, reply) => {
+      		const {
+        		client_id,
+        		campaign_name,
+        		no_of_dials,
+        		no_of_contacts,
+        		gross_transfer,
+        		net_transfer,
+        		date,
+      		} = req.body;
+
+      		const file = req.file;
+
+      		// --- Validation ---
+      		if (!client_id) return reply.status(400).send({ error: "Client ID is required" });
+      		if (!date) return reply.status(400).send({ error: "Date is required" });
+
+      		try {
+        		let results = [];
+        		let fileName = null;
+        		let count = 0;
+        		let status = "no_file";
+
+        		// --- If a file is uploaded ---
+        		if (file) {
+          			fileName = file.originalname;
+          			const filePath = file.path;
+          			status = "processing";
+
+          			// --- Parse CSV ---
+          			await new Promise((resolve, reject) => {
+            			fs.createReadStream(filePath)
+              			.pipe(csvParser())
+              			.on("data", (row) => {
+                			if (row["Customer Name"] && row["Phone number"] && row["Status"]) {
+                  				results.push({
+                    				client_id: Number(client_id),
+                    				customer_name: row["Customer Name"],
+                    				phone_number: row["Phone number"],
+                    				status: row["Status"],
+                  				});
+                			}
+              			})
+              			.on("end", resolve)
+              			.on("error", reject);
+          			});
+
+          			count = results.length;
+          			status = count > 0 ? "success" : "failed";
+
+          			// Delete the uploaded file after parsing
+          			fs.unlinkSync(filePath);
+        		}
+
+        		// --- Create Tracker Record ---
+        		const tracker = await LgTracker.create({
+		          	client_id,
+		          	campaign_name,
+		          	no_of_dials,
+		          	no_of_contacts,
+		          	gross_transfer,
+		          	net_transfer,
+		          	date,
+		          	file_name: fileName || "",
+		          	count: count || 0,
+		          	status,
+		        });
+
+        		// --- If file data exists, bulk insert uploaded rows ---
+        		if (results.length > 0) {
+          			const rowsWithTrackerId = results.map((r) => ({
+            			...r,
+            			lg_tracker_id: tracker.id,
+          			}));
+          			await UploadedData.bulkCreate(rowsWithTrackerId);
+        		}
+
+        		return reply.send({
+		          	success: true,
+		          	message: "Tracker saved successfully",
+		          	data: tracker,
+		          	uploaded_count: count,
+		        });
+      		} catch (err) {
+        		fastify.log.error(err);
+        		return reply.status(500).send({ error: "Failed to save tracker data" });
+      		}
+    	}
+  	);
+
 }

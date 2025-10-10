@@ -11,10 +11,6 @@ export const LgTracker = sequelize.define("lg_tracker", {
     type: DataTypes.INTEGER,
     defaultValue: 0,
   },
-  campaign_name: {
-    type: DataTypes.STRING(255),
-    allowNull: false,
-  },
   no_of_dials: {
     type: DataTypes.INTEGER,
     defaultValue: 0,
@@ -34,6 +30,18 @@ export const LgTracker = sequelize.define("lg_tracker", {
   date: {
     type: DataTypes.DATEONLY,
     allowNull: false,
+  },
+  file_name: {
+    type: DataTypes.STRING,
+    allowNull: false 
+  },
+  count: {
+   type: DataTypes.INTEGER, 
+    allowNull: false 
+  },
+  status: { 
+    type: DataTypes.STRING,
+    allowNull: false 
   },
 }, {
   tableName: "lg_tracker",

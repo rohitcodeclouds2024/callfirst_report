@@ -5,17 +5,11 @@ import clsx from "clsx";
 import {
   FaUsers,
   FaUserShield,
-  FaChartBar,
   FaRegClipboard,
   FaClockRotateLeft,
 } from "react-icons/fa6";
 
-import {
-  FaHome,
-  FaFileUpload,
-  FaAngleDoubleRight,
-  FaAngleDoubleLeft,
-} from "react-icons/fa";
+import { FaHome, FaAngleDoubleRight, FaAngleDoubleLeft } from "react-icons/fa";
 
 interface SideBarSectionProps {
   sidebarOpen: boolean;
@@ -29,12 +23,6 @@ const menuItems = [
   { name: "Dashboard", icon: <FaHome />, href: "/admin/dashboard" },
   { name: "Users", icon: <FaUsers />, href: "/admin/users" },
   { name: "Roles", icon: <FaUserShield />, href: "/admin/roles" },
-  { name: "Upload", icon: <FaFileUpload />, href: "/admin/upload" },
-  {
-    name: "Upload Report",
-    icon: <FaChartBar />,
-    href: "/admin/reports/upload",
-  },
   { name: "Tracker Form", icon: <FaRegClipboard />, href: "/admin/tracker" },
   {
     name: "Tracker Report",

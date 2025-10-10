@@ -64,23 +64,42 @@ export default function UploadPage() {
     <div className="upload-wrapper">
       <h3 className="text-2xl font-semibold mb-4">Upload CSV</h3>
       <Card>
-        <form onSubmit={ handleUpload } className="grid grid-cols-12 gap-6">
+        <form onSubmit={handleUpload} className="grid grid-cols-12 gap-6">
           <div className="col-span-6">
-            <select className="w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" value={ client } onChange={ ( e ) => setClient( e.target.value ) }>
+            <select
+              className="w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary"
+              value={client}
+              onChange={(e) => setClient(e.target.value)}
+            >
               <option value="">Select Client</option>
-              { clientList.map( ( c ) => (
-                <option key={ c.id } value={ c.id }>
-                  { c.name }
+              {clientList.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
                 </option>
-              ) ) }
+              ))}
             </select>
           </div>
           <div className="col-span-6">
-            <input type="file" accept=".csv,.xlsx" onChange={ ( e ) => setFile( e.target.files?.[ 0 ] || null ) } className="w-full px-4 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-primary" />
+            <input
+              type="file"
+              accept=".csv,.xlsx"
+              onChange={(e) => setFile(e.target.files?.[0] || null)}
+              className="w-full px-4 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+            />
           </div>
           <div className="col-span-12 flex items-center justify-end gap-4">
-            <a href="http://localhost:5010/upload/sample" className="text-primary underline">Download Sample</a>
-            <button type="submit" className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300">Upload</button>
+            <a
+              href="http://localhost:5010/upload/sample"
+              className="text-primary underline"
+            >
+              Download Sample
+            </a>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
+            >
+              Upload
+            </button>
           </div>
         </form>
       </Card>
