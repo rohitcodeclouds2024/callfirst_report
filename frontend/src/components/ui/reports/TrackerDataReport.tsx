@@ -92,7 +92,7 @@ export default function TrackerDataReport({ clientList }) {
           <thead>
             <tr className="bg-gray-200">
               <th className="p-2 border">#</th>
-              <th className="p-2 border">Campaign Name</th>
+              {/* <th className="p-2 border">Campaign Name</th> */}
               <th className="p-2 border">No. of Dials</th>
               <th className="p-2 border">No. of Contacts</th>
               <th className="p-2 border">Gross Transfer</th>
@@ -105,7 +105,7 @@ export default function TrackerDataReport({ clientList }) {
             {trackerData.map((item, i) => (
               <tr key={item.id} className="text-center">
                 <td className="border p-2">{i + 1}</td>
-                <td className="border p-2">{item.campaign_name}</td>
+                {/* <td className="border p-2">{item.campaign_name}</td> */}
                 <td className="border p-2">{item.no_of_dials}</td>
                 <td className="border p-2">{item.no_of_contacts}</td>
                 <td className="border p-2">{item.gross_transfer}</td>
@@ -118,8 +118,8 @@ export default function TrackerDataReport({ clientList }) {
                     ? `${(
                         (100 * item.gross_transfer) /
                         item.no_of_contacts
-                      ).toFixed(2)}%`
-                    : "0.00%"}
+                      ).toFixed(2)}`
+                    : "0.00"}
                 </td>
               </tr>
             ))}
