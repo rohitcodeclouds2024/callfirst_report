@@ -7,7 +7,7 @@ export default function UploadReport() {
   const { clients } = useAppContext();
 
   return (
-    <div className="p-6">
+    <div className="upload-report-wrapper">
       {/* 🔹 Uploaded Data Report */}
       <UploadDataReport clientList={clients} />
     </div>

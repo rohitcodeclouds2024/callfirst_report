@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/lib/axios";
 import { notify } from "../../../components/Toaster";
+import Card from "@/components/ui/card/Card";
 
 interface User {
   id: number;
@@ -101,105 +102,46 @@ export default function TrackerForm() {
   };
 
   return (
-    <div className="p-6 max-w-lg mx-auto">
-      <h2 className="text-xl font-bold mb-4">📊 Tracker Form</h2>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block font-medium">Client Name</label>
-          <select
-            className="border p-2 w-full"
-            name="client_id"
-            value={formData.client_id}
-            onChange={handleChange}
-          >
-            <option value="">Select Client</option>
-            {clientList.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        {/* <div>
-          <label className="block font-medium">Campaign Name</label>
-          <input
-            type="text"
-            name="campaign_name"
-            value={formData.campaign_name}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            required
-          />
-        </div> */}
-
-        <div>
-          <label className="block font-medium">No of Dials</label>
-          <input
-            type="number"
-            name="no_of_dials"
-            value={formData.no_of_dials}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            min="0"
-          />
-        </div>
-
-        <div>
-          <label className="block font-medium">No of Contacts</label>
-          <input
-            type="number"
-            name="no_of_contacts"
-            value={formData.no_of_contacts}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            min="0"
-          />
-        </div>
-
-        <div>
-          <label className="block font-medium">Gross Transfer</label>
-          <input
-            type="number"
-            name="gross_transfer"
-            value={formData.gross_transfer}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            min="0"
-          />
-        </div>
-
-        <div>
-          <label className="block font-medium">Net Transfer</label>
-          <input
-            type="number"
-            name="net_transfer"
-            value={formData.net_transfer}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            min="0"
-          />
-        </div>
-
-        <div>
-          <label className="block font-medium">Date</label>
-          <input
-            type="date"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            required
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Save Tracker
-        </button>
-      </form>
+    <div className="tracker-form-wrapper">
+      <h3 className="text-2xl font-semibold mb-4">Tracker Form</h3>
+      <Card>
+        <form onSubmit={ handleSubmit } className="grid grid-cols-12 gap-6">
+          <div className="col-span-6">
+            <label className="block text-sm font-medium mb-2">Client Name</label>
+            <select className="w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" name="client_id" value={ formData.client_id } onChange={ handleChange }>
+              <option value="">Select Client</option>
+              { clientList.map( ( c ) => (
+                <option key={ c.id } value={ c.id }>
+                  { c.name }
+                </option>
+              ) ) }
+            </select>
+          </div>
+          <div className="col-span-6">
+            <label className="block text-sm font-medium mb-2">No of Dials</label>
+            <input type="number" name="no_of_dials" value={ formData.no_of_dials } onChange={ handleChange } className="w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" min="0" />
+          </div>
+          <div className="col-span-6">
+            <label className="block text-sm font-medium mb-2">No of Contacts</label>
+            <input type="number" name="no_of_contacts" value={ formData.no_of_contacts } onChange={ handleChange } className="w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" min="0" />
+          </div>
+          <div className="col-span-6">
+            <label className="block text-sm font-medium mb-2">Gross Transfer</label>
+            <input type="number" name="gross_transfer" value={ formData.gross_transfer } onChange={ handleChange } className="w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" min="0" />
+          </div>
+          <div className="col-span-6">
+            <label className="block text-sm font-medium mb-2">Net Transfer</label>
+            <input type="number" name="net_transfer" value={ formData.net_transfer } onChange={ handleChange } className="w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" min="0" />
+          </div>
+          <div className="col-span-6">
+            <label className="block text-sm font-medium mb-2">Date</label>
+            <input type="date" name="date" value={ formData.date } onChange={ handleChange } className="w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" required />
+          </div>
+          <div className="col-span-12 flex justify-end">
+            <button type="submit" className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300">Save Tracker</button>
+          </div>
+        </form>
+      </Card>
     </div>
   );
 }
