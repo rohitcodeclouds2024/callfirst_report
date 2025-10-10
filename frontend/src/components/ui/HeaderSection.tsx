@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import ThemeToggle from "../ThemeComponent";
-import { FaBars, FaSignOutAlt, FaChevronDown } from "react-icons/fa";
+import { FaBars, FaSignOutAlt, FaChevronDown, FaUserCircle } from "react-icons/fa";
 import { useSession, signOut } from "next-auth/react";
 import { notify } from "../Toaster";
 import { apiClient } from "@/lib/axios";
@@ -59,34 +59,22 @@ export default function HeaderSection({ setSidebarOpen }) {
           />
         </div>
       </div>
-
-      {/* Right */}
-      <div className="flex items-center space-x-4" ref={profileRef}>
-        {/* Online/Offline + socket id */}
-        <div className="flex items-center space-x-2">Hello</div>
-
+      <div className="flex items-center gap-6" ref={ profileRef }>
         <ThemeToggle />
-        {/* Profile dropdown */}
         <div className="relative">
-          <button
-            className="flex items-center space-x-1 text-sm font-medium text-neutral focus:outline-none"
-            onClick={() => setProfileDropdown((prev) => !prev)}
-          >
-            <span>{(session?.user as any)?.name || "Admin"}</span>
-            <FaChevronDown className="text-xs" />
+          <button className="flex items-center gap-2 text-sm font-medium focus:outline-none" onClick={ () => setProfileDropdown( ( prev ) => !prev ) }>
+            <FaUserCircle size={ 20 } className="block text-gray-500 dark:text-white" />
+            <span>Hello { ( session?.user as any )?.name || "Admin" }</span>
+            <FaChevronDown size={ 10 } className="block" />
           </button>
-          {profileDropdown && (
+          { profileDropdown && (
             <div className="absolute right-0 mt-2 w-40 bg-surface border border-border rounded shadow z-50">
-              <button
-                className="flex w-full items-center px-3 py-2 text-sm text-neutral hover:bg-background"
-                onClick={handleLogout}
-                disabled={loadingLogout}
-              >
+              <button className="flex w-full items-center px-3 py-2 text-sm text-neutral hover:bg-background" onClick={ handleLogout } disabled={ loadingLogout }>
                 <FaSignOutAlt className="mr-2" />
                 Logout
               </button>
             </div>
-          )}
+          ) }
         </div>
       </div>
     </header>

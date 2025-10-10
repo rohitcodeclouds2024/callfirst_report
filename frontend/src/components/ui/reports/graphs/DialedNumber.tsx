@@ -47,7 +47,7 @@ export default function DialedNumber({
   }, [selectedClientId, dateFilter, customRange]);
 
   return (
-    <Card className="col-span-8" title="Number of Dials">
+    <Card className="col-span-12 md:col-span-6 lg:col-span-8" title="Number of Dials">
       <ResponsiveContainer width="100%" height={260}>
         <AreaChart
           data={numberOfDial}

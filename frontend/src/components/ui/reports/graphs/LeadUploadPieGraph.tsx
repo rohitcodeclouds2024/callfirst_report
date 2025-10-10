@@ -40,7 +40,7 @@ export default function LeadUploadPieGraph({
   }, [selectedClientId, dateFilter, customRange]);
 
   return (
-    <Card className="col-span-4" title="Number of Lead Uploads">
+    <Card className="col-span-12 md:col-span-6 lg:col-span-4" title="Number of Lead Uploads">
       <ResponsiveContainer width="100%" height={260}>
         <PieChart margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
           <Pie

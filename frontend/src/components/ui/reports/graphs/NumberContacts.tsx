@@ -49,7 +49,7 @@ export default function NumberContacts({
   }, [selectedClientId, dateFilter, customRange]);
 
   return (
-    <Card className="col-span-6" title="Number of Contacts">
+    <Card className="col-span-12 md:col-span-6" title="Number of Contacts">
       <ResponsiveContainer width="100%" height={260}>
         <LineChart
           data={numberOfContacts}

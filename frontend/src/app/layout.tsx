@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import "./../styles/global.css";
 import SessionWrapper from "./../components/SessionWrapper";
 import { ThemeProvider } from "./context/ThemeContext";
-import ThemeToggle from "./../components/ThemeComponent";
 import { LoaderProvider } from "./context/LoaderContext";
 import { AppProvider } from "./context/AppProvider";
 
@@ -51,7 +50,6 @@ export default function RootLayout({
               <AppProvider> {children}</AppProvider>
             </LoaderProvider>
           </SessionWrapper>
-          <ThemeToggle />
         </ThemeProvider>
       </body>
     </html>
