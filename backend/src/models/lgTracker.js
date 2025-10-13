@@ -1,5 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../lib/db.js";
+import UploadedData from "./uploadedData.js";
+import User from "./user.js";
 
 export const LgTracker = sequelize.define("lg_tracker", {
   id: {
@@ -51,3 +53,9 @@ export const LgTracker = sequelize.define("lg_tracker", {
 });
 
 export default LgTracker;
+
+LgTracker.belongsTo(User, { foreignKey: "client_id", as: "client" });
+
+LgTracker.hasMany(UploadedData, { foreignKey: 'lg_tracker_id', as: 'uploadedData' });
+
+UploadedData.belongsTo(LgTracker, { foreignKey: 'lg_tracker_id', as: 'LgTracker' });

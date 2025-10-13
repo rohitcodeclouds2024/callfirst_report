@@ -1,7 +1,8 @@
 import { apiClient } from "@/lib/axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import Card from "../card/Card";
+import Pagination from "@/components/form/Pagination";
+import { TrackerData } from "@/types/trackerData";
 
 interface UploadedData {
   id: number;
@@ -12,14 +13,14 @@ interface UploadedData {
 }
 
 export default function TrackerUploadReport({ clientList, clientIdFromUrl }) {
-  const [clientId, setClientId] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
   const [data, setData] = useState<UploadedData[]>([]);
+  const [lgData, setLgData] = useState<TrackerData>();
   const [loading, setLoading] = useState(false);
-  const handleFetch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!clientId) {
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [total, setTotal] = useState<number>(0);
+  const handleFetch = async () => {
+    if (!clientIdFromUrl) {
       toast.error("Please select a client");
       return;
     }
@@ -27,54 +28,63 @@ export default function TrackerUploadReport({ clientList, clientIdFromUrl }) {
     try {
       setLoading(true);
 
-      const res = await apiClient.get(
-        `/report/tracker/uploaded-data?${clientId}`
-      );
+      const res = await apiClient.post(`/report/tracker/uploaded-data`, {
+        lg_tracker_id: clientIdFromUrl,
+        page: currentPage, // pagination
+        perPage: 20, // you can make this dynamic if needed
+      });
+
+      const lgResponse = res.data.lgData;
+
+      setLgData({
+        id: lgResponse.id,
+        client_name: lgResponse.client?.name || "", // extract nested client name
+        no_of_dials: lgResponse.no_of_dials,
+        no_of_contacts: lgResponse.no_of_contacts,
+        gross_transfer: lgResponse.gross_transfer,
+        net_transfer: lgResponse.net_transfer,
+        date: lgResponse.date,
+      });
+
       setData(res.data.data || []);
+      setTotalPages(res.data.meta.totalPages || 0);
+      setTotal(res.data.meta.total || 0);
     } catch (err) {
       toast.error("Failed to fetch report");
     } finally {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    handleFetch();
+  }, [currentPage]);
   return (
     <div className="uploaded_data_report mb-12">
       <h3 className="text-2xl font-semibold mb-4">Uploaded Data Report</h3>
-      <Card className="mb-6">
-        <form onSubmit={handleFetch} className="grid grid-cols-12 gap-6">
-          <select
-            className="col-span-3 w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary"
-            value={clientId}
-            onChange={(e) => setClientId(e.target.value)}
-          >
-            <option value="">Select Client</option>
-            {clientList.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-          <input
-            type="date"
-            className="col-span-3 w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-          <input
-            type="date"
-            className="col-span-3 w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
-          <button
-            type="submit"
-            className="col-span-3 px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
-            disabled={loading}
-          >
-            {loading ? "Loading..." : "Fetch Report"}
-          </button>
-        </form>
-      </Card>
+      {/* Display LgTracker summary */}
+      {lgData && (
+        <div className="mb-4 p-4 bg-white rounded shadow-sm grid grid-cols-6 gap-4 text-sm">
+          <div>
+            <strong>Client Name:</strong> {lgData.client_name}
+          </div>
+          <div>
+            <strong>No of Dials:</strong> {lgData.no_of_dials}
+          </div>
+          <div>
+            <strong>No of Contacts:</strong> {lgData.no_of_contacts}
+          </div>
+          <div>
+            <strong>Gross Transfer:</strong> {lgData.gross_transfer}
+          </div>
+          <div>
+            <strong>Net Transfer:</strong> {lgData.net_transfer}
+          </div>
+          <div>
+            <strong>Date:</strong> {lgData.date}
+          </div>
+        </div>
+      )}
+
       {data.length > 0 ? (
         <div className="overflow-x-auto rounded-lg shadow">
           <table className="w-full text-sm text-left">
@@ -109,6 +119,14 @@ export default function TrackerUploadReport({ clientList, clientIdFromUrl }) {
               ))}
             </tbody>
           </table>
+          {!loading && data.length > 0 && (
+            <Pagination
+              total={total}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          )}
         </div>
       ) : (
         <p className="text-gray-500 text-sm mt-4">

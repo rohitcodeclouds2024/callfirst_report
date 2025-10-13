@@ -30,14 +30,16 @@ export default function TrackerAndUploadPage() {
 
   // --- Upload Form State ---
   const [uploadFile, setUploadFile] = useState<File | null>(null);
-  const [uploadClient, setUploadClient] = useState("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [total, setTotal] = useState<number>(0);
 
   // --- Fetch Clients ---
   useEffect(() => {
     const fetchClients = async () => {
       try {
         const { data } = await apiClient.get<{ data: User[] }>("/clients", {
-          params: { page: 1, keyword: "" },
+          params: { keyword: "", page: currentPage, perPage: 20 },
         });
         setClientList(data.data || []);
       } catch (err) {
@@ -45,7 +47,6 @@ export default function TrackerAndUploadPage() {
         toast.error("Failed to load clients");
       }
     };
-
     fetchClients();
   }, []);
 

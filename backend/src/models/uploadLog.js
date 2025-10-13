@@ -1,6 +1,5 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../lib/db.js';
-import UploadedData from "./uploadedData.js";
 
 export const UploadLog = sequelize.define('uploadLog', {
 	id: { type: DataTypes.INTEGER.UNSIGNED, primaryKey: true, autoIncrement: true },
@@ -16,6 +15,3 @@ export const UploadLog = sequelize.define('uploadLog', {
 
 export default UploadLog;
 
-UploadLog.hasMany(UploadedData, { foreignKey: 'upload_log_id', as: 'uploadedData' });
-
-UploadedData.belongsTo(UploadLog, { foreignKey: 'upload_log_id', as: 'uploadLog' });

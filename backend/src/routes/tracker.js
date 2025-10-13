@@ -42,13 +42,23 @@ export default async function trackerRoutes(fastify) {
 	    }
 	});
 
-	fastify.get("/report/tracker-data", async (req, reply) => {
+	fastify.post("/report/tracker-data", async (req, reply) => {
     	try {
-      		const { client_id, start_date, end_date } = req.query;
+      		const {
+        		client_id,
+        		start_date,
+        		end_date,
+        		page = 1,
+        		perPage = 20,
+      		} = req.body;
 
       		if (!client_id) {
         		return reply.status(400).send({ error: "Client ID is required" });
       		}
+
+      		const pageNum = Math.max(1, Number(page));
+      		const limit = Math.max(1, Math.min(100, Number(perPage)));
+      		const offset = (pageNum - 1) * limit;
 
       		const where = { client_id };
 
@@ -62,17 +72,28 @@ export default async function trackerRoutes(fastify) {
         		where.date = { [Op.lte]: new Date(end_date) };
       		}
 
-      		const data = await LgTracker.findAll({
+      		const { rows, count } = await LgTracker.findAndCountAll({
         		where,
         		order: [["date", "DESC"]],
+        		limit,
+        		offset,
       		});
 
-      		return reply.send({ data });
+  			return reply.send({
+    			data: rows,
+    			meta: {
+      				page: pageNum,
+      				perPage: limit,
+      				total: count,
+      				totalPages: Math.ceil(count / limit),
+    			},
+  			});
     	} catch (err) {
       		fastify.log.error(err);
       		return reply.status(500).send({ error: "Failed to fetch tracker data" });
     	}
   	});
+
 
   	fastify.post("/conversion-percentage", async (request, reply) => {
   		const { clientId, dateFilter, customRange } = request.body;

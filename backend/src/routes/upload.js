@@ -7,6 +7,8 @@ import { sequelize } from '../lib/db.js';
 
 import UploadLog from "../models/uploadLog.js";
 import UploadedData from "../models/uploadedData.js";
+import User from "../models/user.js";
+import LgTracker from '../models/lgTracker.js';
 import { getDateRange } from "../utils/dateRange.js";
 
 // Configure multer to store uploaded files temporarily
@@ -88,36 +90,62 @@ export default async function uploadRoutes(fastify, opts) {
     reply.send(sample);
   });
 
-  fastify.get("/report/uploaded-data", async (req, reply) => {
-    try {
-      const { client_id, start_date, end_date } = req.query;
+  fastify.post(
+    "/report/tracker/uploaded-data",
+    // { preValidation: [fastify.authenticate] }, 
+    async (request, reply) => {
+      try {
+        const { lg_tracker_id, page = 1, perPage = 20, keyword = "" } = request.body;
 
-      if (!client_id) {
-        return reply.status(400).send({ error: "Client ID is required" });
+        if (!lg_tracker_id) {
+          return reply.status(400).send({ error: "lg_tracker_id is required" });
+        }
+
+        const pageNum = Math.max(1, Number(page));
+        const limit = Math.max(1, Math.min(100, Number(perPage)));
+        const offset = (pageNum - 1) * limit;
+
+        const where = { lg_tracker_id };
+
+        // Optional keyword search by customer name or phone number
+        if (keyword.trim()) {
+          where[Op.or] = [
+            { customer_name: { [Op.like]: `%${keyword}%` } },
+            { phone_number: { [Op.like]: `%${keyword}%` } },
+          ];
+        }
+
+        const { rows, count } = await UploadedData.findAndCountAll({
+          where,
+          limit,
+          offset,
+          order: [["id", "DESC"]],
+        });
+
+        return reply.send({
+          data: rows,
+          lgData: await LgTracker.findOne({
+             where: { id: lg_tracker_id },
+             attributes: ['client_id', 'no_of_dials', 'no_of_contacts','gross_transfer','net_transfer','date'],
+             include: [
+                {
+                 model: User,
+                 as: 'client', // same 'as' as in your association
+                 attributes: ['name'],
+                },
+             ],
+          }),
+          meta: {
+            page: pageNum,
+            perPage: limit,
+            total: count,
+            totalPages: Math.ceil(count / limit),
+          },
+        });
+      } catch (err) {
+        fastify.log.error(err);
+        return reply.status(500).send({ error: "list_failed" });
       }
-
-      const where = { client_id };
-
-      // Optional date filter
-      if (start_date && end_date) {
-        where.createdAt = {
-          [Op.between]: [new Date(start_date), new Date(end_date)],
-        };
-      } else if (start_date) {
-        where.createdAt = { [Op.gte]: new Date(start_date) };
-      } else if (end_date) {
-        where.createdAt = { [Op.lte]: new Date(end_date) };
-      }
-
-      const data = await UploadedData.findAll({
-        where,
-        order: [["createdAt", "DESC"]],
-      });
-
-      return reply.send({ data });
-    } catch (err) {
-      fastify.log.error(err);
-      return reply.status(500).send({ error: "Failed to fetch report data" });
     }
-  });
+  );
 }

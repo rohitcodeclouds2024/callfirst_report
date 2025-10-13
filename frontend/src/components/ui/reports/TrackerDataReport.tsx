@@ -1,27 +1,24 @@
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/lib/axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import Card from "../card/Card";
 import { FaEye } from "react-icons/fa";
-
-interface TrackerData {
-  id: number;
-  campaign_name: string;
-  no_of_dials: number;
-  no_of_contacts: number;
-  gross_transfer: number;
-  net_transfer: number;
-  date: string;
-}
+import Pagination from "@/components/form/Pagination";
+import { TrackerData } from "@/types/trackerData";
 
 export default function TrackerDataReport({ clientList }) {
   const router = useRouter();
-  const [trackerClient, setTrackerClient] = useState("");
+  const [trackerClient, setTrackerClient] = useState<number | "">("");
   const [trackerStart, setTrackerStart] = useState("");
   const [trackerEnd, setTrackerEnd] = useState("");
   const [trackerData, setTrackerData] = useState<TrackerData[]>([]);
   const [trackerLoading, setTrackerLoading] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [total, setTotal] = useState<number>(0);
+  const [appliedClientId, setAppliedClientId] = useState<number | "">("");
 
   const handleTrackerFetch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,23 +26,48 @@ export default function TrackerDataReport({ clientList }) {
       toast.error("Please select a client");
       return;
     }
+    setAppliedClientId(trackerClient);
+  };
 
+  const getTrackerData = async () => {
     try {
       setTrackerLoading(true);
-      const params = new URLSearchParams({
+
+      const body = {
         client_id: trackerClient,
         ...(trackerStart && { start_date: trackerStart }),
         ...(trackerEnd && { end_date: trackerEnd }),
-      });
-
-      const res = await apiClient.get(`/report/tracker-data?${params}`);
+        page: currentPage,
+        perPage: 20,
+      };
+      const res = await apiClient.post(`/report/tracker-data`, body);
       setTrackerData(res.data.data || []);
+      setTotalPages(res.data.meta.totalPages || 0);
+      setTotal(res.data.meta.total || 0);
     } catch (err) {
       toast.error("Failed to fetch tracker report");
     } finally {
       setTrackerLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (clientList.length > 0 && trackerClient === "") {
+      const firstValidClient = clientList.find(
+        (client) => client.id !== 0 && client.id !== null
+      );
+      if (firstValidClient) {
+        setTrackerClient(firstValidClient.id);
+        setAppliedClientId(firstValidClient.id);
+      }
+    }
+  }, [clientList, trackerClient]);
+
+  useEffect(() => {
+    if (trackerClient !== "") {
+      getTrackerData();
+    }
+  }, [currentPage, appliedClientId]);
 
   const redirectUploadRedirect = (id) => {
     router.push(`/admin/reports/tracker/upload/${id}`);
@@ -62,7 +84,7 @@ export default function TrackerDataReport({ clientList }) {
           <select
             className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
             value={trackerClient}
-            onChange={(e) => setTrackerClient(e.target.value)}
+            onChange={(e) => setTrackerClient(Number(e.target.value) || "")}
           >
             <option value="">Select Client</option>
             {clientList.map((c) => (
@@ -136,7 +158,7 @@ export default function TrackerDataReport({ clientList }) {
                         ).toFixed(2)}`
                       : "0.00"}
                   </td>
-                  <td className="border p-2">
+                  <td className="px-4 py-3 bg-white border-t border-border">
                     <span onClick={() => redirectUploadRedirect(item.id)}>
                       <FaEye />
                     </span>
@@ -145,6 +167,14 @@ export default function TrackerDataReport({ clientList }) {
               ))}
             </tbody>
           </table>
+          {!trackerLoading && trackerData.length > 0 && (
+            <Pagination
+              total={total}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          )}
         </div>
       ) : (
         <p className="text-gray-500 text-sm mt-4">
