@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { apiClient } from "@/lib/axios";
+import Card from "@/components/ui/card/Card";
 
 interface Permission {
   id: number;
@@ -106,51 +107,39 @@ export default function RoleFormPage() {
   }
 
   return (
-    <div className="p-6 max-w-2xl">
-      <h2 className="text-xl font-bold mb-4">
-        {type === 1 ? "🔹 Create Role" : "✏️ Edit Role"}
-      </h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block font-medium">Role Name</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block font-medium mb-2">Assign Permissions</label>
-          {permissions.map((group) => (
-            <div key={group.name} className="mb-4 border p-3 rounded">
-              <h3 className="font-semibold mb-2">{group.name}</h3>
-              <div className="grid grid-cols-2 gap-2">
-                {group.data.map((perm) => (
-                  <label key={perm.id} className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      checked={formData.permission_ids.includes(perm.id)}
-                      onChange={() => handlePermissionToggle(perm.id)}
-                    />
-                    <span>{perm.name}</span>
-                  </label>
-                ))}
-              </div>
+    <div className="role-wrapper">
+      <h3 className="text-xl font-bold mb-4">{ type === 1 ? "Create Role" : "Edit Role" }</h3>
+      <Card>
+        <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-6">
+          <div className="col-span-12">
+            <label className="block text-sm font-medium mb-2">Role Name</label>
+            <input type="text" name="name" value={ formData.name } onChange={ handleChange } className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" required />
+          </div>
+          <div className="col-span-12">
+            <h4 className="text-lg font-semibold pb-2 border-b border-border mb-4">Assign Permissions</h4>
+            <div className="flex flex-col gap-6">
+              { permissions.map( ( group ) => (
+                <div key={ group.name }>
+                  <label className="block text-sm font-medium capitalize mb-2">{ group.name }</label>
+                  <div className="flex flex-wrap gap-x-4 gap-y-2">
+                    { group.data.map( ( perm ) => (
+                      <label key={ perm.id } className="flex items-center gap-x-2 text-sm">
+                        <input type="checkbox" checked={ formData.permission_ids.includes( perm.id ) } onChange={ () => handlePermissionToggle( perm.id ) } />
+                        <span className="block">{ perm.name }</span>
+                      </label>
+                    ) ) }
+                  </div>
+                </div>
+              ) ) }
             </div>
-          ))}
-        </div>
-
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded"
-        >
-          {type === 1 ? "Create Role" : "Update Role"}
-        </button>
-      </form>
+          </div>
+          <div className="col-span-12 flex justify-end">
+            <button type="submit" className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300">
+              { type === 1 ? "Create Role" : "Update Role" }
+            </button>
+          </div>
+        </form>
+      </Card>
     </div>
   );
 }

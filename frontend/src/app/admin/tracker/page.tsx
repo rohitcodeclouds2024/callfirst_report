@@ -104,7 +104,7 @@ export default function TrackerAndUploadPage() {
     <div className="tracker-upload-page space-y-12">
       {/* Tracker Form Section */}
       <div className="tracker-form-section">
-        <h3 className="text-2xl font-semibold mb-4">📊 Tracker Form</h3>
+        <h3 className="text-2xl font-semibold mb-4">Tracker Form</h3>
         <Card>
           <form
             onSubmit={handleTrackerSubmit}
