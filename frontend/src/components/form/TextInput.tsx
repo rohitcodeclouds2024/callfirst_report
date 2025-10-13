@@ -45,20 +45,12 @@ const TextInput: React.FC<TextInputProps> = ({
   readOnly = false,
   autoComplete = "off",
 }) => {
-  const inputClasses = ` input focus:outline-none ring-1 focus:ring-2 w-full ${
-    iconLeft ? "pl-10" : ""
-  } ${
-    error
-      ? "ring-red-500 focus:ring-red-500"
-      : "ring-gray-300 focus:ring-accent"
-  } ${
-    disabled ? "opacity-50 cursor-not-allowed bg-muted/10" : ""
-  } ${className} `;
+  const inputClasses = `w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none ${ iconLeft ? "pl-10" : "" } ${ error ? "ring-red-500 focus:border-red-500" : "ring-gray-300 focus:border-primary" } ${ disabled ? "opacity-50 cursor-not-allowed bg-muted/10" : "" } ${ className }`.trim();
 
   return (
-    <div className="form-group relative">
+    <div className="relative">
       {showLabel && (
-        <label htmlFor={id} className={`form-label ${labelClassName}`}>
+        <label htmlFor={id} className={`block text-sm font-medium mb-2 ${labelClassName}`}>
           {label}
           {required && " *"}
         </label>

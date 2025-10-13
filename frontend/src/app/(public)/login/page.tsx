@@ -93,93 +93,47 @@ export default function LoginPage() {
   ));
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-background px-4 overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
       {/* Animated Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1e3a8a] via-[#0f172a] to-[#2563eb] animate-gradient-xy opacity-40 -z-20"></div>
+      {/* <div className="absolute inset-0 bg-gradient-to-br from-[#1e3a8a] via-[#0f172a] to-[#2563eb] animate-gradient-xy opacity-40 -z-20"></div> */}
 
       {/* Particles */}
-      <div className="absolute inset-0 -z-10">{particles}</div>
+      {/* <div className="absolute inset-0 -z-10">{particles}</div> */}
 
       {/* Login Card */}
-      <div className="flex flex-col md:flex-row w-full max-w-4xl bg-surface rounded-xl shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-[1.02] hover:shadow-2xl relative z-10">
-        {/* Left Section */}
-        <div className="hidden md:flex md:w-1/2 flex-col justify-center bg-gradient-to-br from-primary-dark to-background p-8 text-white">
-          <div className="flex items-center gap-2 text-3xl font-bold mb-4">
-            {/* <FaTooth className="text-accent" /> */}
+      <div className="flex flex-col md:flex-row w-full max-w-4xl bg-surface rounded-xl shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-[1.02] hover:shadow-2xl">
+        <div className="hidden md:flex md:w-1/2 flex-col justify-center bg-primary p-8 text-white">
+          <div className="flex items-center gap-2 mb-6">
             <img src="/logo.png" alt="Logo" className="h-8 w-auto" />
-            DatastarPro
+            <span className="text-xl font-bold">DatastarPro</span>
           </div>
-          <h2 className="text-2xl font-semibold mb-2">Welcome Back</h2>
-          <p className="text-muted text-sm">
-            Enter your credentials to access your <strong>dashboard</strong> and
-            manage your account.
-          </p>
+          <h2 className="text-3xl font-semibold mb-2">Welcome Back</h2>
+          <p className="text-gray-200 text-sm">Enter your credentials to access your <strong>dashboard</strong> and manage your account.</p>
         </div>
-
-        {/* Right Section */}
         <div className="w-full md:w-1/2 p-8">
-          <h2 className="text-2xl font-semibold mb-6 md:hidden text-center text-neutral">
-            Login
-          </h2>
-          <form className="form space-y-5" onSubmit={handleSubmit}>
-            <TextInput
-              id="email"
-              label="Email"
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={errors.email}
-              autoComplete="on"
-              className="focus:ring-primary transition-all duration-200"
-            />
-            <PasswordInput
-              id="password"
-              label="Password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={errors.password}
-              autoComplete="off"
-              className="focus:ring-primary transition-all duration-200"
-            />
-            <CheckboxInput
-              label="Remember Me"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-              id="rememberMe"
-              labelClassName="mt-2 "
-            />
-            <FormButton
-              label="Sign In"
-              type="submit"
-              id="login"
-              disabled={loading}
-              loading={loading}
-              icon={<HiArrowRight className="text-lg" />}
-              className="transition-transform duration-200 hover:scale-105"
-              iconPosition="right"
-            />
+          <h2 className="text-2xl font-semibold mb-6 md:hidden text-center text-neutral">Login</h2>
+          <form className="grid grid-cols-12 gap-6 mb-6" onSubmit={ handleSubmit }>
+            <div className="col-span-12">
+              <TextInput id="email" label="Email" type="email" placeholder="Enter your email" value={ email } onChange={ ( e ) => setEmail( e.target.value ) } error={ errors.email } autoComplete="on" />
+            </div>
+            <div className="col-span-12">
+              <PasswordInput id="password" label="Password" placeholder="Enter your password" value={ password } onChange={ ( e ) => setPassword( e.target.value ) } error={ errors.password } autoComplete="off" />
+            </div>
+            <div className="col-span-12">
+              <CheckboxInput label="Remember Me" checked={ rememberMe } onChange={ ( e ) => setRememberMe( e.target.checked ) } id="rememberMe" />
+            </div>
+            <div className="col-span-12">
+              <FormButton label="Sign In" type="submit" id="login" variant="primary" className="w-full" disabled={ loading } loading={ loading } icon={ <HiArrowRight size={ 16 }  /> } iconPosition="right" />
+            </div>
           </form>
-          <p className="text-sm text-muted mt-6 text-center">
-            Email : demo@demo.com <br /> password : demo123
-          </p>
-
-          <p className="text-sm text-muted mt-6 text-center">
-            Forgot your password?{" "}
-            <Link
-              href="/forgot-password"
-              id="resetLink"
-              className="link font-semibold text-accent hover:underline"
-            >
-              Reset it here
-            </Link>
+          {/* <p className="text-sm text-muted my-6 text-center">Email : demo@demo.com <br /> password : demo123</p> */}
+          <p className="text-sm text-gray-500 text-center">Forgot your password?{" "}
+            <Link href="/forgot-password" id="resetLink" className="font-medium text-primary underline">Reset it here</Link>
           </p>
         </div>
       </div>
-
       {/* Gradient animation & particles CSS */}
-      <style jsx global>{`
+      {/* <style jsx global>{`
         @keyframes gradientXY {
           0% {
             background-position: 0% 50%;
@@ -234,7 +188,7 @@ export default function LoginPage() {
         `
           )
           .join("")}
-      `}</style>
+      `}</style> */}
     </div>
   );
 }

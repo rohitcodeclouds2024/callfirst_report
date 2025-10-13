@@ -23,21 +23,11 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
   placeholder,
   autoComplete = "off",
 }) => {
-  const inputClasses = `
-  input
-  focus:outline-none
-  ring-1
-  focus:ring-2
-  ${
-    error
-      ? "ring-red-500 focus:ring-red-500"
-      : "ring-gray-300 focus:ring-accent"
-  }
-`;
+  const inputClasses = `w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none ${ error ? "border-red-500 focus:border-red-500" : "focus:border-primary" }`.trim();
 
   return (
-    <div className="form-group">
-      <label className="form-label" htmlFor={id}>
+    <div className="relative">
+      <label className="block text-sm font-medium mb-2" htmlFor={id}>
         {label}
         {required && " *"}
       </label>

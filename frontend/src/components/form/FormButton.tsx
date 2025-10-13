@@ -40,12 +40,12 @@ const FormButton: React.FC<FormButtonProps> = ({
   id = "",
   iconPosition = "left",
 }) => {
-  const base = "custom-button";
+  const base = "";
 
   const variants = {
     primary:
       base +
-      " btn w-full flex items-center justify-center gap-2 text-white bg-gradient-to-br from-primary-dark to-background hover:opacity-90",
+      "px-4 py-3 text-sm uppercase bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300",
     secondary: base + " ",
     accent: base + " ",
     unstyled:
@@ -58,9 +58,7 @@ const FormButton: React.FC<FormButtonProps> = ({
     paginate: base + " custom-paginate",
   };
 
-  const buttonClass = `${variants[variant]} ${className} ${
-    disabled || loading ? "opacity-60 cursor-not-allowed" : ""
-  }`;
+  const buttonClass = `${ variants[ variant ] } ${ icon ? 'inline-flex items-center justify-center gap-2' : '' } ${ className } ${ disabled || loading ? "opacity-60 cursor-not-allowed" : "" }`.trim();
 
   return (
     <button
