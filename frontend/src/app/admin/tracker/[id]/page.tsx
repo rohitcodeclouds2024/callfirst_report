@@ -180,7 +180,7 @@ export default function TrackerAndUploadPage() {
               />
             </div>
 
-            <div className="col-span-12 sm:col-span-4">
+            <div className="col-span-12 sm:col-span-6">
               <label className="block text-sm font-medium mb-2">
                 No of Contacts
               </label>
@@ -194,7 +194,7 @@ export default function TrackerAndUploadPage() {
               />
             </div>
 
-            <div className="col-span-12 sm:col-span-4">
+            <div className="col-span-12 sm:col-span-6">
               <label className="block text-sm font-medium mb-2">
                 Gross Transfer
               </label>
@@ -208,7 +208,7 @@ export default function TrackerAndUploadPage() {
               />
             </div>
 
-            <div className="col-span-12 sm:col-span-4">
+            <div className="col-span-12 sm:col-span-6">
               <label className="block text-sm font-medium mb-2">
                 Net Transfer
               </label>
