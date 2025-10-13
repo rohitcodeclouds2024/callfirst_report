@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import useApi from "@/lib/useApi";
 import { apiClient } from "@/lib/axios";
+import Card from "@/components/ui/card/Card";
 
 interface User {
   id: number;
@@ -157,100 +158,48 @@ export default function UserFormPage() {
   }
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">
-        {type === 1 ? "🔹 Create User" : "✏️ Edit User"}
-      </h2>
-
-      <form onSubmit={handleSubmit} className="space-y-4 max-w-lg">
-        <div>
-          <label className="block font-medium">Name</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block font-medium">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block font-medium">Phone</label>
-          <input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block font-medium">Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            placeholder={
-              type === 2 ? "Leave blank to keep current password" : ""
-            }
-            {...(type === 1 ? { required: true } : {})}
-          />
-        </div>
-
-        <div>
-          <label className="block font-medium">Confirm Password</label>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            {...(type === 1 ? { required: true } : {})}
-          />
-        </div>
-
-        <div>
-          <label className="block font-medium">Assign Role</label>
-          <select
-            name="role_id[]"
-            value={formData.role_id.map(String)}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            required
-            multiple
-          >
-            <option value="">Select Role</option>
-            {roles.map((role) => (
-              <option key={role.id} value={role.id}>
-                {role.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          {type === 1 ? "Create User" : "Update User"}
-        </button>
-      </form>
+    <div className="user-wrapper">
+      <h3 className="text-2xl font-semibold mb-4">{ type === 1 ? "Create User" : "Edit User" }</h3>
+      <Card>
+        <form onSubmit={ handleSubmit } className="grid grid-cols-12 gap-6">
+          <div className="col-span-12">
+            <label className="block text-sm font-medium mb-2">Name</label>
+            <input type="text" name="name" value={ formData.name } onChange={ handleChange } className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" required />
+          </div>
+          <div className="col-span-6">
+            <label className="block text-sm font-medium mb-2">Email</label>
+            <input type="email" name="email" value={ formData.email } onChange={ handleChange } className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" required />
+          </div>
+          <div className="col-span-6">
+            <label className="block text-sm font-medium mb-2">Phone</label>
+            <input type="text" name="phone" value={ formData.phone } onChange={ handleChange } className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" />
+          </div>
+          <div className="col-span-6">
+            <label className="block text-sm font-medium mb-2">Password</label>
+            <input type="password" name="password" value={ formData.password } onChange={ handleChange } className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" placeholder={ type === 2 ? "Leave blank to keep current password" : "" } {...( type === 1 ? { required: true } : {} ) } />
+          </div>
+          <div className="col-span-6">
+            <label className="block text-sm font-medium mb-2">Confirm Password</label>
+            <input type="password" name="confirmPassword" value={ formData.confirmPassword } onChange={ handleChange } className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" { ...( type === 1 ? { required: true } : {} ) } />
+          </div>
+          <div className="col-span-12">
+            <label className="block text-sm font-medium mb-2">Assign Role</label>
+            <select name="role_id[]" value={ formData.role_id.map( String ) } onChange={ handleChange } className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" required multiple>
+              <option value="">Select Role</option>
+              { roles.map( ( role ) => (
+                <option key={ role.id } value={ role.id }>
+                  { role.name }
+                </option>
+              ) ) }
+            </select>
+          </div>
+          <div className="flex justify-end col-span-12">
+            <button type="submit" className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300">
+              { type === 1 ? "Create User" : "Update User" }
+            </button>
+          </div>
+        </form>
+      </Card>
     </div>
   );
 }
