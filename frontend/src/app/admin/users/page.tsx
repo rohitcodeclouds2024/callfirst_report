@@ -95,7 +95,7 @@ export default function Users() {
     if (!result.isConfirmed) return;
 
     try {
-      await apiClient.delete(`/users/${id}`); // ✅ correct call
+      await apiClient.delete(`/users/${id}`);
 
       // update state
       setUsers((prev) => prev.filter((u) => u.id !== id));
@@ -141,28 +141,35 @@ export default function Users() {
       <div className="flex justify-between gap-4 mb-4">
         <div className="relative w-72">
           <TextInput
-            value={ search }
-            onChange={ ( e ) => {
-              setSearch( e.target.value );
-              setCurrentPage( 1 );
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
             }}
             placeholder="Search user..."
-            showLabel={ false }
-            iconLeft={ <FaSearch className="block" />}
+            showLabel={false}
+            iconLeft={<FaSearch className="block" />}
           />
         </div>
         <div className="flex items-center gap-2">
-          <Link href="/admin/users/1/0" className="flex items-center gap-2 px-4 py-2 text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition-all duration-300">
-            <FaPlus size={ 14 } className="block" />
+          <Link
+            href="/admin/users/1/0"
+            className="flex items-center gap-2 px-4 py-2 text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition-all duration-300"
+          >
+            <FaPlus size={14} className="block" />
             <span className="block">Create User</span>
             {/* <FormButton icon={ <FaPlus className="block" /> } label="Create User" showLabel variant="primary" /> */}
           </Link>
-          { selected.length > 0 && (
-            <a href="#" className="p-3 text-red-500 border border-red-500 rounded-md" onClick={ handleBulkDelete }>
-              <FaTrash className="block" size={ 16 } />
+          {selected.length > 0 && (
+            <a
+              href="#"
+              className="p-3 text-red-500 border border-red-500 rounded-md"
+              onClick={handleBulkDelete}
+            >
+              <FaTrash className="block" size={16} />
             </a>
             // <FormButton icon={ <FaTrash className="text-error text-xl text-primary" /> } iconOnly showLabel={ false } variant="deleteAll" label={ `Delete Selected (${selected.length})` } onClick={ handleBulkDelete } />
-          ) }
+          )}
         </div>
       </div>
       <div className="overflow-x-auto rounded-lg shadow">
@@ -171,9 +178,7 @@ export default function Users() {
             <tr>
               <th className="p-4 bg-white w-[50px]">
                 <CheckboxInput
-                  checked={
-                    selected.length === users.length && users.length > 0
-                  }
+                  checked={selected.length === users.length && users.length > 0}
                   onChange={(e) => {
                     if (e.target.checked) {
                       setSelected(users.map((u) => u.id));
@@ -190,11 +195,11 @@ export default function Users() {
             </tr>
           </thead>
           <tbody className="text-gray-500">
-            { loading ? (
+            {loading ? (
               <RowSkeleton count={5} columns={5} withCheckbox />
             ) : users.length > 0 ? (
               users.map((user) => (
-                <tr key={ user.id }>
+                <tr key={user.id}>
                   <td className="px-4 py-3 bg-white border-t border-border">
                     <CheckboxInput
                       checked={selected.includes(user.id)}
@@ -203,29 +208,41 @@ export default function Users() {
                       className="checkbox"
                     />
                   </td>
-                  <td className="px-4 py-3 bg-white border-t border-border">{ user.id }</td>
+                  <td className="px-4 py-3 bg-white border-t border-border">
+                    {user.id}
+                  </td>
                   <td className="px-4 py-3 bg-white border-t border-border">
                     <p className="flex items-center gap-2">
-                      <FaEnvelope size={ 14 } className="block text-primary" />
-                      <span className="block">{ user.email }</span>
+                      <FaEnvelope size={14} className="block text-primary" />
+                      <span className="block">{user.email}</span>
                     </p>
                   </td>
                   <td className="px-4 py-3 bg-white border-t border-border">
                     <p className="flex items-center gap-2">
-                      <FaPhoneAlt size={ 14 } className="block text-primary" />
-                      <span className="block">{ user.contact_number }</span>
+                      <FaPhoneAlt size={14} className="block text-primary" />
+                      <span className="block">{user.contact_number}</span>
                     </p>
                   </td>
                   <td className="px-4 py-3 bg-white border-t border-border">
                     <div className="flex gap-2">
-                      <Link href={ `/admin/users/3/${user.id}` } className="p-2 text-blue-500 border border-blue-500 rounded hover:bg-blue-100 transition-all duration-300">
-                        <FaEye size={ 14 } className="block" />
+                      <Link
+                        href={`/admin/users/3/${user.id}`}
+                        className="p-2 text-blue-500 border border-blue-500 rounded hover:bg-blue-100 transition-all duration-300"
+                      >
+                        <FaEye size={14} className="block" />
                       </Link>
-                      <Link href={ `/admin/users/2/${user.id}` } className="p-2 text-green-500 border border-green-500 rounded hover:bg-green-100 transition-all duration-300">
-                        <FaEdit size={ 14 } className="block" />
+                      <Link
+                        href={`/admin/users/2/${user.id}`}
+                        className="p-2 text-green-500 border border-green-500 rounded hover:bg-green-100 transition-all duration-300"
+                      >
+                        <FaEdit size={14} className="block" />
                       </Link>
-                      <a href="#" className="p-2 text-red-500 border border-red-500 rounded hover:bg-red-100 transition-all duration-300" onClick={ () => handleDelete( user.id ) }>
-                        <FaTrash size={ 14 } className="block" />
+                      <a
+                        href="#"
+                        className="p-2 text-red-500 border border-red-500 rounded hover:bg-red-100 transition-all duration-300"
+                        onClick={() => handleDelete(user.id)}
+                      >
+                        <FaTrash size={14} className="block" />
                       </a>
                     </div>
                   </td>

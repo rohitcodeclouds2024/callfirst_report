@@ -3,9 +3,10 @@ import { apiClient } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import Card from "../card/Card";
-import { FaEye, FaEdit } from "react-icons/fa";
+import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import Pagination from "@/components/form/Pagination";
 import { TrackerData } from "@/types/trackerData";
+import MySwal from "@/lib/swal";
 
 export default function TrackerDataReport({ clientList }) {
   const router = useRouter();
@@ -69,12 +70,43 @@ export default function TrackerDataReport({ clientList }) {
     }
   }, [currentPage, appliedClientId]);
 
-  const redirectUploadShow = (id) => {
+  const redirectUploadShow = (id: number) => {
     router.push(`/admin/reports/tracker/upload/${id}`);
   };
 
-  const redirectUploadEdit = (id) => {
+  const redirectUploadEdit = (id: number) => {
     router.push(`/admin/tracker/${id}`);
+  };
+
+  const handleDeleteOperation = async (id: number) => {
+    const result = await MySwal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      await apiClient.delete(`/tracker/${id}`);
+
+      // update state
+      setTrackerData((prev) => prev.filter((u) => u.id !== id));
+
+      MySwal.fire("Deleted!", "Tracker Record has been deleted.", "success");
+    } catch (err: any) {
+      console.error("Failed to delete user", err.response?.data || err.message);
+      MySwal.fire(
+        "Error!",
+        err.response?.data?.error || "Something went wrong.",
+        "error"
+      );
+    }
   };
 
   return (
@@ -168,6 +200,9 @@ export default function TrackerDataReport({ clientList }) {
                     </span>
                     <span onClick={() => redirectUploadEdit(item.id)}>
                       <FaEdit />
+                    </span>
+                    <span onClick={() => handleDeleteOperation(item.id)}>
+                      <FaTrash />
                     </span>
                   </td>
                 </tr>
