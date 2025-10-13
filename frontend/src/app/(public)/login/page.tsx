@@ -123,7 +123,7 @@ export default function LoginPage() {
               <CheckboxInput label="Remember Me" checked={ rememberMe } onChange={ ( e ) => setRememberMe( e.target.checked ) } id="rememberMe" />
             </div>
             <div className="col-span-12">
-              <FormButton label="Sign In" type="submit" id="login" variant="primary" className="w-full" disabled={ loading } loading={ loading } icon={ <HiArrowRight size={ 16 }  /> } iconPosition="right" />
+              <FormButton label="Sign In" type="submit" id="login" variant="primary" className="w-full" disabled={ loading } loading={ loading } icon={ <HiArrowRight size={ 16 } className="block"  /> } iconPosition="right" />
             </div>
           </form>
           {/* <p className="text-sm text-muted my-6 text-center">Email : demo@demo.com <br /> password : demo123</p> */}

@@ -82,7 +82,7 @@ export default function Dashboard() {
               </div>
             </>
           ) }
-          <button onClick={ handleApply } className="w-full sm:w-auto px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition">Apply</button>
+          <button onClick={ handleApply } className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300">Apply</button>
         </div>
       </div>
       <div className="grid grid-cols-12 gap-6">
