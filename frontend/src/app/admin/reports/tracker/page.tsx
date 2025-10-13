@@ -7,7 +7,7 @@ export default function TrackeReport() {
   const { clients } = useAppContext();
 
   return (
-    <div className="p-6">
+    <div className="tracker-report-wrapper">
       {/* 🔹 Tracker Data Report */}
       <TrackerDataReport clientList={clients} />
     </div>

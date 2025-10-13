@@ -1,6 +1,7 @@
 import { apiClient } from "@/lib/axios";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import Card from "../card/Card";
 
 interface TrackerData {
   id: number;
@@ -44,92 +45,63 @@ export default function TrackerDataReport({ clientList }) {
   };
 
   return (
-    <div className="tracker_data_report">
-      <h1 className="text-xl font-bold mb-4">📈 Tracker Data Report</h1>
-
-      <form
-        onSubmit={handleTrackerFetch}
-        className="grid grid-cols-4 gap-4 mb-6"
-      >
-        <select
-          className="border p-2 rounded"
-          value={trackerClient}
-          onChange={(e) => setTrackerClient(e.target.value)}
-        >
-          <option value="">Select Client</option>
-          {clientList.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-
-        <input
-          type="date"
-          className="border p-2 rounded"
-          value={trackerStart}
-          onChange={(e) => setTrackerStart(e.target.value)}
-        />
-
-        <input
-          type="date"
-          className="border p-2 rounded"
-          value={trackerEnd}
-          onChange={(e) => setTrackerEnd(e.target.value)}
-        />
-
-        <button
-          type="submit"
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-          disabled={trackerLoading}
-        >
-          {trackerLoading ? "Loading..." : "Fetch Tracker"}
-        </button>
-      </form>
-
-      {trackerData.length > 0 ? (
-        <table className="w-full border border-gray-300 text-sm">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="p-2 border">#</th>
-              {/* <th className="p-2 border">Campaign Name</th> */}
-              <th className="p-2 border">No. of Dials</th>
-              <th className="p-2 border">No. of Contacts</th>
-              <th className="p-2 border">Gross Transfer</th>
-              <th className="p-2 border">Net Transfer</th>
-              <th className="p-2 border">Date</th>
-              <th className="p-2 border">Conv %</th>
-            </tr>
-          </thead>
-          <tbody>
-            {trackerData.map((item, i) => (
-              <tr key={item.id} className="text-center">
-                <td className="border p-2">{i + 1}</td>
-                {/* <td className="border p-2">{item.campaign_name}</td> */}
-                <td className="border p-2">{item.no_of_dials}</td>
-                <td className="border p-2">{item.no_of_contacts}</td>
-                <td className="border p-2">{item.gross_transfer}</td>
-                <td className="border p-2">{item.net_transfer}</td>
-                <td className="border p-2">
-                  {new Date(item.date).toLocaleDateString()}
-                </td>
-                <td>
-                  {item.no_of_contacts
-                    ? `${(
-                        (100 * item.gross_transfer) /
-                        item.no_of_contacts
-                      ).toFixed(2)}`
-                    : "0.00"}
-                </td>
+    <>
+      <h3 className="text-2xl font-semibold mb-4">Tracker Data Report</h3>
+      <Card className="mb-6">
+        <form onSubmit={ handleTrackerFetch } className="grid grid-col-12 sm:grid-cols-4 gap-2 sm:gap-4 lg:gap-6">
+          <select className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" value={ trackerClient } onChange={ ( e ) => setTrackerClient( e.target.value ) }>
+            <option value="">Select Client</option>
+            { clientList.map( ( c ) => (
+              <option key={ c.id } value={ c.id }>
+                { c.name }
+              </option>
+            ) ) }
+          </select>
+          <input type="date" className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" value={ trackerStart } onChange={ ( e ) => setTrackerStart( e.target.value ) } />
+          <input type="date" className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" value={ trackerEnd } onChange={ ( e ) => setTrackerEnd( e.target.value ) } />
+          <button type="submit" className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300" disabled={ trackerLoading }>
+            { trackerLoading ? "Loading..." : "Fetch Tracker" }
+          </button>
+        </form>
+      </Card>
+      { trackerData.length > 0 ? (
+        <div className="overflow-x-auto rounded-lg shadow">
+          <table className="w-full text-sm text-left">
+            <thead className="uppercase">
+              <tr>
+                <th className="p-4 bg-white">#</th>
+                <th className="p-4 bg-white">No. of Dials</th>
+                <th className="p-4 bg-white">No. of Contacts</th>
+                <th className="p-4 bg-white">Gross Transfer</th>
+                <th className="p-4 bg-white">Net Transfer</th>
+                <th className="p-4 bg-white">Date</th>
+                <th className="p-4 bg-white">Conv %</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="text-gray-500">
+              { trackerData.map(( item, i ) => (
+                <tr key={ item.id }>
+                  <td className="px-4 py-3 bg-white border-t border-border">{i + 1}</td>
+                  <td className="px-4 py-3 bg-white border-t border-border">{item.no_of_dials}</td>
+                  <td className="px-4 py-3 bg-white border-t border-border">{item.no_of_contacts}</td>
+                  <td className="px-4 py-3 bg-white border-t border-border">{item.gross_transfer}</td>
+                  <td className="px-4 py-3 bg-white border-t border-border">{item.net_transfer}</td>
+                  <td className="px-4 py-3 bg-white border-t border-border">
+                    { new Date( item.date ).toLocaleDateString() }
+                  </td>
+                  <td className="px-4 py-3 bg-white border-t border-border">
+                    { item.no_of_contacts ? `${ ( ( 100 * item.gross_transfer ) / item.no_of_contacts ).toFixed( 2 ) }` : "0.00" }
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <p className="text-gray-500 text-sm mt-4">
           {trackerLoading ? "" : "No data found."}
         </p>
       )}
-    </div>
+    </>
   );
 }
