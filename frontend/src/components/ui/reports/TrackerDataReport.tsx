@@ -3,7 +3,7 @@ import { apiClient } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import Card from "../card/Card";
-import { FaEye } from "react-icons/fa";
+import { FaEye, FaEdit } from "react-icons/fa";
 import Pagination from "@/components/form/Pagination";
 import { TrackerData } from "@/types/trackerData";
 
@@ -69,8 +69,12 @@ export default function TrackerDataReport({ clientList }) {
     }
   }, [currentPage, appliedClientId]);
 
-  const redirectUploadRedirect = (id) => {
+  const redirectUploadShow = (id) => {
     router.push(`/admin/reports/tracker/upload/${id}`);
+  };
+
+  const redirectUploadEdit = (id) => {
+    router.push(`/admin/tracker/${id}`);
   };
 
   return (
@@ -159,8 +163,11 @@ export default function TrackerDataReport({ clientList }) {
                       : "0.00"}
                   </td>
                   <td className="px-4 py-3 bg-white border-t border-border">
-                    <span onClick={() => redirectUploadRedirect(item.id)}>
+                    <span onClick={() => redirectUploadShow(item.id)}>
                       <FaEye />
+                    </span>
+                    <span onClick={() => redirectUploadEdit(item.id)}>
+                      <FaEdit />
                     </span>
                   </td>
                 </tr>

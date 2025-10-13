@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { apiClient } from "@/lib/axios";
 import { toast } from "react-hot-toast";
 import Card from "@/components/ui/card/Card";
@@ -17,6 +17,8 @@ export default function TrackerAndUploadPage() {
   const router = useRouter();
   const today = new Date().toISOString().split("T")[0];
   const [clientList, setClientList] = useState<User[]>([]);
+  const params = useParams(); // Get route params
+  const lg_tracker_id = Number(params.id);
 
   // --- Tracker Form State ---
   const [trackerForm, setTrackerForm] = useState({
@@ -26,6 +28,7 @@ export default function TrackerAndUploadPage() {
     gross_transfer: "",
     net_transfer: "",
     date: today,
+    lg_tracker_id: lg_tracker_id,
   });
 
   // --- Upload Form State ---
@@ -47,7 +50,34 @@ export default function TrackerAndUploadPage() {
         toast.error("Failed to load clients");
       }
     };
+    const fetchTrackerDetails = async () => {
+      if (lg_tracker_id === 0) {
+        return;
+      }
+      try {
+        const res = await apiClient.post(`/report/tracker/uploaded-data`, {
+          lg_tracker_id: lg_tracker_id,
+        });
+
+        const lgResponse = res.data.lgData;
+
+        setTrackerForm((prevState) => ({
+          ...prevState, // keep all previous values
+          client_id: lgResponse.client_id,
+          no_of_dials: lgResponse.no_of_dials,
+          no_of_contacts: lgResponse.no_of_contacts,
+          gross_transfer: lgResponse.gross_transfer,
+          net_transfer: lgResponse.net_transfer,
+          date: lgResponse.date,
+        }));
+      } catch (err) {
+        // toast.error("Failed to fetch report");
+      } finally {
+        // setLoading(false);
+      }
+    };
     fetchClients();
+    fetchTrackerDetails();
   }, []);
 
   // --- Tracker Form Change Handler ---
@@ -72,6 +102,11 @@ export default function TrackerAndUploadPage() {
 
     if (!trackerForm.date) {
       toast.error("Date is required");
+      return;
+    }
+
+    if (!uploadFile) {
+      toast.error("File is required");
       return;
     }
 

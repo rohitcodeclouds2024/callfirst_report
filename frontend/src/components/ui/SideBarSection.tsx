@@ -23,7 +23,7 @@ const menuItems = [
   { name: "Dashboard", icon: <FaHome />, href: "/admin/dashboard" },
   { name: "Users", icon: <FaUsers />, href: "/admin/users" },
   { name: "Roles", icon: <FaUserShield />, href: "/admin/roles" },
-  { name: "Tracker Form", icon: <FaRegClipboard />, href: "/admin/tracker" },
+  { name: "Tracker Form", icon: <FaRegClipboard />, href: "/admin/tracker/0" },
   {
     name: "Tracker Report",
     icon: <FaClockRotateLeft />,

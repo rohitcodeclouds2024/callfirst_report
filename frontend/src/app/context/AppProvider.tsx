@@ -42,7 +42,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       const res = await apiClient.get("/clients");
       setClients(res.data.data || []);
     } catch (err) {
-      toast.error("Failed to load clients");
+      // toast.error("Failed to load clients");
     }
   };
 
@@ -59,7 +59,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       const names: string[] = perms.map((p) => p.name);
       setPermissionMap(names);
     } catch (err) {
-      toast.error("Failed to load permissions");
+      // toast.error("Failed to load permissions");
     }
   };
 
