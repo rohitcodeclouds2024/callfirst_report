@@ -396,4 +396,28 @@ export default async function trackerRoutes(fastify) {
 	    }
 	);
 
+	fastify.delete('/tracker/:id', async (request, reply) => {
+		try {
+			const id = Number(request.params.id);
+			if (!Number.isFinite(id) || id <= 0) {
+				return reply.code(400).send({ error: 'invalid_id' });
+			}
+
+			const deleted = await LgTracker.destroy({ where: { id } });
+
+			if (!deleted) {
+				return reply.code(404).send({ error: 'not_found' });
+			}
+			await UploadedData.destroy({
+	          	where: { lg_tracker_id: id },
+	        });
+
+			// return 200 with body or 204 no-content — using 200 for easier client handling
+			return reply.code(200).send({ ok: true, id });
+		} catch (err) {
+			fastify.log.error(err);
+			return reply.code(500).send({ error: 'delete_failed' });
+		}
+	});
+
 }
