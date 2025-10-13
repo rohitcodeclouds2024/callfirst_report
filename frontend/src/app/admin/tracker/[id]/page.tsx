@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { apiClient } from "@/lib/axios";
 import { toast } from "react-hot-toast";
 import Card from "@/components/ui/card/Card";
+import Link from "next/link";
 
 interface User {
   id: number;
@@ -144,9 +145,9 @@ export default function TrackerAndUploadPage() {
         <Card>
           <form
             onSubmit={handleTrackerSubmit}
-            className="grid grid-cols-12 gap-6"
+            className="grid grid-cols-12 gap-4 sm:gap-6"
           >
-            <div className="col-span-6">
+            <div className="col-span-12 sm:col-span-6">
               <label className="block text-sm font-medium mb-2">
                 Client Name
               </label>
@@ -165,7 +166,7 @@ export default function TrackerAndUploadPage() {
               </select>
             </div>
 
-            <div className="col-span-6">
+            <div className="col-span-12 sm:col-span-6">
               <label className="block text-sm font-medium mb-2">
                 No of Dials
               </label>
@@ -179,7 +180,7 @@ export default function TrackerAndUploadPage() {
               />
             </div>
 
-            <div className="col-span-6">
+            <div className="col-span-12 sm:col-span-4">
               <label className="block text-sm font-medium mb-2">
                 No of Contacts
               </label>
@@ -193,7 +194,7 @@ export default function TrackerAndUploadPage() {
               />
             </div>
 
-            <div className="col-span-6">
+            <div className="col-span-12 sm:col-span-4">
               <label className="block text-sm font-medium mb-2">
                 Gross Transfer
               </label>
@@ -207,7 +208,7 @@ export default function TrackerAndUploadPage() {
               />
             </div>
 
-            <div className="col-span-6">
+            <div className="col-span-12 sm:col-span-4">
               <label className="block text-sm font-medium mb-2">
                 Net Transfer
               </label>
@@ -221,7 +222,7 @@ export default function TrackerAndUploadPage() {
               />
             </div>
 
-            <div className="col-span-6">
+            <div className="col-span-12 sm:col-span-6">
               <label className="block text-sm font-medium mb-2">Date</label>
               <input
                 type="date"
@@ -231,7 +232,7 @@ export default function TrackerAndUploadPage() {
                 className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
               />
             </div>
-            <div className="col-span-6">
+            <div className="col-span-12 sm:col-span-6">
               <label className="block text-sm font-medium mb-2">
                 Upload File
               </label>
@@ -242,22 +243,10 @@ export default function TrackerAndUploadPage() {
                 className="w-full px-4 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
               />
             </div>
-            <div className="col-span-12 flex justify-between items-center">
-              <a
-                href="http://localhost:5010/upload/sample"
-                className="text-primary underline"
-              >
-                Download Sample File
-              </a>
-            </div>
 
-            <div className="col-span-12 flex justify-end">
-              <button
-                type="submit"
-                className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
-              >
-                Save
-              </button>
+            <div className="col-span-12 flex justify-between items-center gap-4">
+              <Link href="http://localhost:5010/upload/sample" className="inline-block font-medium text-primary underline">Download Sample File</Link>
+              <button type="submit" className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300">Save</button>
             </div>
           </form>
         </Card>

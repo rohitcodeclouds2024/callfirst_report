@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import Pagination from "@/components/form/Pagination";
 import { TrackerData } from "@/types/trackerData";
+import { FaPhoneAlt } from "react-icons/fa";
 
 interface UploadedData {
   id: number;
@@ -101,19 +102,22 @@ export default function TrackerUploadReport({ clientList, clientIdFromUrl }) {
               {data.map((item, i) => (
                 <tr key={item.id}>
                   <td className="px-4 py-3 bg-white border-t border-border">
-                    {i + 1}
+                    { i + 1 }
                   </td>
                   <td className="px-4 py-3 bg-white border-t border-border">
-                    {item.customer_name}
+                    { item.customer_name }
                   </td>
                   <td className="px-4 py-3 bg-white border-t border-border">
-                    {item.phone_number}
+                    <p className="flex items-center gap-2">
+                      <FaPhoneAlt size={ 14 } className="block text-primary" />
+                      <span className="block">{ item.phone_number }</span>
+                    </p>
                   </td>
                   <td className="px-4 py-3 bg-white border-t border-border">
-                    {item.status}
+                    <span className={`inline-block text-sm leading-none font-medium px-2 py-1 rounded-xl border ${ item.status === 'Inactive' ? 'bg-yellow-100 text-yellow-700 border-yellow-700' : item.status === 'Active' ? 'bg-green-100 text-green-700 border-green-700' : '' }`.trim()}>{ item.status }</span>
                   </td>
                   <td className="px-4 py-3 bg-white border-t border-border">
-                    {new Date(item.createdAt).toLocaleString()}
+                    { new Date( item.createdAt ).toLocaleString() }
                   </td>
                 </tr>
               ))}

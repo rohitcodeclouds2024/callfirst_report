@@ -195,15 +195,17 @@ export default function TrackerDataReport({ clientList }) {
                       : "0.00"}
                   </td>
                   <td className="px-4 py-3 bg-white border-t border-border">
-                    <span onClick={() => redirectUploadShow(item.id)}>
-                      <FaEye />
-                    </span>
-                    <span onClick={() => redirectUploadEdit(item.id)}>
-                      <FaEdit />
-                    </span>
-                    <span onClick={() => handleDeleteOperation(item.id)}>
-                      <FaTrash />
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <button onClick={ () => redirectUploadShow( item.id ) } className="p-2 text-blue-500 border border-blue-500 rounded hover:bg-blue-100 transition-all duration-300">
+                        <FaEye size={ 14 } className="block" />
+                      </button>
+                      <button onClick={ () => redirectUploadEdit( item.id ) } className="p-2 text-green-500 border border-green-500 rounded hover:bg-green-100 transition-all duration-300">
+                        <FaEdit size={ 14 } className="block" />
+                      </button>
+                      <button onClick={ () => handleDeleteOperation( item.id ) } className="p-2 text-red-500 border border-red-500 rounded hover:bg-red-100 transition-all duration-300">
+                        <FaTrash size={ 14 } className="block" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
