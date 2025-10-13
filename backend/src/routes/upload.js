@@ -120,46 +120,4 @@ export default async function uploadRoutes(fastify, opts) {
       return reply.status(500).send({ error: "Failed to fetch report data" });
     }
   });
-
-  fastify.post("/uploads-report", async (request, reply) => {
-    const { clientId, dateFilter, customRange } = request.body;
-
-    if (!clientId) return reply.status(400).send({ message: "clientId is required" });
-
-    let startDate, endDate, dateArray;
-    try {
-      ({ startDate, endDate, dateArray } = getDateRange(dateFilter, customRange));
-    } catch (err) {
-      return reply.status(400).send({ message: err.message });
-    }
-
-    try {
-      // Fetch sum of counts from UploadLog grouped by date
-      const logs = await UploadLog.findAll({
-        where: {
-          client_id: clientId,
-          date: {
-            [Op.between]: [startDate, endDate],
-          },
-        },
-        attributes: ["date", "count"],
-        order: [["date", "ASC"]],
-      });
-
-      // Map to chart data
-      const chartData = dateArray.map((date) => {
-          const record = logs.find((d) => d.date === date);
-          const count = (record && record.count) || 0;
-          return {
-            name: new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric" }), // e.g., Oct 1
-            value: count,
-          };
-      });
-
-      return reply.send(chartData);
-    } catch (err) {
-      console.error(err);
-      return reply.status(500).send({ error: "Failed to fetch uploads" });
-    }
-  });
 }

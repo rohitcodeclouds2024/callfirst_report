@@ -185,6 +185,42 @@ export default async function trackerRoutes(fastify) {
     	return reply.send(chartData);
   	});
 
+  	fastify.post("/uploads-report", async (request, reply) => {
+    	const { clientId, dateFilter, customRange } = request.body;
+
+    	if (!clientId) return reply.status(400).send({ message: "clientId is required" });
+
+  		let startDate, endDate, dateArray;
+  		try {
+    		({ startDate, endDate, dateArray } = getDateRange(dateFilter, customRange));
+  		} catch (err) {
+    		return reply.status(400).send({ message: err.message });
+  		}
+
+  		const data = await LgTracker.findAll({
+    		where: {
+      			client_id: clientId,
+      			date: {
+        			[Op.between]: [startDate, endDate],
+      			},
+    		},
+    		order: [["date", "ASC"]],
+    		attributes: ["date", "count"],
+  		});
+
+    	// Map data to chart format
+    	const chartData = dateArray.map((date) => {
+	      	const record = data.find((d) => d.date === date);
+	      	const count = (record && record.count) || 0;
+	      	return {
+	        	name: new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric" }), // e.g., Oct 1
+	        	value: count,
+	      	};
+	    });
+
+    	return reply.send(chartData);
+  	});
+
   	fastify.post(
     	"/tracker/upload",
     	{ preHandler: upload.single("file") },
