@@ -154,7 +154,7 @@ export default function Users() {
         <div className="flex items-center gap-2">
           <Link
             href="/admin/users/1/0"
-            className="flex items-center gap-2 px-4 py-2 text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition-all duration-300"
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
           >
             <FaPlus size={14} className="block" />
             <span className="block">Create User</span>

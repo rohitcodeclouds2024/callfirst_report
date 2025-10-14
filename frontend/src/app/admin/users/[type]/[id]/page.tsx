@@ -139,20 +139,24 @@ export default function UserFormPage() {
 
   if (type === 3 && user) {
     return (
-      <div className="p-6 space-y-2">
-        <h2 className="text-xl font-bold">👀 User Details</h2>
-        <p>
-          <strong>ID:</strong> {user.id}
-        </p>
-        <p>
-          <strong>Name:</strong> {user.name}
-        </p>
-        <p>
-          <strong>Email:</strong> {user.email}
-        </p>
-        <p>
-          <strong>Phone:</strong> {user.contact_number}
-        </p>
+      <div className="user-details-wrapper">
+        <h2 className="text-2xl font-semibold mb-4">User Details</h2>
+        <Card>
+          <ul className="flex flex-col gap-4">
+            <li>
+              <strong>ID:</strong> {user.id}
+            </li>
+            <li>
+              <strong>Name:</strong> {user.name}
+            </li>
+            <li>
+              <strong>Email:</strong> {user.email}
+            </li>
+            <li>
+              <strong>Phone:</strong> {user.contact_number}
+            </li>
+          </ul>
+        </Card>
       </div>
     );
   }
