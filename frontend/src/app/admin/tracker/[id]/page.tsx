@@ -184,7 +184,7 @@ export default function TrackerAndUploadPage() {
                 type="text"
                 name="no_of_dials"
                 value={trackerForm.no_of_dials}
-                onChange={handleTrackerChange}
+                onChange={handleNumeriChange}
                 className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
                 min="0"
               />
@@ -198,7 +198,7 @@ export default function TrackerAndUploadPage() {
                 type="text"
                 name="no_of_contacts"
                 value={trackerForm.no_of_contacts}
-                onChange={handleTrackerChange}
+                onChange={handleNumeriChange}
                 className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
                 min="0"
               />
@@ -212,7 +212,7 @@ export default function TrackerAndUploadPage() {
                 type="text"
                 name="gross_transfer"
                 value={trackerForm.gross_transfer}
-                onChange={handleTrackerChange}
+                onChange={handleNumeriChange}
                 className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
                 min="0"
               />
@@ -226,7 +226,7 @@ export default function TrackerAndUploadPage() {
                 type="text"
                 name="net_transfer"
                 value={trackerForm.net_transfer}
-                onChange={handleTrackerChange}
+                onChange={handleNumeriChange}
                 className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
                 min="0"
               />
