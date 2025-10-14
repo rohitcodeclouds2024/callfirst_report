@@ -92,6 +92,16 @@ export default function TrackerAndUploadPage() {
     }));
   };
 
+  const handleNumeriChange = (e) => {
+    const { name, value } = e.target;
+    if (/^\d*$/.test(value)) {
+      setTrackerForm((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+
   const handleTrackerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -171,7 +181,7 @@ export default function TrackerAndUploadPage() {
                 No of Dials
               </label>
               <input
-                type="number"
+                type="text"
                 name="no_of_dials"
                 value={trackerForm.no_of_dials}
                 onChange={handleTrackerChange}
@@ -185,7 +195,7 @@ export default function TrackerAndUploadPage() {
                 No of Contacts
               </label>
               <input
-                type="number"
+                type="text"
                 name="no_of_contacts"
                 value={trackerForm.no_of_contacts}
                 onChange={handleTrackerChange}
@@ -199,7 +209,7 @@ export default function TrackerAndUploadPage() {
                 Gross Transfer
               </label>
               <input
-                type="number"
+                type="text"
                 name="gross_transfer"
                 value={trackerForm.gross_transfer}
                 onChange={handleTrackerChange}
@@ -213,7 +223,7 @@ export default function TrackerAndUploadPage() {
                 Net Transfer
               </label>
               <input
-                type="number"
+                type="text"
                 name="net_transfer"
                 value={trackerForm.net_transfer}
                 onChange={handleTrackerChange}
@@ -245,8 +255,18 @@ export default function TrackerAndUploadPage() {
             </div>
 
             <div className="col-span-12 flex justify-between items-center gap-4">
-              <Link href="http://localhost:5010/upload/sample" className="inline-block font-medium text-primary underline">Download Sample File</Link>
-              <button type="submit" className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300">Save</button>
+              <Link
+                href="http://localhost:5010/upload/sample"
+                className="inline-block font-medium text-primary underline"
+              >
+                Download Sample File
+              </Link>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
+              >
+                Save
+              </button>
             </div>
           </form>
         </Card>

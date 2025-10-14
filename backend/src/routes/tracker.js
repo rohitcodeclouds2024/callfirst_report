@@ -74,7 +74,7 @@ export default async function trackerRoutes(fastify) {
 
       		const { rows, count } = await LgTracker.findAndCountAll({
         		where,
-        		order: [["date", "DESC"]],
+        		order: [["id", "DESC"]],
         		limit,
         		offset,
       		});
