@@ -150,7 +150,7 @@ export default function TrackerAndUploadPage() {
 
     const result = await MySwal.fire({
       title: "Are you sure?",
-      text: `You want to uplaod a file for client name - . ${clientName}`,
+      html: `You want to upload a file for client name - <b> ${clientName} </b>`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -292,10 +292,18 @@ export default function TrackerAndUploadPage() {
                 className="w-full bg-white dark:bg-background px-4 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
               />
             </div>
+            {lg_tracker_id > 0 && (
+              <div className="col-span-12">
+                <p className="text-red-600 font-medium">
+                  ⚠️ Please note: Editing and uploading will overwrite your
+                  existing data with the new data.
+                </p>
+              </div>
+            )}
 
             <div className="col-span-12 flex justify-between items-center gap-4">
               <Link
-                href="http://localhost:5010/upload/sample"
+                href={`${process.env.NEXT_PUBLIC_ADMIN_BASE_URL}/upload/sample`}
                 className="inline-block font-medium text-primary underline"
               >
                 Download Sample File
