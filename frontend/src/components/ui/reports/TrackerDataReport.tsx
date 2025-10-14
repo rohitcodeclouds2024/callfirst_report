@@ -156,11 +156,11 @@ export default function TrackerDataReport({ clientList }) {
             <thead className="uppercase">
               <tr>
                 <th className="p-4 bg-surface">#</th>
+                <th className="p-4 bg-surface">Date</th>
                 <th className="p-4 bg-surface">No. of Dials</th>
                 <th className="p-4 bg-surface">No. of Contacts</th>
                 <th className="p-4 bg-surface">Gross Transfer</th>
                 <th className="p-4 bg-surface">Net Transfer</th>
-                <th className="p-4 bg-surface">Date</th>
                 <th className="p-4 bg-surface">Conv %</th>
                 <th className="p-4 bg-surface">Action</th>
               </tr>
@@ -170,6 +170,9 @@ export default function TrackerDataReport({ clientList }) {
                 <tr key={item.id}>
                   <td className="px-4 py-3 bg-surface border-t border-border">
                     {i + 1}
+                  </td>
+                  <td className="px-4 py-3 bg-surface border-t border-border">
+                    {new Date(item.date).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-3 bg-surface border-t border-border">
                     {item.no_of_dials}
@@ -184,9 +187,6 @@ export default function TrackerDataReport({ clientList }) {
                     {item.net_transfer}
                   </td>
                   <td className="px-4 py-3 bg-surface border-t border-border">
-                    {new Date(item.date).toLocaleDateString()}
-                  </td>
-                  <td className="px-4 py-3 bg-surface border-t border-border">
                     {item.no_of_contacts
                       ? `${(
                           (100 * item.gross_transfer) /
@@ -196,14 +196,23 @@ export default function TrackerDataReport({ clientList }) {
                   </td>
                   <td className="px-4 py-3 bg-surface border-t border-border">
                     <div className="flex items-center gap-2">
-                      <button onClick={ () => redirectUploadShow( item.id ) } className="p-2 text-blue-500 border border-blue-500 rounded hover:bg-blue-100 transition-all duration-300">
-                        <FaEye size={ 14 } className="block" />
+                      <button
+                        onClick={() => redirectUploadShow(item.id)}
+                        className="p-2 text-blue-500 border border-blue-500 rounded hover:bg-blue-100 transition-all duration-300"
+                      >
+                        <FaEye size={14} className="block" />
                       </button>
-                      <button onClick={ () => redirectUploadEdit( item.id ) } className="p-2 text-green-500 border border-green-500 rounded hover:bg-green-100 transition-all duration-300">
-                        <FaEdit size={ 14 } className="block" />
+                      <button
+                        onClick={() => redirectUploadEdit(item.id)}
+                        className="p-2 text-green-500 border border-green-500 rounded hover:bg-green-100 transition-all duration-300"
+                      >
+                        <FaEdit size={14} className="block" />
                       </button>
-                      <button onClick={ () => handleDeleteOperation( item.id ) } className="p-2 text-red-500 border border-red-500 rounded hover:bg-red-100 transition-all duration-300">
-                        <FaTrash size={ 14 } className="block" />
+                      <button
+                        onClick={() => handleDeleteOperation(item.id)}
+                        className="p-2 text-red-500 border border-red-500 rounded hover:bg-red-100 transition-all duration-300"
+                      >
+                        <FaTrash size={14} className="block" />
                       </button>
                     </div>
                   </td>

@@ -34,16 +34,13 @@ export default function TrackerAndUploadPage() {
 
   // --- Upload Form State ---
   const [uploadFile, setUploadFile] = useState<File | null>(null);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
-  const [total, setTotal] = useState<number>(0);
 
   // --- Fetch Clients ---
   useEffect(() => {
     const fetchClients = async () => {
       try {
         const { data } = await apiClient.get<{ data: User[] }>("/clients", {
-          params: { keyword: "", page: currentPage, perPage: 20 },
+          params: { keyword: "" },
         });
         setClientList(data.data || []);
       } catch (err) {
@@ -105,20 +102,42 @@ export default function TrackerAndUploadPage() {
   const handleTrackerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // --- Basic validation ---
-    if (!trackerForm.client_id) {
-      toast.error("Client Name is required");
-      return;
-    }
+    const {
+      client_id,
+      date,
+      no_of_dials,
+      no_of_contacts,
+      gross_transfer,
+      net_transfer,
+    } = trackerForm;
 
-    if (!trackerForm.date) {
-      toast.error("Date is required");
-      return;
-    }
+    // --- Validation Rules ---
+    const validations = [
+      { valid: !!client_id, message: "Client Name is required" },
+      { valid: !!date, message: "Date is required" },
+      { valid: !!no_of_dials, message: "No of Dials is required" },
+      {
+        valid: no_of_contacts <= no_of_dials,
+        message: "No of Contacts cannot be greater than No of Dials",
+      },
+      {
+        valid: gross_transfer <= no_of_contacts,
+        message: "Gross Transfer cannot be greater than No of Contacts",
+      },
+      {
+        valid: net_transfer <= gross_transfer,
+        message: "Net Transfer cannot be greater than Gross Transfer",
+      },
+      { valid: !!uploadFile, message: "File is required" },
+    ];
 
-    if (!uploadFile) {
-      toast.error("File is required");
-      return;
+    // --- Run validations ---
+    for (const { valid, message } of validations) {
+      console.log(valid);
+      if (!valid) {
+        toast.error(message);
+        return;
+      }
     }
 
     try {
@@ -157,6 +176,16 @@ export default function TrackerAndUploadPage() {
             onSubmit={handleTrackerSubmit}
             className="grid grid-cols-12 gap-4 sm:gap-6"
           >
+            <div className="col-span-12 sm:col-span-6">
+              <label className="block text-sm font-medium mb-2">Date</label>
+              <input
+                type="date"
+                name="date"
+                value={trackerForm.date}
+                onChange={handleTrackerChange}
+                className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+              />
+            </div>
             <div className="col-span-12 sm:col-span-6">
               <label className="block text-sm font-medium mb-2">
                 Client Name
@@ -229,17 +258,6 @@ export default function TrackerAndUploadPage() {
                 onChange={handleNumeriChange}
                 className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
                 min="0"
-              />
-            </div>
-
-            <div className="col-span-12 sm:col-span-6">
-              <label className="block text-sm font-medium mb-2">Date</label>
-              <input
-                type="date"
-                name="date"
-                value={trackerForm.date}
-                onChange={handleTrackerChange}
-                className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
               />
             </div>
             <div className="col-span-12 sm:col-span-6">
