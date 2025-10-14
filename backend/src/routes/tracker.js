@@ -299,6 +299,10 @@ export default async function trackerRoutes(fastify) {
 		        	fs.unlinkSync(filePath);
 		      	}
 
+		      	if(count != gross_transfer){
+		      		return reply.status(400).send({ error: "Trying to attempt wrong file" });
+		      	}
+
       			let tracker;
 
       			if (Number(lg_tracker_id) === 0) {
