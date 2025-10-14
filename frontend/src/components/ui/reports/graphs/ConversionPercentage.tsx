@@ -52,11 +52,12 @@ export default function ConversionPercentage({
         <BarChart
           data={conversionData}
           margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+          className="text-primary"
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis tickFormatter={(value) => `${value}%`} />
-          <Tooltip formatter={(value) => `${value}%`} />
+          <XAxis dataKey="name" tick={{ fill: 'var(--color-text)' }} />
+          <YAxis tickFormatter={(value) => `${value}%`} tick={{ fill: 'var(--color-text)' }} />
+          <Tooltip formatter={(value) => `${value}%`} contentStyle={{ backgroundColor: 'var(--color-bg)', color: 'var(--color-text)', border: 0, borderRadius: '0.5rem', boxShadow: '0px 2px 4px 0px rgb(0 0 0 / 30%)' }} cursor={{ fill: 'transparent' }} />
           <Bar
             dataKey="conversion"
             fill="currentColor"

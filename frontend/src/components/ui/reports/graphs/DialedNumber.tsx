@@ -52,17 +52,18 @@ export default function DialedNumber({
         <AreaChart
           data={numberOfDial}
           margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+          className="text-primary"
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
+          <XAxis dataKey="name" tick={{ fill: 'var(--color-text)' }} />
+          <YAxis tick={{ fill: 'var(--color-text)' }} />
+          <Tooltip contentStyle={{ backgroundColor: 'var(--color-bg)', color: 'var(--color-text)', border: 0, borderRadius: '0.5rem', boxShadow: '0px 2px 4px 0px rgb(0 0 0 / 30%)' }} />
           <Area
             type="monotone"
             dataKey="dials"
             stroke="currentColor"
             className="text-primary"
-            fill="#0c3c604d"
+            fill="#0c3c6080"
             name="Dials"
           />
         </AreaChart>
