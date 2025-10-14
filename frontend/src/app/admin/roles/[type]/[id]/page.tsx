@@ -86,17 +86,21 @@ export default function RoleFormPage() {
 
   if (type === 3 && role) {
     return (
-      <div className="p-6 space-y-4">
-        <h2 className="text-xl font-bold">👀 Role Details</h2>
-        <p>
-          <strong>ID:</strong> {role.id}
-        </p>
-        <p>
-          <strong>Name:</strong> {role.name}
-        </p>
-        <p>
-          <strong>Permissions:</strong>
-        </p>
+      <div className="role-details-wrapper">
+        <h3 className="text-2xl font-semibold mb-4">Role Details</h3>
+        <Card>
+          <ul className="flex flex-col gap-4">
+            <li>
+              <strong>ID:</strong> {role.id}
+            </li>
+            <li>
+              <strong>Name:</strong> {role.name}
+            </li>
+            <li>
+              <strong>Permissions:</strong>
+            </li>
+          </ul>
+        </Card>
         <ul className="list-disc ml-6">
           {role.permissions?.map((p) => (
             <li key={p.id}>{p.name}</li>

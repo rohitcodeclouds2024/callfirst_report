@@ -140,7 +140,7 @@ export default function UserFormPage() {
   if (type === 3 && user) {
     return (
       <div className="user-details-wrapper">
-        <h2 className="text-2xl font-semibold mb-4">User Details</h2>
+        <h3 className="text-2xl font-semibold mb-4">User Details</h3>
         <Card>
           <ul className="flex flex-col gap-4">
             <li>
