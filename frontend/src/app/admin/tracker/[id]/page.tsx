@@ -6,6 +6,7 @@ import { apiClient } from "@/lib/axios";
 import { toast } from "react-hot-toast";
 import Card from "@/components/ui/card/Card";
 import Link from "next/link";
+import MySwal from "@/lib/swal";
 
 interface User {
   id: number;
@@ -117,15 +118,15 @@ export default function TrackerAndUploadPage() {
       { valid: !!date, message: "Date is required" },
       { valid: !!no_of_dials, message: "No of Dials is required" },
       {
-        valid: no_of_contacts <= no_of_dials,
+        valid: Number(no_of_contacts) <= Number(no_of_dials),
         message: "No of Contacts cannot be greater than No of Dials",
       },
       {
-        valid: gross_transfer <= no_of_contacts,
+        valid: Number(gross_transfer) <= Number(no_of_contacts),
         message: "Gross Transfer cannot be greater than No of Contacts",
       },
       {
-        valid: net_transfer <= gross_transfer,
+        valid: Number(net_transfer) <= Number(gross_transfer),
         message: "Net Transfer cannot be greater than Gross Transfer",
       },
       { valid: !!uploadFile, message: "File is required" },
@@ -133,12 +134,32 @@ export default function TrackerAndUploadPage() {
 
     // --- Run validations ---
     for (const { valid, message } of validations) {
-      console.log(valid);
+      // console.log(!valid);
+      // console.log(net_transfer + " data " + gross_transfer);
       if (!valid) {
+        // console.log(message, trackerForm);
         toast.error(message);
         return;
       }
     }
+
+    const client = clientList.find(
+      (c) => String(c.id) === String(trackerForm.client_id)
+    );
+    const clientName = client ? client.name : "";
+
+    const result = await MySwal.fire({
+      title: "Are you sure?",
+      text: `You want to uplaod a file for client name - . ${clientName}`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, Upload It!",
+      cancelButtonText: "Cancel",
+    });
+
+    if (!result.isConfirmed) return;
 
     try {
       const formData = new FormData();
