@@ -44,20 +44,11 @@ export default function HeaderSection({ setSidebarOpen }) {
   return (
     <header className="flex items-center justify-between bg-surface border-b border-border px-6 h-[56px]">
       {/* Left */}
-      <div className="flex items-center space-x-3">
-        <div className=" items-center">
-          <button
-            className="lg:hidden text-neutral"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <FaBars className="h-6 w-6" />
-          </button>
-          <input
-            type="text"
-            placeholder="Impersonate As..."
-            className="hidden md:block rounded-lg border border-border px-3 py-1 bg-background focus:outline-none focus:ring focus:ring-primary"
-          />
-        </div>
+      <div className="flex items-center gap-6">
+        <button className="lg:hidden text-primary" onClick={ () => setSidebarOpen( true ) }>
+          <FaBars size={ 20 } className="block" />
+        </button>
+        <input type="text" placeholder="Impersonate As..." className="hidden md:block w-full bg-white dark:bg-background px-4 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-primary" />
       </div>
       <div className="flex items-center gap-6" ref={ profileRef }>
         <ThemeToggle />
@@ -68,10 +59,10 @@ export default function HeaderSection({ setSidebarOpen }) {
             <FaChevronDown size={ 10 } className="block" />
           </button>
           { profileDropdown && (
-            <div className="absolute right-0 mt-2 w-40 bg-surface border border-border rounded shadow z-50">
-              <button className="flex w-full items-center px-3 py-2 text-sm text-neutral hover:bg-background" onClick={ handleLogout } disabled={ loadingLogout }>
-                <FaSignOutAlt className="mr-2" />
-                Logout
+            <div className="absolute top-full right-0 z-50 w-40 bg-surface border border-border border-t-0 rounded-b-md mt-[18px] shadow-sm overflow-hidden">
+              <button className="flex items-center gap-2 w-full px-4 py-3 text-sm font-medium" onClick={ handleLogout } disabled={ loadingLogout }>
+                <FaSignOutAlt size={ 16 } className="block" />
+                <span className="bock">Logout</span>
               </button>
             </div>
           ) }

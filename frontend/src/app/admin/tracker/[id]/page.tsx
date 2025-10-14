@@ -155,7 +155,7 @@ export default function TrackerAndUploadPage() {
                 name="client_id"
                 value={trackerForm.client_id}
                 onChange={handleTrackerChange}
-                className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+                className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
               >
                 <option value="">Select Client</option>
                 {clientList.map((c) => (
@@ -175,7 +175,7 @@ export default function TrackerAndUploadPage() {
                 name="no_of_dials"
                 value={trackerForm.no_of_dials}
                 onChange={handleTrackerChange}
-                className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+                className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
                 min="0"
               />
             </div>
@@ -189,7 +189,7 @@ export default function TrackerAndUploadPage() {
                 name="no_of_contacts"
                 value={trackerForm.no_of_contacts}
                 onChange={handleTrackerChange}
-                className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+                className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
                 min="0"
               />
             </div>
@@ -203,7 +203,7 @@ export default function TrackerAndUploadPage() {
                 name="gross_transfer"
                 value={trackerForm.gross_transfer}
                 onChange={handleTrackerChange}
-                className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+                className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
                 min="0"
               />
             </div>
@@ -217,7 +217,7 @@ export default function TrackerAndUploadPage() {
                 name="net_transfer"
                 value={trackerForm.net_transfer}
                 onChange={handleTrackerChange}
-                className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+                className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
                 min="0"
               />
             </div>
@@ -229,7 +229,7 @@ export default function TrackerAndUploadPage() {
                 name="date"
                 value={trackerForm.date}
                 onChange={handleTrackerChange}
-                className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+                className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
               />
             </div>
             <div className="col-span-12 sm:col-span-6">
@@ -240,7 +240,7 @@ export default function TrackerAndUploadPage() {
                 type="file"
                 accept=".csv,.xlsx"
                 onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
-                className="w-full px-4 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+                className="w-full bg-white dark:bg-background px-4 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
               />
             </div>
 
