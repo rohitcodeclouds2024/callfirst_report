@@ -148,9 +148,18 @@ export default function TrackerAndUploadPage() {
     );
     const clientName = client ? client.name : "";
 
+    let htmlText = `<p className="text-red-600 font-medium"> You want to upload a file for client name - <b> ${clientName} </b> </p>`;
+
+    if (lg_tracker_id > 0) {
+      htmlText += `<br> <p style="color:#dc2626; font-weight:500;">
+                  ⚠️ Please note: Editing and uploading will overwrite your
+                  existing data with the new data.
+                </p>`;
+    }
+
     const result = await MySwal.fire({
       title: "Are you sure?",
-      html: `You want to upload a file for client name - <b> ${clientName} </b>`,
+      html: htmlText,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -183,7 +192,9 @@ export default function TrackerAndUploadPage() {
       router.push("/admin/reports/tracker");
     } catch (err) {
       console.error(err);
-      toast.error("Failed to save tracker or upload file");
+      toast.error(
+        "The number of rows in the CSV file does not match the Gross Transfer data."
+      );
     }
   };
 

@@ -57,9 +57,35 @@ export default function NumberContacts({
           className="text-primary"
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" tick={{ fill: 'var(--color-text)' }} />
-          <YAxis tick={{ fill: 'var(--color-text)' }} />
-          <Tooltip contentStyle={{ backgroundColor: 'var(--color-bg)', color: 'var(--color-text)', border: 0, borderRadius: '0.5rem', boxShadow: '0px 2px 4px 0px rgb(0 0 0 / 30%)' }} />
+          <XAxis
+            dataKey="name"
+            tick={{
+              fill: "var(--color-text)",
+              fontStyle: "italic",
+              fontSize: 10,
+              fontFamily: "sans-serif",
+            }}
+            angle={-80}
+            textAnchor="end"
+            height={100}
+          />
+
+          <YAxis
+            tick={{
+              fill: "var(--color-text)",
+              fontSize: 10,
+              fontFamily: "sans-serif",
+            }}
+          />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: "var(--color-bg)",
+              color: "var(--color-text)",
+              border: 0,
+              borderRadius: "0.5rem",
+              boxShadow: "0px 2px 4px 0px rgb(0 0 0 / 30%)",
+            }}
+          />
           <Line
             type="monotone"
             dataKey="contacts"
