@@ -95,7 +95,7 @@ export default async function trackerRoutes(fastify) {
   	});
 
 
-  	fastify.post("/conversion-percentage", async (request, reply) => {
+  	fastify.post("/conversion-percentage_old", async (request, reply) => {
   		const { clientId, dateFilter, customRange } = request.body;
 
   		if (!clientId) return reply.status(400).send({ message: "clientId is required" });
@@ -133,44 +133,7 @@ export default async function trackerRoutes(fastify) {
   		return reply.send(chartData);
 	});
 
-
-  	fastify.post("/contacts-number_old", async (request, reply) => {
-    	const { clientId, dateFilter, customRange } = request.body;
-
-    	if (!clientId) return reply.status(400).send({ message: "clientId is required" });
-
-  		let startDate, endDate, dateArray;
-  		try {
-    		({ startDate, endDate, dateArray } = getDateRange(dateFilter, customRange));
-  		} catch (err) {
-    		return reply.status(400).send({ message: err.message });
-  		}
-
-  		const data = await LgTracker.findAll({
-    		where: {
-      			client_id: clientId,
-      			date: {
-        			[Op.between]: [startDate, endDate],
-      			},
-    		},
-    		order: [["date", "ASC"]],
-    		attributes: ["date", "no_of_contacts"],
-  		});
-
-    	// Map data to chart format
-    	const chartData = dateArray.map((date) => {
-	      	const record = data.find((d) => d.date === date);
-	      	const no_of_contacts = (record && record.no_of_contacts) || 0;
-	      	return {
-	        	name: new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric" }), // e.g., Oct 1
-	        	contacts: no_of_contacts,
-	      	};
-	    });
-
-    	return reply.send(chartData);
-  	});
-
-  	fastify.post("/contacts-number", async (request, reply) => {
+	fastify.post("/conversion-percentage", async (request, reply) => {
   try {
     const { clientId, dateFilter, customRange } = request.body;
 
@@ -179,155 +142,359 @@ export default async function trackerRoutes(fastify) {
     }
 
     const { startDate, endDate, dateArray } = getDateRangeNewLogic(dateFilter, customRange);
-
     const sameYear = new Date(startDate).getFullYear() === new Date(endDate).getFullYear();
 
-    // console.log(startDate, endDate, dateArray);
-
-    const trackerData = await LgTracker.findAll({
+    // Fetch data from DB
+    const data = await LgTracker.findAll({
       where: {
         client_id: clientId,
         date: { [Op.between]: [startDate, endDate] },
       },
       order: [["date", "ASC"]],
-      attributes: ["date", "no_of_contacts"],
+      attributes: ["date", "no_of_contacts", "gross_transfer"],
       raw: true,
     });
 
-    // Convert DB results into a map for fast lookup
-    const contactMap = new Map(
-      trackerData.map((d) => [d.date.split("T")[0], d.no_of_contacts])
-    );
-
-    // console.log(contactMap, trackerData);
-
+    // Map DB results by date
+    const dataMap = new Map();
+    data.forEach(d => {
+      const dateKey = d.date.split("T")[0];
+      dataMap.set(dateKey, {
+        no_of_contacts: d.no_of_contacts,
+        gross_transfer: d.gross_transfer,
+      });
+    });
 
     const diffDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-    let groupedData = [];
+    let groupedData;
 
     if (diffDays > 10) {
       const maxPoints = 10;
       const groupSize = Math.ceil(diffDays / maxPoints);
 
       for (let i = 0; i < dateArray.length; i += groupSize) {
-  		const groupDates = dateArray.slice(i, i + groupSize);
-  		const totalContacts = groupDates.reduce(
-    		(sum, d) => sum + (contactMap.get(d) || 0),
-    		0
-  		);
+        const groupDates = dateArray.slice(i, i + groupSize);
 
-  const startDateObj = new Date(groupDates[0]);
-  const endDateObj = new Date(groupDates[groupDates.length - 1]);
+        let totalContacts = 0;
+        let totalGross = 0;
 
+        groupDates.forEach(date => {
+          const record = dataMap.get(date);
+          if (record) {
+            totalContacts += record.no_of_contacts || 0;
+            totalGross += record.gross_transfer || 0;
+          }
+        });
 
-  // Format labels
-  const startLabel = startDateObj.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    ...(sameYear ? {} : { year: '2-digit' })
-  });
-  const endLabel = endDateObj.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    ...(sameYear ? {} : { year: '2-digit' })
-  });
+        // Compute conversion
+        const conversion = totalContacts ? (100 * totalGross) / totalContacts : 0;
 
-  const rangeLabel = startLabel === endLabel ? startLabel : `${startLabel} - ${endLabel}`;
+        // Format label
+        const startDateObj = new Date(groupDates[0]);
+        const endDateObj = new Date(groupDates[groupDates.length - 1]);
 
-  groupedData.push({
-    name: rangeLabel,
-    contacts: totalContacts,
-  });
-}
-    } else {
-      // Small range → keep daily data
-      groupedData = dateArray.map((date) => ({
-        name: new Date(date).toLocaleDateString("en-US", {
+        const startLabel = startDateObj.toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",
-        }),
-        contacts: contactMap.get(date) || 0,
-      }));
+          ...(sameYear ? {} : { year: "2-digit" }),
+        });
+        const endLabel = endDateObj.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          ...(sameYear ? {} : { year: "2-digit" }),
+        });
+
+        const rangeLabel = startLabel === endLabel ? startLabel : `${startLabel} - ${endLabel}`;
+
+        groupedData.push({
+          name: rangeLabel,
+          conversion: parseFloat(conversion.toFixed(2)),
+        });
+      }
+    } else {
+      // Daily data
+      groupedData = dateArray.map(date => {
+        const record = dataMap.get(date);
+        const conversion = record && record.no_of_contacts
+          ? (100 * record.gross_transfer) / record.no_of_contacts
+          : 0;
+
+        return {
+          name: new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+          conversion: parseFloat(conversion.toFixed(2)),
+        };
+      });
     }
 
     return reply.send(groupedData);
+
   } catch (error) {
-    console.error("Error in /contacts-number:", error);
+    console.error("Error in /conversion-percentage:", error);
     return reply.status(500).send({ message: "Internal server error" });
   }
 });
 
-  	fastify.post("/dials-number", async (request, reply) => {
-    	const { clientId, dateFilter, customRange } = request.body;
 
-    	if (!clientId) return reply.status(400).send({ message: "clientId is required" });
-
-  		let startDate, endDate, dateArray;
+  	fastify.post("/contacts-number", async (request, reply) => {
   		try {
-    		({ startDate, endDate, dateArray } = getDateRange(dateFilter, customRange));
-  		} catch (err) {
-    		return reply.status(400).send({ message: err.message });
+    		const { clientId, dateFilter, customRange } = request.body;
+
+		    if (!clientId) {
+		      return reply.status(400).send({ message: "clientId is required" });
+		    }
+
+    		const { startDate, endDate, dateArray } = getDateRangeNewLogic(dateFilter, customRange);
+
+    		const sameYear = new Date(startDate).getFullYear() === new Date(endDate).getFullYear();
+
+    		// console.log(startDate, endDate, dateArray);
+
+		    const trackerData = await LgTracker.findAll({
+		      	where: {
+		        	client_id: clientId,
+		        	date: { [Op.between]: [startDate, endDate] },
+		      	},
+		      	order: [["date", "ASC"]],
+		      	attributes: ["date", "no_of_contacts"],
+		      	raw: true,
+		    });
+
+    		// Convert DB results into a map for fast lookup
+    		const contactMap = new Map(
+      			trackerData.map((d) => [d.date.split("T")[0], d.no_of_contacts])
+    		);
+
+    		// console.log(contactMap, trackerData);
+
+
+    		const diffDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+    		let groupedData = [];
+
+    		if (diffDays > 10) {
+      			const maxPoints = 10;
+      			const groupSize = Math.ceil(diffDays / maxPoints);
+
+      			for (let i = 0; i < dateArray.length; i += groupSize) {
+  					const groupDates = dateArray.slice(i, i + groupSize);
+  					const totalContacts = groupDates.reduce(
+    					(sum, d) => sum + (contactMap.get(d) || 0),
+    					0
+  					);
+
+  					const startDateObj = new Date(groupDates[0]);
+  					const endDateObj = new Date(groupDates[groupDates.length - 1]);
+
+
+  					// Format labels
+				  	const startLabel = startDateObj.toLocaleDateString("en-US", {
+				    	month: "short",
+				    	day: "numeric",
+				    	...(sameYear ? {} : { year: '2-digit' })
+				  	});
+				  	const endLabel = endDateObj.toLocaleDateString("en-US", {
+				    	month: "short",
+				    	day: "numeric",
+				    	...(sameYear ? {} : { year: '2-digit' })
+				  	});
+
+				  	const rangeLabel = startLabel === endLabel ? startLabel : `${startLabel} - ${endLabel}`;
+
+				  	groupedData.push({
+				    	name: rangeLabel,
+				    	contacts: totalContacts,
+				  	});
+				}
+    		} else {
+      			// Small range → keep daily data
+      			groupedData = dateArray.map((date) => ({
+       	 				name: new Date(date).toLocaleDateString("en-US", {
+          				month: "short",
+          				day: "numeric",
+        			}),
+        			contacts: contactMap.get(date) || 0,
+     	 		}));
+    		}
+
+    		return reply.send(groupedData);
+  		} catch (error) {
+    		console.error("Error in /contacts-number:", error);
+    		return reply.status(500).send({ message: "Internal server error" });
   		}
+	});
 
-  		const data = await LgTracker.findAll({
-    		where: {
-      			client_id: clientId,
-      			date: {
-        			[Op.between]: [startDate, endDate],
-      			},
-    		},
-    		order: [["date", "ASC"]],
-    		attributes: ["date", "no_of_dials"],
-  		});
-
-    	// Map data to chart format
-    	const chartData = dateArray.map((date) => {
-	      	const record = data.find((d) => d.date === date);
-	      	const no_of_dials = (record && record.no_of_dials) || 0;
-	      	return {
-	        	name: new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric" }), // e.g., Oct 1
-	        	dials: no_of_dials,
-	      	};
-	    });
-
-    	return reply.send(chartData);
-  	});
-
-  	fastify.post("/uploads-report", async (request, reply) => {
-    	const { clientId, dateFilter, customRange } = request.body;
-
-    	if (!clientId) return reply.status(400).send({ message: "clientId is required" });
-
-  		let startDate, endDate, dateArray;
+	fastify.post("/dials-number", async (request, reply) => {
   		try {
-    		({ startDate, endDate, dateArray } = getDateRange(dateFilter, customRange));
-  		} catch (err) {
-    		return reply.status(400).send({ message: err.message });
+    		const { clientId, dateFilter, customRange } = request.body;
+
+		    if (!clientId) {
+		      return reply.status(400).send({ message: "clientId is required" });
+		    }
+
+    		const { startDate, endDate, dateArray } = getDateRangeNewLogic(dateFilter, customRange);
+
+    		const sameYear = new Date(startDate).getFullYear() === new Date(endDate).getFullYear();
+
+    		// console.log(startDate, endDate, dateArray);
+
+		    const trackerData = await LgTracker.findAll({
+		      	where: {
+		        	client_id: clientId,
+		        	date: { [Op.between]: [startDate, endDate] },
+		      	},
+		      	order: [["date", "ASC"]],
+		      	attributes: ["date", "no_of_dials"],
+		      	raw: true,
+		    });
+
+    		// Convert DB results into a map for fast lookup
+    		const contactMap = new Map(
+      			trackerData.map((d) => [d.date.split("T")[0], d.no_of_dials])
+    		);
+
+    		// console.log(contactMap, trackerData);
+
+
+    		const diffDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+    		let groupedData = [];
+
+    		if (diffDays > 10) {
+      			const maxPoints = 10;
+      			const groupSize = Math.ceil(diffDays / maxPoints);
+
+      			for (let i = 0; i < dateArray.length; i += groupSize) {
+  					const groupDates = dateArray.slice(i, i + groupSize);
+  					const totalContacts = groupDates.reduce(
+    					(sum, d) => sum + (contactMap.get(d) || 0),
+    					0
+  					);
+
+  					const startDateObj = new Date(groupDates[0]);
+  					const endDateObj = new Date(groupDates[groupDates.length - 1]);
+
+
+  					// Format labels
+				  	const startLabel = startDateObj.toLocaleDateString("en-US", {
+				    	month: "short",
+				    	day: "numeric",
+				    	...(sameYear ? {} : { year: '2-digit' })
+				  	});
+				  	const endLabel = endDateObj.toLocaleDateString("en-US", {
+				    	month: "short",
+				    	day: "numeric",
+				    	...(sameYear ? {} : { year: '2-digit' })
+				  	});
+
+				  	const rangeLabel = startLabel === endLabel ? startLabel : `${startLabel} - ${endLabel}`;
+
+				  	groupedData.push({
+				    	name: rangeLabel,
+				    	dials: totalContacts,
+				  	});
+				}
+    		} else {
+      			// Small range → keep daily data
+      			groupedData = dateArray.map((date) => ({
+       	 				name: new Date(date).toLocaleDateString("en-US", {
+          				month: "short",
+          				day: "numeric",
+        			}),
+        			dials: contactMap.get(date) || 0,
+     	 		}));
+    		}
+
+    		return reply.send(groupedData);
+  		} catch (error) {
+    		console.error("Error in //dials-number:", error);
+    		return reply.status(500).send({ message: "Internal server error" });
   		}
+	});
 
-  		const data = await LgTracker.findAll({
-    		where: {
-      			client_id: clientId,
-      			date: {
-        			[Op.between]: [startDate, endDate],
-      			},
-    		},
-    		order: [["date", "ASC"]],
-    		attributes: ["date", "count"],
-  		});
+	fastify.post("/uploads-report", async (request, reply) => {
+  		try {
+    		const { clientId, dateFilter, customRange } = request.body;
 
-    	// Map data to chart format
-    	const chartData = dateArray.map((date) => {
-	      	const record = data.find((d) => d.date === date);
-	      	const count = (record && record.count) || 0;
-	      	return {
-	        	name: new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric" }), // e.g., Oct 1
-	        	value: count,
-	      	};
-	    });
+		    if (!clientId) {
+		      return reply.status(400).send({ message: "clientId is required" });
+		    }
 
-    	return reply.send(chartData);
-  	});
+    		const { startDate, endDate, dateArray } = getDateRangeNewLogic(dateFilter, customRange);
+
+    		const sameYear = new Date(startDate).getFullYear() === new Date(endDate).getFullYear();
+
+    		// console.log(startDate, endDate, dateArray);
+
+		    const trackerData = await LgTracker.findAll({
+		      	where: {
+		        	client_id: clientId,
+		        	date: { [Op.between]: [startDate, endDate] },
+		      	},
+		      	order: [["date", "ASC"]],
+		      	attributes: ["date", "count"],
+		      	raw: true,
+		    });
+
+    		// Convert DB results into a map for fast lookup
+    		const contactMap = new Map(
+      			trackerData.map((d) => [d.date.split("T")[0], d.count])
+    		);
+
+    		// console.log(contactMap, trackerData);
+
+
+    		const diffDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+    		let groupedData = [];
+
+    		if (diffDays > 10) {
+      			const maxPoints = 10;
+      			const groupSize = Math.ceil(diffDays / maxPoints);
+
+      			for (let i = 0; i < dateArray.length; i += groupSize) {
+  					const groupDates = dateArray.slice(i, i + groupSize);
+  					const totalContacts = groupDates.reduce(
+    					(sum, d) => sum + (contactMap.get(d) || 0),
+    					0
+  					);
+
+  					const startDateObj = new Date(groupDates[0]);
+  					const endDateObj = new Date(groupDates[groupDates.length - 1]);
+
+
+  					// Format labels
+				  	const startLabel = startDateObj.toLocaleDateString("en-US", {
+				    	month: "short",
+				    	day: "numeric",
+				    	...(sameYear ? {} : { year: '2-digit' })
+				  	});
+				  	const endLabel = endDateObj.toLocaleDateString("en-US", {
+				    	month: "short",
+				    	day: "numeric",
+				    	...(sameYear ? {} : { year: '2-digit' })
+				  	});
+
+				  	const rangeLabel = startLabel === endLabel ? startLabel : `${startLabel} - ${endLabel}`;
+
+				  	groupedData.push({
+				    	name: rangeLabel,
+				    	value: totalContacts,
+				  	});
+				}
+    		} else {
+      			// Small range → keep daily data
+      			groupedData = dateArray.map((date) => ({
+       	 				name: new Date(date).toLocaleDateString("en-US", {
+          				month: "short",
+          				day: "numeric",
+        			}),
+        			value: contactMap.get(date) || 0,
+     	 		}));
+    		}
+
+    		return reply.send(groupedData);
+  		} catch (error) {
+    		console.error("Error in //uploads-report:", error);
+    		return reply.status(500).send({ message: "Internal server error" });
+  		}
+	});
 
   	fastify.post(
   		"/tracker/upload",

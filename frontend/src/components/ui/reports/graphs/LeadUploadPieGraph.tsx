@@ -40,32 +40,52 @@ export default function LeadUploadPieGraph({
   }, [selectedClientId, dateFilter, customRange]);
 
   return (
-    <Card className="col-span-12 md:col-span-6 lg:col-span-4" title="Number of Lead Uploads">
+    <Card
+      className="col-span-12 md:col-span-6 lg:col-span-4"
+      title="Number of Lead Uploads"
+    >
       <ResponsiveContainer width="100%" height={260}>
         <PieChart margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
           <Pie
-            data={ leadUpload }
+            data={leadUpload}
             dataKey="value"
             nameKey="name"
             cx="50%"
-            innerRadius={ 80 }
-            outerRadius={ 96 }
+            innerRadius={80}
+            outerRadius={96}
             fill="currentColor"
             className="text-primary"
-            label={ ( { x, y, value } ) => (
-              <text x={ x } y={ y } textAnchor={ x > 150 ? 'start' : 'end' } dominantBaseline="central" fill="var(--color-text)" dx={ x > 150 ? 10 : -10 }>
-                { String( value ) }
+            label={({ x, y, value }) => (
+              <text
+                x={x}
+                y={y}
+                textAnchor={x > 150 ? "start" : "end"}
+                dominantBaseline="central"
+                fill="var(--color-text)"
+                dx={x > 150 ? 10 : -10}
+                style={{
+                  fontStyle: "italic",
+                  fontSize: 10,
+                  fontFamily: "sans-serif",
+                }}
+              >
+                {String(value)}
               </text>
-            ) }
-            labelLine={ { stroke: 'var(--color-text)' } } 
+            )}
+            labelLine={{ stroke: "var(--color-text)" }}
           />
           <Tooltip
             formatter={(value, name, props) => [
               `${value}`,
               `${props.payload.name}`,
             ]}
-            contentStyle={{ backgroundColor: 'var(--color-bg)', border: 0, borderRadius: '0.5rem', boxShadow: '0px 2px 4px 0px rgb(0 0 0 / 30%)' }}
-            itemStyle={{ color: 'var(--color-text)' }}
+            contentStyle={{
+              backgroundColor: "var(--color-bg)",
+              border: 0,
+              borderRadius: "0.5rem",
+              boxShadow: "0px 2px 4px 0px rgb(0 0 0 / 30%)",
+            }}
+            itemStyle={{ color: "var(--color-text)" }}
           />
         </PieChart>
       </ResponsiveContainer>

@@ -55,9 +55,37 @@ export default function ConversionPercentage({
           className="text-primary"
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" tick={{ fill: 'var(--color-text)' }} />
-          <YAxis tickFormatter={(value) => `${value}%`} tick={{ fill: 'var(--color-text)' }} />
-          <Tooltip formatter={(value) => `${value}%`} contentStyle={{ backgroundColor: 'var(--color-bg)', color: 'var(--color-text)', border: 0, borderRadius: '0.5rem', boxShadow: '0px 2px 4px 0px rgb(0 0 0 / 30%)' }} cursor={{ fill: 'transparent' }} />
+          <XAxis
+            dataKey="name"
+            tick={{
+              fill: "var(--color-text)",
+              fontStyle: "italic",
+              fontSize: 10,
+              fontFamily: "sans-serif",
+            }}
+            angle={-80}
+            textAnchor="end"
+            height={100}
+          />
+          <YAxis
+            tickFormatter={(value) => `${value}%`}
+            tick={{
+              fill: "var(--color-text)",
+              fontSize: 10,
+              fontFamily: "sans-serif",
+            }}
+          />
+          <Tooltip
+            formatter={(value) => `${value}%`}
+            contentStyle={{
+              backgroundColor: "var(--color-bg)",
+              color: "var(--color-text)",
+              border: 0,
+              borderRadius: "0.5rem",
+              boxShadow: "0px 2px 4px 0px rgb(0 0 0 / 30%)",
+            }}
+            cursor={{ fill: "transparent" }}
+          />
           <Bar
             dataKey="conversion"
             fill="currentColor"
