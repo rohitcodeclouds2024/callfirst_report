@@ -64,7 +64,7 @@ export default function TrackerUploadReport({ clientList, clientIdFromUrl }) {
       <h3 className="text-2xl font-semibold mb-4">Uploaded Data Report</h3>
       {/* Display LgTracker summary */}
       {lgData && (
-        <div className="mb-4 p-4 bg-white rounded shadow-sm grid grid-cols-6 gap-4 text-sm">
+        <div className="mb-4 p-4 bg-surface rounded shadow-sm grid grid-cols-6 gap-4 text-sm">
           <div>
             <strong>Client Name:</strong> {lgData.client_name}
           </div>
@@ -91,32 +91,32 @@ export default function TrackerUploadReport({ clientList, clientIdFromUrl }) {
           <table className="w-full text-sm text-left">
             <thead className="uppercase">
               <tr>
-                <th className="p-4 bg-white">#</th>
-                <th className="p-4 bg-white">Customer Name</th>
-                <th className="p-4 bg-white">Phone Number</th>
-                <th className="p-4 bg-white">Status</th>
-                <th className="p-4 bg-white">Created At</th>
+                <th className="p-4 bg-surface">#</th>
+                <th className="p-4 bg-surface">Customer Name</th>
+                <th className="p-4 bg-surface">Phone Number</th>
+                <th className="p-4 bg-surface">Status</th>
+                <th className="p-4 bg-surface">Created At</th>
               </tr>
             </thead>
-            <tbody className="text-gray-500">
+            <tbody className="text-gray-500 dark:text-gray-300">
               {data.map((item, i) => (
                 <tr key={item.id}>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     { i + 1 }
                   </td>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     { item.customer_name }
                   </td>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     <p className="flex items-center gap-2">
                       <FaPhoneAlt size={ 14 } className="block text-primary" />
                       <span className="block">{ item.phone_number }</span>
                     </p>
                   </td>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     <span className={`inline-block text-sm leading-none font-medium px-2 py-1 rounded-xl border ${ item.status === 'Inactive' ? 'bg-yellow-100 text-yellow-700 border-yellow-700' : item.status === 'Active' ? 'bg-green-100 text-green-700 border-green-700' : '' }`.trim()}>{ item.status }</span>
                   </td>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     { new Date( item.createdAt ).toLocaleString() }
                   </td>
                 </tr>
