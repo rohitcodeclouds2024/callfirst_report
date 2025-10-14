@@ -172,7 +172,7 @@ export default function Roles() {
         <table className="w-full text-sm text-left">
           <thead className="uppercase">
             <tr>
-              <th className="p-4 bg-white w-[50px]">
+              <th className="p-4 bg-surface w-[50px]">
                 <div className="flex items-center justify-center">
                   <CheckboxInput
                     checked={
@@ -188,18 +188,18 @@ export default function Roles() {
                   />
                 </div>
               </th>
-              <th className="p-4 bg-white">#</th>
-              <th className="p-4 bg-white">Name</th>
-              <th className="p-4 bg-white">Actions</th>
+              <th className="p-4 bg-surface">#</th>
+              <th className="p-4 bg-surface">Name</th>
+              <th className="p-4 bg-surface">Actions</th>
             </tr>
           </thead>
-          <tbody className="text-gray-500">
+          <tbody className="text-gray-500 dark:text-gray-300">
             {loading ? (
               <RowSkeleton count={5} columns={5} withCheckbox />
             ) : roles.length > 0 ? (
               roles.map((role) => (
                 <tr key={ role.id }>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     <CheckboxInput
                       checked={selected.includes(role.id)}
                       onChange={() => toggleSelect(role.id)}
@@ -207,9 +207,9 @@ export default function Roles() {
                       className="checkbox"
                     />
                   </td>
-                  <td className="px-4 py-3 bg-white border-t border-border">{role.id}</td>
-                  <td className="px-4 py-3 bg-white border-t border-border">{role.name}</td>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">{role.id}</td>
+                  <td className="px-4 py-3 bg-surface border-t border-border">{role.name}</td>
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     <div className="flex gap-2">
                       <Link href={ `/admin/roles/3/${role.id}` } className="p-2 text-blue-500 border border-blue-500 rounded hover:bg-blue-100 transition-all duration-300">
                         <FaEye size={ 14 } className="block" />

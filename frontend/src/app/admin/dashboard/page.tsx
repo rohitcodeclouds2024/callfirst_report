@@ -55,7 +55,7 @@ export default function Dashboard() {
         <h3 className="text-2xl font-semibold mb-4 lg:mb-0">Dashboard</h3>
         <div className="grow flex flex-col sm:flex-row gap-2 items-center justify-end">
           <div className="w-full lg:w-1/5 xl:w-1/6">
-            <select className="w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" value={ selectedClientId } onChange={ ( e ) => setSelectedClientId( e.target.value ? Number( e.target.value ) : "" ) }>
+            <select className="w-full bg-white dark:bg-surface px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" value={ selectedClientId } onChange={ ( e ) => setSelectedClientId( e.target.value ? Number( e.target.value ) : "" ) }>
               <option value="">Select Client</option>
               { clients.map( ( client ) => (
                 <option key={ client.id } value={ client.id }>
@@ -65,7 +65,7 @@ export default function Dashboard() {
             </select>
           </div>
           <div className="w-full lg:w-1/5 xl:w-1/6">
-            <select className="w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" value={ dateFilter } onChange={ ( e ) => setDateFilter( e.target.value as "last7" | "previousWeek" | "custom" ) }>
+            <select className="w-full bg-white dark:bg-surface px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" value={ dateFilter } onChange={ ( e ) => setDateFilter( e.target.value as "last7" | "previousWeek" | "custom" ) }>
               <option value="last7">Last 7 Days</option>
               <option value="previousWeek">Previous Week</option>
               <option value="custom">Custom Range</option>
@@ -74,11 +74,11 @@ export default function Dashboard() {
           { dateFilter === "custom" && (
             <>
               <div className="w-full lg:w-1/5 xl:w-1/6">
-                <input type="date" className="w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" value={ customRange.start } onChange={ ( e ) => setCustomRange( { ...customRange, start: e.target.value } ) } />
+                <input type="date" className="w-full bg-white dark:bg-surface px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" value={ customRange.start } onChange={ ( e ) => setCustomRange( { ...customRange, start: e.target.value } ) } />
               </div>
               <span className="block w-auto">to</span>
               <div className="w-full lg:w-1/5 xl:w-1/6">
-                <input type="date" className="w-full px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" value={ customRange.end } onChange={ ( e ) => setCustomRange( { ...customRange, end: e.target.value } ) } />
+                <input type="date" className="w-full bg-white dark:bg-surface px-4 py-3 text-sm leading-none border border-border rounded-md focus:outline-none focus:border-primary" value={ customRange.end } onChange={ ( e ) => setCustomRange( { ...customRange, end: e.target.value } ) } />
               </div>
             </>
           ) }

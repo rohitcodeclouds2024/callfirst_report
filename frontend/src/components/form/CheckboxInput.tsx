@@ -17,7 +17,7 @@ const CheckboxInput: React.FC<CheckboxInputProps> = ({
   checked,
   onChange,
   disabled = false,
-  className = "checkbox",
+  className = "checkbox bg-background",
   labelClassName = "",
   id,
   name,

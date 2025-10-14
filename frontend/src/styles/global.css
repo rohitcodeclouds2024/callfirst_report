@@ -47,11 +47,11 @@
 	--color-accent: #facc15;
 	/* Yellow 400 */
 
-	--color-bg: #0f172a;
-	--color-surface: #1e293b;
+	--color-bg: #212121;
+	--color-surface: #000000;
 	--color-text: #ffffff;
 	--color-muted: #9ca3af;
-	--color-border: #334155;
+	--color-border: #2e2e2e;
 	--color-success: #4ade80;
 	/* green-400 */
 	--color-error: #f87171;

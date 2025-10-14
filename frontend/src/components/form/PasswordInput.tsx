@@ -23,7 +23,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
   placeholder,
   autoComplete = "off",
 }) => {
-  const inputClasses = `w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none ${ error ? "border-red-500 focus:border-red-500" : "focus:border-primary" }`.trim();
+  const inputClasses = `w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none ${ error ? "border-red-500 focus:border-red-500" : "focus:border-primary" }`.trim();
 
   return (
     <div className="relative">

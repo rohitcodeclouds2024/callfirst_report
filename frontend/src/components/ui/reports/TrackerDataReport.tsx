@@ -118,7 +118,7 @@ export default function TrackerDataReport({ clientList }) {
           className="grid grid-col-12 sm:grid-cols-4 gap-2 sm:gap-4 lg:gap-6"
         >
           <select
-            className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+            className="w-full px-4 py-3 bg-white dark:bg-background text-sm border border-border rounded-md focus:outline-none focus:border-primary"
             value={trackerClient}
             onChange={(e) => setTrackerClient(Number(e.target.value) || "")}
           >
@@ -131,13 +131,13 @@ export default function TrackerDataReport({ clientList }) {
           </select>
           <input
             type="date"
-            className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+            className="w-full px-4 py-3 bg-white dark:bg-background text-sm border border-border rounded-md focus:outline-none focus:border-primary"
             value={trackerStart}
             onChange={(e) => setTrackerStart(e.target.value)}
           />
           <input
             type="date"
-            className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+            className="w-full px-4 py-3 bg-white dark:bg-background text-sm border border-border rounded-md focus:outline-none focus:border-primary"
             value={trackerEnd}
             onChange={(e) => setTrackerEnd(e.target.value)}
           />
@@ -155,38 +155,38 @@ export default function TrackerDataReport({ clientList }) {
           <table className="w-full text-sm text-left">
             <thead className="uppercase">
               <tr>
-                <th className="p-4 bg-white">#</th>
-                <th className="p-4 bg-white">No. of Dials</th>
-                <th className="p-4 bg-white">No. of Contacts</th>
-                <th className="p-4 bg-white">Gross Transfer</th>
-                <th className="p-4 bg-white">Net Transfer</th>
-                <th className="p-4 bg-white">Date</th>
-                <th className="p-4 bg-white">Conv %</th>
-                <th className="p-4 bg-white">Action</th>
+                <th className="p-4 bg-surface">#</th>
+                <th className="p-4 bg-surface">No. of Dials</th>
+                <th className="p-4 bg-surface">No. of Contacts</th>
+                <th className="p-4 bg-surface">Gross Transfer</th>
+                <th className="p-4 bg-surface">Net Transfer</th>
+                <th className="p-4 bg-surface">Date</th>
+                <th className="p-4 bg-surface">Conv %</th>
+                <th className="p-4 bg-surface">Action</th>
               </tr>
             </thead>
-            <tbody className="text-gray-500">
+            <tbody className="text-gray-500 dark:text-gray-300">
               {trackerData.map((item, i) => (
                 <tr key={item.id}>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     {i + 1}
                   </td>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     {item.no_of_dials}
                   </td>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     {item.no_of_contacts}
                   </td>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     {item.gross_transfer}
                   </td>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     {item.net_transfer}
                   </td>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     {new Date(item.date).toLocaleDateString()}
                   </td>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     {item.no_of_contacts
                       ? `${(
                           (100 * item.gross_transfer) /
@@ -194,7 +194,7 @@ export default function TrackerDataReport({ clientList }) {
                         ).toFixed(2)}`
                       : "0.00"}
                   </td>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     <div className="flex items-center gap-2">
                       <button onClick={ () => redirectUploadShow( item.id ) } className="p-2 text-blue-500 border border-blue-500 rounded hover:bg-blue-100 transition-all duration-300">
                         <FaEye size={ 14 } className="block" />

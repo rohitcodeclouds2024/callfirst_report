@@ -164,27 +164,27 @@ export default function UserFormPage() {
         <form onSubmit={ handleSubmit } className="grid grid-cols-12 gap-6">
           <div className="col-span-12">
             <label className="block text-sm font-medium mb-2">Name</label>
-            <input type="text" name="name" value={ formData.name } onChange={ handleChange } className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" required />
+            <input type="text" name="name" value={ formData.name } onChange={ handleChange } className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" required />
           </div>
           <div className="col-span-6">
             <label className="block text-sm font-medium mb-2">Email</label>
-            <input type="email" name="email" value={ formData.email } onChange={ handleChange } className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" required />
+            <input type="email" name="email" value={ formData.email } onChange={ handleChange } className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" required />
           </div>
           <div className="col-span-6">
             <label className="block text-sm font-medium mb-2">Phone</label>
-            <input type="text" name="phone" value={ formData.phone } onChange={ handleChange } className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" />
+            <input type="text" name="phone" value={ formData.phone } onChange={ handleChange } className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" />
           </div>
           <div className="col-span-6">
             <label className="block text-sm font-medium mb-2">Password</label>
-            <input type="password" name="password" value={ formData.password } onChange={ handleChange } className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" placeholder={ type === 2 ? "Leave blank to keep current password" : "" } {...( type === 1 ? { required: true } : {} ) } />
+            <input type="password" name="password" value={ formData.password } onChange={ handleChange } className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" placeholder={ type === 2 ? "Leave blank to keep current password" : "" } {...( type === 1 ? { required: true } : {} ) } />
           </div>
           <div className="col-span-6">
             <label className="block text-sm font-medium mb-2">Confirm Password</label>
-            <input type="password" name="confirmPassword" value={ formData.confirmPassword } onChange={ handleChange } className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" { ...( type === 1 ? { required: true } : {} ) } />
+            <input type="password" name="confirmPassword" value={ formData.confirmPassword } onChange={ handleChange } className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" { ...( type === 1 ? { required: true } : {} ) } />
           </div>
           <div className="col-span-12">
             <label className="block text-sm font-medium mb-2">Assign Role</label>
-            <select name="role_id[]" value={ formData.role_id.map( String ) } onChange={ handleChange } className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" required multiple>
+            <select name="role_id[]" value={ formData.role_id.map( String ) } onChange={ handleChange } className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" required multiple>
               <option value="">Select Role</option>
               { roles.map( ( role ) => (
                 <option key={ role.id } value={ role.id }>

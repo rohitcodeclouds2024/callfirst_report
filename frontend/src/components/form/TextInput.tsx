@@ -45,7 +45,7 @@ const TextInput: React.FC<TextInputProps> = ({
   readOnly = false,
   autoComplete = "off",
 }) => {
-  const inputClasses = `w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none ${ iconLeft ? "pl-10" : "" } ${ error ? "ring-red-500 focus:border-red-500" : "ring-gray-300 focus:border-primary" } ${ disabled ? "opacity-50 cursor-not-allowed bg-muted/10" : "" } ${ className }`.trim();
+  const inputClasses = `w-full px-4 py-3 bg-white dark:bg-background text-sm border border-border rounded-md focus:outline-none ${ iconLeft ? "pl-10" : "" } ${ error ? "ring-red-500 focus:border-red-500" : "ring-gray-300 focus:border-primary" } ${ disabled ? "opacity-50 cursor-not-allowed bg-muted/10" : "" } ${ className }`.trim();
 
   return (
     <div className="relative">

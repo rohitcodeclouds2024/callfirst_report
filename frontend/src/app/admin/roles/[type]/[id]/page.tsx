@@ -113,7 +113,7 @@ export default function RoleFormPage() {
         <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-6">
           <div className="col-span-12">
             <label className="block text-sm font-medium mb-2">Role Name</label>
-            <input type="text" name="name" value={ formData.name } onChange={ handleChange } className="w-full px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" required />
+            <input type="text" name="name" value={ formData.name } onChange={ handleChange } className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" required />
           </div>
           <div className="col-span-12">
             <h4 className="text-lg font-semibold pb-2 border-b border-border mb-4">Assign Permissions</h4>

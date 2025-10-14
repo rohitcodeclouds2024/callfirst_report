@@ -176,7 +176,7 @@ export default function Users() {
         <table className="w-full text-sm text-left">
           <thead className="uppercase">
             <tr>
-              <th className="p-4 bg-white w-[50px]">
+              <th className="p-4 bg-surface w-[50px]">
                 <CheckboxInput
                   checked={selected.length === users.length && users.length > 0}
                   onChange={(e) => {
@@ -188,19 +188,19 @@ export default function Users() {
                   }}
                 />
               </th>
-              <th className="p-4 bg-white">#</th>
-              <th className="p-4 bg-white">Email</th>
-              <th className="p-4 bg-white">Contact Number</th>
-              <th className="p-4 bg-white">Actions</th>
+              <th className="p-4 bg-surface">#</th>
+              <th className="p-4 bg-surface">Email</th>
+              <th className="p-4 bg-surface">Contact Number</th>
+              <th className="p-4 bg-surface">Actions</th>
             </tr>
           </thead>
-          <tbody className="text-gray-500">
+          <tbody className="text-gray-500 dark:text-gray-300">
             {loading ? (
               <RowSkeleton count={5} columns={5} withCheckbox />
             ) : users.length > 0 ? (
               users.map((user) => (
                 <tr key={user.id}>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     <CheckboxInput
                       checked={selected.includes(user.id)}
                       onChange={() => toggleSelect(user.id)}
@@ -208,22 +208,22 @@ export default function Users() {
                       className="checkbox"
                     />
                   </td>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     {user.id}
                   </td>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     <p className="flex items-center gap-2">
                       <FaEnvelope size={14} className="block text-primary" />
                       <span className="block">{user.email}</span>
                     </p>
                   </td>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     <p className="flex items-center gap-2">
                       <FaPhoneAlt size={14} className="block text-primary" />
                       <span className="block">{user.contact_number}</span>
                     </p>
                   </td>
-                  <td className="px-4 py-3 bg-white border-t border-border">
+                  <td className="px-4 py-3 bg-surface border-t border-border">
                     <div className="flex gap-2">
                       <Link
                         href={`/admin/users/3/${user.id}`}
