@@ -151,7 +151,8 @@ export default function Roles() {
             }}
             placeholder="Search role..."
             showLabel={false}
-            iconLeft={ <FaSearch className="block" />}
+            iconLeft={ <FaSearch size={ 14 } className="block" />}
+            className="bg-white dark:bg-surface !pl-[40px]"
           />
         </div>
         <div className="flex items-center gap-2">
