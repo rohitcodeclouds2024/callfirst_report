@@ -166,7 +166,7 @@ export default async function trackerRoutes(fastify) {
     });
 
     const diffDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-    let groupedData;
+    let groupedData= [];
 
     if (diffDays > 10) {
       const maxPoints = 10;
