@@ -11,7 +11,7 @@ export default async function registerUsersRoutes(fastify) {
     	// { preValidation: [fastify.authenticate] },
 		async (request, reply) => {
 		  	try {
-		    	const { name, email, contact_number, password, role_id } = request.body || {};
+		    	const { name, email, contact_number, password, role_id,revenue_per_transfer } = request.body || {};
 
 		    	if (!email || !password || !role_id) {
 		      		return reply.status(400).send({ error: "name, email, password & role_id required" });
@@ -25,6 +25,8 @@ export default async function registerUsersRoutes(fastify) {
 		      		email,
 		      		contact_number,
 		      		password: hashed,
+		      		revenue_per_transfer,
+
 		   	 	});
 
 			    // map role_user

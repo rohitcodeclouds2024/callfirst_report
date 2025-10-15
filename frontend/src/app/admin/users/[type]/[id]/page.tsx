@@ -12,6 +12,7 @@ interface User {
   email: string;
   contact_number: string;
   role_id?: number[];
+  revenue_per_transfer: number;
 }
 
 interface Role {
@@ -41,6 +42,7 @@ export default function UserFormPage() {
     phone: "",
     password: "",
     confirmPassword: "",
+    revenue_per_transfer: 0,
     role_id: [],
   });
 
@@ -75,6 +77,7 @@ export default function UserFormPage() {
         phone: data.contact_number,
         password: "",
         confirmPassword: "",
+        revenue_per_transfer: data.revenue_per_transfer,
         role_id: data.role_id || [],
       });
     } catch (err) {
@@ -117,6 +120,7 @@ export default function UserFormPage() {
           contact_number: formData.phone,
           password: formData.password,
           role_id: formData.role_id,
+          revenue_per_transfer: formData.revenue_per_transfer,
         });
       } else if (type === 2 && user) {
         await api.put(`/users/${id}`, {
@@ -125,6 +129,7 @@ export default function UserFormPage() {
           contact_number: formData.phone,
           password: formData.password || undefined, // allow empty password (no change)
           role_id: formData.role_id,
+          revenue_per_transfer: formData.revenue_per_transfer,
         });
       }
 
@@ -155,6 +160,9 @@ export default function UserFormPage() {
             <li>
               <strong>Phone:</strong> {user.contact_number}
             </li>
+            <li>
+              <strong>Revenue per Transfer:</strong> {user.revenue_per_transfer}
+            </li>
           </ul>
         </Card>
       </div>
@@ -163,43 +171,114 @@ export default function UserFormPage() {
 
   return (
     <div className="user-wrapper">
-      <h3 className="text-2xl font-semibold mb-4">{ type === 1 ? "Create User" : "Edit User" }</h3>
+      <h3 className="text-2xl font-semibold mb-4">
+        {type === 1 ? "Create User" : "Edit User"}
+      </h3>
       <Card>
-        <form onSubmit={ handleSubmit } className="grid grid-cols-12 gap-6">
+        <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-6">
           <div className="col-span-12">
             <label className="block text-sm font-medium mb-2">Name</label>
-            <input type="text" name="name" value={ formData.name } onChange={ handleChange } className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" required />
+            <input
+              placeholder="Name"
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+              required
+            />
           </div>
           <div className="col-span-6">
             <label className="block text-sm font-medium mb-2">Email</label>
-            <input type="email" name="email" value={ formData.email } onChange={ handleChange } className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" required />
+            <input
+              placeholder="Email"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+              required
+            />
           </div>
           <div className="col-span-6">
             <label className="block text-sm font-medium mb-2">Phone</label>
-            <input type="text" name="phone" value={ formData.phone } onChange={ handleChange } className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" />
+            <input
+              placeholder="Phone"
+              type="text"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+            />
           </div>
           <div className="col-span-6">
             <label className="block text-sm font-medium mb-2">Password</label>
-            <input type="password" name="password" value={ formData.password } onChange={ handleChange } className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" placeholder={ type === 2 ? "Leave blank to keep current password" : "" } {...( type === 1 ? { required: true } : {} ) } />
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+              placeholder={
+                type === 2 ? "Leave blank to keep current password" : ""
+              }
+              {...(type === 1 ? { required: true } : {})}
+            />
           </div>
           <div className="col-span-6">
-            <label className="block text-sm font-medium mb-2">Confirm Password</label>
-            <input type="password" name="confirmPassword" value={ formData.confirmPassword } onChange={ handleChange } className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" { ...( type === 1 ? { required: true } : {} ) } />
+            <label className="block text-sm font-medium mb-2">
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+              {...(type === 1 ? { required: true } : {})}
+              placeholder="Confirm Password"
+            />
+          </div>
+          <div className="col-span-6">
+            <label className="block text-sm font-medium mb-2">
+              Revenue per Transfer
+            </label>
+            <input
+              type="number"
+              name="revenue_per_transfer"
+              value={formData.revenue_per_transfer}
+              onChange={handleChange}
+              className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+              {...(type === 1 ? { required: true } : {})}
+              placeholder="Revenue per Transfer"
+            />
           </div>
           <div className="col-span-12">
-            <label className="block text-sm font-medium mb-2">Assign Role</label>
-            <select name="role_id[]" value={ formData.role_id.map( String ) } onChange={ handleChange } className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary" required multiple>
+            <label className="block text-sm font-medium mb-2">
+              Assign Role
+            </label>
+            <select
+              name="role_id[]"
+              value={formData.role_id.map(String)}
+              onChange={handleChange}
+              className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+              required
+              multiple
+            >
               <option value="">Select Role</option>
-              { roles.map( ( role ) => (
-                <option key={ role.id } value={ role.id }>
-                  { role.name }
+              {roles.map((role) => (
+                <option key={role.id} value={role.id}>
+                  {role.name}
                 </option>
-              ) ) }
+              ))}
             </select>
           </div>
           <div className="flex justify-end col-span-12">
-            <button type="submit" className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300">
-              { type === 1 ? "Create User" : "Update User" }
+            <button
+              type="submit"
+              className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
+            >
+              {type === 1 ? "Create User" : "Update User"}
             </button>
           </div>
         </form>

@@ -14,6 +14,7 @@ export const User = sequelize.define('user', {
 	twilio_token_issued_at: { type: DataTypes.DATE, allowNull: true },
 	twilio_token_expires_at: { type: DataTypes.DATE, allowNull: true },
 	socket_id: { type: DataTypes.STRING(128), allowNull: true },
+	revenue_per_transfer: { type: DataTypes.INTEGER(11), allowNull: false, defaultValue: 0  },
 	last_active_at: { type: DataTypes.DATE, allowNull: true },
 }, { tableName: 'users' });
 
