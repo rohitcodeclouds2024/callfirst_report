@@ -89,8 +89,8 @@ export default function NumberContacts({
           <Line
             type="monotone"
             dataKey="contacts"
-            stroke="currentColor"
-            className="text-primary"
+            stroke="#673ab7"
+            // className="text-primary"
             strokeWidth={2}
             dot={{ r: 4 }}
             activeDot={{ r: 6 }}

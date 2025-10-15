@@ -1,6 +1,6 @@
 "use client";
 
-import { Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { Pie, PieChart, ResponsiveContainer, Tooltip, Cell } from "recharts";
 import Card from "@/components/ui/card/Card";
 import { useEffect, useState } from "react";
 import { apiClient } from "@/lib/axios";
@@ -38,7 +38,16 @@ export default function LeadUploadPieGraph({
 
     fetchConversion();
   }, [selectedClientId, dateFilter, customRange]);
-
+  const COLORS = [
+  "#ef4444", // red
+  "#3b82f6", // blue
+  "#facc15", // yellow
+  "#10b981", // green
+  "#8b5cf6", // purple
+  "#f97316", // orange
+  "#ec4899", // pink
+  "#22d3ee", // teal
+];
   return (
     <Card
       className="col-span-12 md:col-span-6 lg:col-span-4"
@@ -55,6 +64,7 @@ export default function LeadUploadPieGraph({
             outerRadius={96}
             fill="currentColor"
             className="text-primary"
+            stroke="0"
             label={({ x, y, value }) => (
               <text
                 x={x}
@@ -66,14 +76,18 @@ export default function LeadUploadPieGraph({
                 style={{
                   fontStyle: "italic",
                   fontSize: 10,
-                  fontFamily: "sans-serif",
+                  // fontFamily: "sans-serif",
                 }}
               >
                 {String(value)}
               </text>
             )}
             labelLine={{ stroke: "var(--color-text)" }}
-          />
+          >
+            {leadUpload.map((entry, index) => (
+        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+      ))}
+          </Pie>
           <Tooltip
             formatter={(value, name, props) => [
               `${value}`,

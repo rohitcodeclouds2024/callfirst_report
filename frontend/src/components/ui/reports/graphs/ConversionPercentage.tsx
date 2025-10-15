@@ -86,8 +86,8 @@ export default function ConversionPercentage({
           />
           <Bar
             dataKey="conversion"
-            fill="currentColor"
-            className="text-primary"
+            fill="#00bcd4"
+            // className="text-primary"
             radius={[8, 8, 0, 0]}
           />
         </BarChart>
