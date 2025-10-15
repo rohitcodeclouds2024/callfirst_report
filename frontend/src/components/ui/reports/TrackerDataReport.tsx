@@ -20,6 +20,8 @@ export default function TrackerDataReport({ clientList }) {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [total, setTotal] = useState<number>(0);
   const [appliedClientId, setAppliedClientId] = useState<number | "">("");
+  const [appliedtrackerStart, setAppliedTrackerStart] = useState("");
+  const [appliedtrackerEnd, setAppliedTrackerEnd] = useState("");
 
   const handleTrackerFetch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,6 +30,8 @@ export default function TrackerDataReport({ clientList }) {
       return;
     }
     setAppliedClientId(trackerClient);
+    setAppliedTrackerStart(trackerStart);
+    setAppliedTrackerEnd(trackerEnd);
   };
 
   const getTrackerData = async () => {
@@ -36,8 +40,8 @@ export default function TrackerDataReport({ clientList }) {
 
       const body = {
         client_id: trackerClient,
-        ...(trackerStart && { start_date: trackerStart }),
-        ...(trackerEnd && { end_date: trackerEnd }),
+        ...(appliedtrackerStart && { start_date: appliedtrackerStart }),
+        ...(appliedtrackerEnd && { end_date: appliedtrackerEnd }),
         page: currentPage,
         perPage: 20,
       };
@@ -68,7 +72,7 @@ export default function TrackerDataReport({ clientList }) {
     if (trackerClient !== "") {
       getTrackerData();
     }
-  }, [currentPage, appliedClientId]);
+  }, [currentPage, appliedClientId, appliedtrackerStart, appliedtrackerEnd]);
 
   const redirectUploadShow = (id: number) => {
     router.push(`/admin/reports/tracker/upload/${id}`);
