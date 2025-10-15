@@ -62,9 +62,9 @@ export default function ConversionPercentage({
               fontStyle: "italic",
               fontSize: 10,
             }}
-            angle={-80}
+            angle={-55}
             textAnchor="end"
-            height={100}
+            height={110}
           />
           <YAxis
             tickFormatter={(value) => `${value}%`}

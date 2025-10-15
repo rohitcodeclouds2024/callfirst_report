@@ -66,9 +66,9 @@ export default function DialedNumber({
               fontSize: 10,
               fontFamily: "sans-serif",
             }}
-            angle={-80}
+            angle={-55}
             textAnchor="end"
-            height={100}
+            height={110}
           />
           <YAxis
             tick={{
