@@ -208,7 +208,7 @@ export default function TrackerAndUploadPage() {
             onSubmit={handleTrackerSubmit}
             className="grid grid-cols-12 gap-4 sm:gap-6"
           >
-            <div className="col-span-12 sm:col-span-6">
+            <div className="col-span-12 sm:col-span-4">
               <label className="block text-sm font-medium mb-2">Date</label>
               <input
                 type="date"
@@ -218,7 +218,7 @@ export default function TrackerAndUploadPage() {
                 className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
               />
             </div>
-            <div className="col-span-12 sm:col-span-6">
+            <div className="col-span-12 sm:col-span-4">
               <label className="block text-sm font-medium mb-2">
                 Client Name
               </label>
@@ -237,7 +237,7 @@ export default function TrackerAndUploadPage() {
               </select>
             </div>
 
-            <div className="col-span-12 sm:col-span-6">
+            <div className="col-span-12 sm:col-span-4">
               <label className="block text-sm font-medium mb-2">
                 No of Dials
               </label>
@@ -251,7 +251,7 @@ export default function TrackerAndUploadPage() {
               />
             </div>
 
-            <div className="col-span-12 sm:col-span-6">
+            <div className="col-span-12 sm:col-span-4">
               <label className="block text-sm font-medium mb-2">
                 No of Contacts
               </label>
@@ -265,7 +265,7 @@ export default function TrackerAndUploadPage() {
               />
             </div>
 
-            <div className="col-span-12 sm:col-span-6">
+            <div className="col-span-12 sm:col-span-4">
               <label className="block text-sm font-medium mb-2">
                 Gross Transfer
               </label>
@@ -279,7 +279,7 @@ export default function TrackerAndUploadPage() {
               />
             </div>
 
-            <div className="col-span-12 sm:col-span-6">
+            <div className="col-span-12 sm:col-span-4">
               <label className="block text-sm font-medium mb-2">
                 Net Transfer
               </label>
@@ -292,7 +292,7 @@ export default function TrackerAndUploadPage() {
                 min="0"
               />
             </div>
-            <div className="col-span-12 sm:col-span-6">
+            <div className="col-span-12 sm:col-span-4">
               <label className="block text-sm font-medium mb-2">
                 Upload File
               </label>

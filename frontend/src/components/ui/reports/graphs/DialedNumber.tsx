@@ -48,7 +48,7 @@ export default function DialedNumber({
 
   return (
     <Card
-      className="col-span-12 md:col-span-6 lg:col-span-8"
+      className="col-span-12 md:col-span-6"
       title="Number of Dials"
     >
       <ResponsiveContainer width="100%" height={260}>

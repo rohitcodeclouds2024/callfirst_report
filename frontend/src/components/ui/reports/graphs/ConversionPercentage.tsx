@@ -47,7 +47,7 @@ export default function ConversionPercentage({
   }, [selectedClientId, dateFilter, customRange]);
 
   return (
-    <Card className="col-span-12 md:col-span-6" title="Conversion Percentage">
+    <Card className="col-span-12 md:col-span-6 lg:col-span-8" title="Conversion Percentage">
       <ResponsiveContainer width="100%" height={260}>
         <BarChart
           data={conversionData}
@@ -61,7 +61,6 @@ export default function ConversionPercentage({
               fill: "var(--color-text)",
               fontStyle: "italic",
               fontSize: 10,
-              fontFamily: "sans-serif",
             }}
             angle={-80}
             textAnchor="end"
@@ -72,7 +71,6 @@ export default function ConversionPercentage({
             tick={{
               fill: "var(--color-text)",
               fontSize: 10,
-              fontFamily: "sans-serif",
             }}
           />
           <Tooltip
