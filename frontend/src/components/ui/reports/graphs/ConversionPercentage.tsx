@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { apiClient } from "@/lib/axios";
 import toast from "react-hot-toast";
 import { GraphProps } from "@/types/graphProps";
+import CustomTooltip from "./tooltip/CustomTooltip";
 
 interface ConversionData {
   name: string;
@@ -77,6 +78,11 @@ export default function ConversionPercentage({
             }}
           />
           <Tooltip
+            content={<CustomTooltip selectedClientId={selectedClientId} />}
+            cursor={{ fill: "transparent" }}
+            wrapperStyle={{ pointerEvents: "none" }}
+          />
+          {/* <Tooltip
             formatter={(value) => `${value}%`}
             contentStyle={{
               fontSize: 14,
@@ -87,12 +93,8 @@ export default function ConversionPercentage({
               boxShadow: "0px 2px 4px 0px rgb(0 0 0 / 30%)",
             }}
             cursor={{ fill: "transparent" }}
-          />
-          <Bar
-            dataKey="conversion"
-            fill="#00bcd4"
-            radius={[8, 8, 0, 0]}
-          />
+          /> */}
+          <Bar dataKey="conversion" fill="#00bcd4" radius={[8, 8, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </Card>
