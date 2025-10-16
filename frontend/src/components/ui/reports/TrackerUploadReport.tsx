@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import Pagination from "@/components/form/Pagination";
 import { TrackerData } from "@/types/trackerData";
-import { FaPhoneAlt } from "react-icons/fa";
+import { FaPhoneAlt, FaDownload } from "react-icons/fa";
 
 interface UploadedData {
   id: number;
@@ -59,6 +59,18 @@ export default function TrackerUploadReport({ clientList, clientIdFromUrl }) {
   useEffect(() => {
     handleFetch();
   }, [currentPage]);
+
+  const handleUploadDownload = () => {
+    const queryList = new URLSearchParams({
+      lg_tracker_id: clientIdFromUrl.toString(),
+    }).toString();
+
+    window.open(
+      `${process.env.NEXT_PUBLIC_ADMIN_BASE_URL}/tracker/uploaded-data-download?${queryList}`,
+      "_blank"
+    );
+  };
+
   return (
     <div className="uploaded_data_report mb-12">
       <h3 className="text-2xl font-semibold mb-4">Uploaded Data Report</h3>
@@ -83,6 +95,14 @@ export default function TrackerUploadReport({ clientList, clientIdFromUrl }) {
           <div>
             <strong>Date:</strong> {lgData.date}
           </div>
+          <button
+            type="button"
+            className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
+            onClick={handleUploadDownload}
+          >
+            <FaDownload />
+            {"Download"}
+          </button>
         </div>
       )}
 
@@ -102,22 +122,32 @@ export default function TrackerUploadReport({ clientList, clientIdFromUrl }) {
               {data.map((item, i) => (
                 <tr key={item.id}>
                   <td className="px-4 py-3 bg-surface border-t border-border">
-                    { i + 1 }
+                    {i + 1}
                   </td>
                   <td className="px-4 py-3 bg-surface border-t border-border">
-                    { item.customer_name }
+                    {item.customer_name}
                   </td>
                   <td className="px-4 py-3 bg-surface border-t border-border">
                     <p className="flex items-center gap-2">
-                      <FaPhoneAlt size={ 14 } className="block text-primary" />
-                      <span className="block">{ item.phone_number }</span>
+                      <FaPhoneAlt size={14} className="block text-primary" />
+                      <span className="block">{item.phone_number}</span>
                     </p>
                   </td>
                   <td className="px-4 py-3 bg-surface border-t border-border">
-                    <span className={`inline-block text-sm leading-none font-medium px-2 py-1 rounded-xl border ${ item.status === 'Inactive' ? 'bg-yellow-100 text-yellow-700 border-yellow-700' : item.status === 'Active' ? 'bg-green-100 text-green-700 border-green-700' : '' }`.trim()}>{ item.status }</span>
+                    <span
+                      className={`inline-block text-sm leading-none font-medium px-2 py-1 rounded-xl border ${
+                        item.status === "Inactive"
+                          ? "bg-yellow-100 text-yellow-700 border-yellow-700"
+                          : item.status === "Active"
+                          ? "bg-green-100 text-green-700 border-green-700"
+                          : ""
+                      }`.trim()}
+                    >
+                      {item.status}
+                    </span>
                   </td>
                   <td className="px-4 py-3 bg-surface border-t border-border">
-                    { new Date( item.createdAt ).toLocaleString() }
+                    {new Date(item.createdAt).toLocaleString()}
                   </td>
                 </tr>
               ))}

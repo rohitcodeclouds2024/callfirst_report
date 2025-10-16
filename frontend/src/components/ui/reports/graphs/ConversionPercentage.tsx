@@ -47,7 +47,10 @@ export default function ConversionPercentage({
   }, [selectedClientId, dateFilter, customRange]);
 
   return (
-    <Card className="col-span-12 md:col-span-6 lg:col-span-8" title="Conversion Percentage">
+    <Card
+      className="col-span-12 md:col-span-6 lg:col-span-8"
+      title="Conversion Percentage"
+    >
       <ResponsiveContainer width="100%" height={260}>
         <BarChart
           data={conversionData}
