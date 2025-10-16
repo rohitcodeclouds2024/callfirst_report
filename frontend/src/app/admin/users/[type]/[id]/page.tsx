@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import useApi from "@/lib/useApi";
 import { apiClient } from "@/lib/axios";
 import Card from "@/components/ui/card/Card";
+import Select from "react-select"
 
 interface User {
   id: number;
@@ -176,7 +177,7 @@ export default function UserFormPage() {
       </h3>
       <Card>
         <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-6">
-          <div className="col-span-12">
+          <div className="col-span-12 md:col-span-4">
             <label className="block text-sm font-medium mb-2">Name</label>
             <input
               placeholder="Name"
@@ -188,7 +189,7 @@ export default function UserFormPage() {
               required
             />
           </div>
-          <div className="col-span-6">
+          <div className="col-span-12 md:col-span-4">
             <label className="block text-sm font-medium mb-2">Email</label>
             <input
               placeholder="Email"
@@ -200,7 +201,7 @@ export default function UserFormPage() {
               required
             />
           </div>
-          <div className="col-span-6">
+          <div className="col-span-4 md:col-span-4">
             <label className="block text-sm font-medium mb-2">Phone</label>
             <input
               placeholder="Phone"
@@ -211,7 +212,7 @@ export default function UserFormPage() {
               className="w-full bg-white dark:bg-background px-4 py-3 text-sm border border-border rounded-md focus:outline-none focus:border-primary"
             />
           </div>
-          <div className="col-span-6">
+          <div className="col-span-12 md:col-span-6">
             <label className="block text-sm font-medium mb-2">Password</label>
             <input
               type="password"
@@ -225,7 +226,7 @@ export default function UserFormPage() {
               {...(type === 1 ? { required: true } : {})}
             />
           </div>
-          <div className="col-span-6">
+          <div className="col-span-12 md:col-span-6">
             <label className="block text-sm font-medium mb-2">
               Confirm Password
             </label>
@@ -239,7 +240,7 @@ export default function UserFormPage() {
               placeholder="Confirm Password"
             />
           </div>
-          <div className="col-span-6">
+          <div className="col-span-12 md:col-span-6">
             <label className="block text-sm font-medium mb-2">
               Revenue per Transfer
             </label>
@@ -253,11 +254,11 @@ export default function UserFormPage() {
               placeholder="Revenue per Transfer"
             />
           </div>
-          <div className="col-span-12">
+          <div className="col-span-12 md:col-span-6">
             <label className="block text-sm font-medium mb-2">
               Assign Role
             </label>
-            <select
+            {/* <select
               name="role_id[]"
               value={formData.role_id.map(String)}
               onChange={handleChange}
@@ -271,7 +272,22 @@ export default function UserFormPage() {
                   {role.name}
                 </option>
               ))}
-            </select>
+            </select> */}
+            <Select
+              isMulti
+              name="role_id"
+              options={ roles.map( ( role ) => ( {
+                value: role.id,
+                label: role.name,
+              } ) ) }
+              className="custom-select"
+              classNamePrefix="select"
+              value={ roles.filter( ( role ) => formData.role_id.includes( role.id ) ).map( ( role ) => ( { value: role.id, label: role.name } ) ) }
+              onChange={ ( selectedOptions ) => {
+                const values = selectedOptions.map( ( opt ) => opt.value );
+                setFormData( ( prev ) => ( { ...prev, role_id: values } ) );
+              }}
+            />
           </div>
           <div className="flex justify-end col-span-12">
             <button

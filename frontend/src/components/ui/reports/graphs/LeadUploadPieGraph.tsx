@@ -38,16 +38,7 @@ export default function LeadUploadPieGraph({
 
     fetchConversion();
   }, [selectedClientId, dateFilter, customRange]);
-  const COLORS = [
-  "#ef4444", // red
-  "#3b82f6", // blue
-  "#facc15", // yellow
-  "#10b981", // green
-  "#8b5cf6", // purple
-  "#f97316", // orange
-  "#ec4899", // pink
-  "#22d3ee", // teal
-];
+  const COLORS = [ "#f44336", "#3f51b5", "#009688", "#ff9800", "#ff5722", "#00bcd4", "#673ab7", "#9c27b0", ];
   return (
     <Card
       className="col-span-12 md:col-span-6 lg:col-span-4"
@@ -76,7 +67,6 @@ export default function LeadUploadPieGraph({
                 style={{
                   fontStyle: "italic",
                   fontSize: 10,
-                  // fontFamily: "sans-serif",
                 }}
               >
                 {String(value)}
@@ -84,9 +74,9 @@ export default function LeadUploadPieGraph({
             )}
             labelLine={{ stroke: "var(--color-text)" }}
           >
-            {leadUpload.map((entry, index) => (
-        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-      ))}
+            { leadUpload.map(( entry, index ) => (
+              <Cell key={ `cell-${ index }` } fill={ COLORS[ index % COLORS.length ] } />
+            ) ) }
           </Pie>
           <Tooltip
             formatter={(value, name, props) => [
@@ -94,6 +84,7 @@ export default function LeadUploadPieGraph({
               `${props.payload.name}`,
             ]}
             contentStyle={{
+              fontSize: 14,
               backgroundColor: "var(--color-bg)",
               border: 0,
               borderRadius: "0.5rem",

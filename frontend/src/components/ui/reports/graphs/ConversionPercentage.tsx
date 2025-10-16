@@ -76,6 +76,7 @@ export default function ConversionPercentage({
           <Tooltip
             formatter={(value) => `${value}%`}
             contentStyle={{
+              fontSize: 14,
               backgroundColor: "var(--color-bg)",
               color: "var(--color-text)",
               border: 0,
@@ -87,7 +88,6 @@ export default function ConversionPercentage({
           <Bar
             dataKey="conversion"
             fill="#00bcd4"
-            // className="text-primary"
             radius={[8, 8, 0, 0]}
           />
         </BarChart>

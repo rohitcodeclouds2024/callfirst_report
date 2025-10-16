@@ -64,7 +64,25 @@ html {
 	transition: background-color 0.3s ease, color 0.3s ease;
 }
 html.dark input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1); /* invert icon color for dark mode */
+  filter: invert(1);
+}
+.custom-select .select__control{
+	@apply min-h-fit bg-white dark:bg-background text-sm border-border hover:border-border rounded-md;
+}
+.custom-select .select__control .select__value-container{
+ @apply px-4 py-2 gap-2;
+}
+.custom-select .select__control .select__value-container .select__multi-value{
+	@apply bg-background rounded border border-border m-0;
+}
+.custom-select .select__control .select__value-container .select__input-container{
+	@apply text-neutral p-0 m-0;
+}
+.custom-select .select__control .select__indicators{
+
+}
+.custom-select .select__control .select__indicators .select__indicator{
+	@apply p-2 ;
 }
 @layer base {
 	body {

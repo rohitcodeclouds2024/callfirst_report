@@ -63,7 +63,6 @@ export default function NumberContacts({
               fill: "var(--color-text)",
               fontStyle: "italic",
               fontSize: 10,
-              fontFamily: "sans-serif",
             }}
             angle={-55}
             textAnchor="end"
@@ -74,11 +73,11 @@ export default function NumberContacts({
             tick={{
               fill: "var(--color-text)",
               fontSize: 10,
-              fontFamily: "sans-serif",
             }}
           />
           <Tooltip
             contentStyle={{
+              fontSize: 14,
               backgroundColor: "var(--color-bg)",
               color: "var(--color-text)",
               border: 0,
@@ -90,7 +89,6 @@ export default function NumberContacts({
             type="monotone"
             dataKey="contacts"
             stroke="#673ab7"
-            // className="text-primary"
             strokeWidth={2}
             dot={{ r: 4 }}
             activeDot={{ r: 6 }}

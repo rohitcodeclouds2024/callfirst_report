@@ -64,7 +64,6 @@ export default function DialedNumber({
               fill: "var(--color-text)",
               fontStyle: "italic",
               fontSize: 10,
-              fontFamily: "sans-serif",
             }}
             angle={-55}
             textAnchor="end"
@@ -74,11 +73,11 @@ export default function DialedNumber({
             tick={{
               fill: "var(--color-text)",
               fontSize: 10,
-              fontFamily: "sans-serif",
             }}
           />
           <Tooltip
             contentStyle={{
+              fontSize: 14,
               backgroundColor: "var(--color-bg)",
               color: "var(--color-text)",
               border: 0,
@@ -90,7 +89,6 @@ export default function DialedNumber({
             type="monotone"
             dataKey="dials"
             stroke="#8bc34a"
-            // className="text-primary"
             fill="#8bc34a80"
             name="Dials"
           />
