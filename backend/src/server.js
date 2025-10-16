@@ -42,7 +42,7 @@ async function build() {
 	await fastify.register(fastifyCors, {
   		origin: (origin, cb) => {
     	if (!origin) return cb(null, true); // allow server-to-server / curl etc.
-    	const allowed = ['http://localhost:3000', 'http://127.0.0.1:3000'];
+    	const allowed = ['http://localhost:3000', 'http://127.0.0.1:3000','https://29be0d7f685a.ngrok-free.app'];
     	if (allowed.includes(origin)) return cb(null, true);
     		return cb(new Error('Not allowed by CORS'), false);
   		},
