@@ -3,7 +3,7 @@ import { apiClient } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import Card from "../card/Card";
-import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import { FaEye, FaEdit, FaTrash, FaDownload } from "react-icons/fa";
 import Pagination from "@/components/form/Pagination";
 import { TrackerData } from "@/types/trackerData";
 import MySwal from "@/lib/swal";
@@ -172,6 +172,7 @@ export default function TrackerDataReport({ clientList }) {
             disabled={trackerLoading}
             onClick={handleDownload}
           >
+            <FaDownload />
             {trackerLoading ? "Loading..." : "Download"}
           </button>
         </form>

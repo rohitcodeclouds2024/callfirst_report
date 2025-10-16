@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import Pagination from "@/components/form/Pagination";
 import { TrackerData } from "@/types/trackerData";
-import { FaPhoneAlt } from "react-icons/fa";
+import { FaPhoneAlt, FaDownload } from "react-icons/fa";
 
 interface UploadedData {
   id: number;
@@ -100,6 +100,7 @@ export default function TrackerUploadReport({ clientList, clientIdFromUrl }) {
             className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
             onClick={handleUploadDownload}
           >
+            <FaDownload />
             {"Download"}
           </button>
         </div>
