@@ -3,7 +3,7 @@ import { apiClient } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import Card from "../card/Card";
-import { FaEye, FaEdit, FaTrash, FaDownload } from "react-icons/fa";
+import { FaEye, FaEdit, FaTrash, FaDownload, FaFileDownload, FaCloudDownloadAlt, FaSpinner } from "react-icons/fa";
 import Pagination from "@/components/form/Pagination";
 import { TrackerData } from "@/types/trackerData";
 import MySwal from "@/lib/swal";
@@ -161,10 +161,10 @@ export default function TrackerDataReport({ clientList }) {
       <Card className="mb-6">
         <form
           onSubmit={handleTrackerFetch}
-          className="grid grid-col-12 sm:grid-cols-4 gap-2 sm:gap-4 lg:gap-6"
+          className="flex flex-col md:flex-row gap-2 sm:gap-4 lg:gap-6"
         >
           <select
-            className="w-full px-4 py-3 bg-white dark:bg-background text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+            className="w-full grow px-4 py-3 bg-white dark:bg-background text-sm border border-border rounded-md focus:outline-none focus:border-primary"
             value={trackerClient}
             onChange={(e) => setTrackerClient(Number(e.target.value) || "")}
           >
@@ -177,36 +177,31 @@ export default function TrackerDataReport({ clientList }) {
           </select>
           <input
             type="date"
-            className="w-full px-4 py-3 bg-white dark:bg-background text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+            className="w-full grow px-4 py-3 bg-white dark:bg-background text-sm border border-border rounded-md focus:outline-none focus:border-primary"
             value={trackerStart}
             onChange={(e) => setTrackerStart(e.target.value)}
           />
           <input
             type="date"
-            className="w-full px-4 py-3 bg-white dark:bg-background text-sm border border-border rounded-md focus:outline-none focus:border-primary"
+            className="w-full grow px-4 py-3 bg-white dark:bg-background text-sm border border-border rounded-md focus:outline-none focus:border-primary"
             value={trackerEnd}
             onChange={(e) => setTrackerEnd(e.target.value)}
           />
           <button
             type="submit"
-            className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
+            className="grow text-nowrap px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
             disabled={trackerLoading}
           >
             {trackerLoading ? "Loading..." : "Fetch Tracker"}
           </button>
-          <button
-            type="button"
-            className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
-            disabled={trackerLoading}
-            onClick={handleDownload}
-          >
-            <FaDownload />
-            {trackerLoading ? "Loading..." : "Download"}
+          <button type="button" className="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300" disabled={ trackerLoading } onClick={ handleDownload }>
+            { trackerLoading ? <FaSpinner className="animate-spin" /> : <FaCloudDownloadAlt className="block" size={ 24 }  /> }
+            <span className="block md:hidden">{ trackerLoading ? "Preparing..." : "Download" }</span>
           </button>
         </form>
       </Card>
       {trackerData.length > 0 ? (
-        <div className="overflow-x-auto rounded-lg shadow">
+        <div className="max-w-full overflow-x-auto rounded-lg shadow">
           <table className="w-full text-sm text-left">
             <thead className="uppercase">
               <tr>
