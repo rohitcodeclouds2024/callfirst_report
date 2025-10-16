@@ -1,13 +1,14 @@
 import LgTracker from '../models/lgTracker.js';
 import UploadedData from "../models/uploadedData.js";
 import { getDateRange,getDateRangeNewLogic } from "../utils/dateRange.js";
-import { formatDateRangeLabel,groupData } from "../utils/helperFunction.js";
+import { formatDateRangeLabel,groupData,formatDateMDY } from "../utils/helperFunction.js";
 import bcrypt from 'bcrypt';
 import { Op } from "sequelize";
 import { sequelize } from '../lib/db.js';
 
 import multer from "fastify-multer";
 import csvParser from "csv-parser";
+
 import fs from "fs";
 
 // Configure multer to store uploaded files temporarily
@@ -94,6 +95,55 @@ export default async function trackerRoutes(fastify) {
       	return reply.status(500).send({ error: "Failed to fetch tracker data" });
     	}
   	});
+
+  	fastify.get("/report/tracker-download", async (req, reply) => {
+  		try {
+    		const { client_id, start_date, end_date } = req.query;
+
+    		if (!client_id) {
+      		return reply.status(400).send({ error: "Client ID is required" });
+    		}
+
+    		const where = { client_id };
+
+    		if (start_date && end_date) {
+      		where.date = { [Op.between]: [new Date(start_date), new Date(end_date)] };
+    		}
+
+    		const rows = await LgTracker.findAll({ where, raw: true });
+
+    		if (!rows.length) {
+      		return reply.status(404).send({ error: "No data found" });
+    		}
+
+			const formattedData = rows.map(item => ({
+		      // "Date": formatDateMDY(item.date),
+		      "Date": item.date,
+		      "No. of Dials": item.no_of_dials || 0,
+		      "No. of Contacts": item.no_of_contacts || 0,
+		      "Gross Transfer": item.gross_transfer || 0,
+		      "Net Transfer": item.net_transfer || 0,
+		      "Conv %": item.no_of_contacts
+		        ? ((100 * item.gross_transfer) / item.no_of_contacts).toFixed(2)
+		        : "0.00",
+		   }));
+
+		    // Convert to CSV manually
+		   const headers = Object.keys(formattedData[0]).join(",") + "\n";
+		   const csvRows = formattedData
+		      .map(row => Object.values(row).join(","))
+		      .join("\n");
+		   const csv = headers + csvRows;
+
+    		reply
+      	.header("Content-Type", "text/csv")
+      	.header("Content-Disposition", "attachment; filename=tracker_report.csv")
+      	.send(csv);
+  		} catch (error) {
+    		console.error(error);
+    		reply.status(500).send({ error: "Failed to generate CSV" });
+  		}
+	});
 
 	fastify.post("/conversion-percentage", async (request, reply) => {
   		try {

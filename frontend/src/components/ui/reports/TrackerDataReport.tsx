@@ -7,6 +7,7 @@ import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import Pagination from "@/components/form/Pagination";
 import { TrackerData } from "@/types/trackerData";
 import MySwal from "@/lib/swal";
+import { formatDateMDY } from "@/lib/helperFunction";
 
 export default function TrackerDataReport({ clientList }) {
   const router = useRouter();
@@ -113,6 +114,19 @@ export default function TrackerDataReport({ clientList }) {
     }
   };
 
+  const handleDownload = () => {
+    const queryList = new URLSearchParams({
+      client_id: appliedClientId.toString(),
+      start_date: appliedtrackerStart,
+      end_date: appliedtrackerEnd,
+    }).toString();
+
+    window.open(
+      `${process.env.NEXT_PUBLIC_ADMIN_BASE_URL}/report/tracker-download?${queryList}`,
+      "_blank"
+    );
+  };
+
   return (
     <>
       <h3 className="text-2xl font-semibold mb-4">Tracker Data Report</h3>
@@ -152,6 +166,14 @@ export default function TrackerDataReport({ clientList }) {
           >
             {trackerLoading ? "Loading..." : "Fetch Tracker"}
           </button>
+          <button
+            type="button"
+            className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
+            disabled={trackerLoading}
+            onClick={handleDownload}
+          >
+            {trackerLoading ? "Loading..." : "Download"}
+          </button>
         </form>
       </Card>
       {trackerData.length > 0 ? (
@@ -176,7 +198,7 @@ export default function TrackerDataReport({ clientList }) {
                     {i + 1}
                   </td>
                   <td className="px-4 py-3 bg-surface border-t border-border">
-                    {new Date(item.date).toLocaleDateString()}
+                    {formatDateMDY(item.date)}
                   </td>
                   <td className="px-4 py-3 bg-surface border-t border-border">
                     {item.no_of_dials}
