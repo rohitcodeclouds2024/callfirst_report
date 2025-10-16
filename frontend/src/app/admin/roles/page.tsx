@@ -145,28 +145,35 @@ export default function Roles() {
         <div className="relative w-72">
           <TextInput
             value={search}
-            onChange={ ( e ) => {
-              setSearch( e.target.value );
-              setCurrentPage( 1 );
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
             }}
             placeholder="Search role..."
             showLabel={false}
-            iconLeft={ <FaSearch size={ 14 } className="block" />}
+            iconLeft={<FaSearch size={14} className="block" />}
             className="bg-white dark:bg-surface !pl-[40px]"
           />
         </div>
         <div className="flex items-center gap-2">
-          <Link href="/admin/roles/1/0" className="flex items-center gap-2 px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300">
-            <FaPlus size={ 14 } className="block" />
-            <span className="block">Create User</span>
+          <Link
+            href="/admin/roles/1/0"
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
+          >
+            <FaPlus size={14} className="block" />
+            <span className="block">Create Role</span>
             {/* <FormButton icon={ <FaPlus /> } label="Create Role" showLabel variant="primary" /> */}
           </Link>
-          { selected.length > 0 && (
-            <a href="#" className="p-3 text-red-500 border border-red-500 rounded-md" onClick={ handleBulkDelete }>
-              <FaTrash className="block" size={ 16 } />
+          {selected.length > 0 && (
+            <a
+              href="#"
+              className="p-3 text-red-500 border border-red-500 rounded-md"
+              onClick={handleBulkDelete}
+            >
+              <FaTrash className="block" size={16} />
             </a>
             // <FormButton icon={ <FaTrash className="text-error text-xl text-primary" /> } iconOnly showLabel={false } variant="deleteAll" label={ `Delete Selected (${ selected.length })` } onClick={ handleBulkDelete } />
-          ) }
+          )}
         </div>
       </div>
       <div className="overflow-x-auto rounded-lg shadow">
@@ -199,7 +206,7 @@ export default function Roles() {
               <RowSkeleton count={5} columns={5} withCheckbox />
             ) : roles.length > 0 ? (
               roles.map((role) => (
-                <tr key={ role.id }>
+                <tr key={role.id}>
                   <td className="px-4 py-3 bg-surface border-t border-border">
                     <CheckboxInput
                       checked={selected.includes(role.id)}
@@ -208,18 +215,32 @@ export default function Roles() {
                       className="checkbox"
                     />
                   </td>
-                  <td className="px-4 py-3 bg-surface border-t border-border">{role.id}</td>
-                  <td className="px-4 py-3 bg-surface border-t border-border">{role.name}</td>
+                  <td className="px-4 py-3 bg-surface border-t border-border">
+                    {role.id}
+                  </td>
+                  <td className="px-4 py-3 bg-surface border-t border-border">
+                    {role.name}
+                  </td>
                   <td className="px-4 py-3 bg-surface border-t border-border">
                     <div className="flex gap-2">
-                      <Link href={ `/admin/roles/3/${role.id}` } className="p-2 text-blue-500 border border-blue-500 rounded hover:bg-blue-100 transition-all duration-300">
-                        <FaEye size={ 14 } className="block" />
+                      <Link
+                        href={`/admin/roles/3/${role.id}`}
+                        className="p-2 text-blue-500 border border-blue-500 rounded hover:bg-blue-100 transition-all duration-300"
+                      >
+                        <FaEye size={14} className="block" />
                       </Link>
-                      <Link href={ `/admin/roles/2/${role.id}` } className="p-2 text-green-500 border border-green-500 rounded hover:bg-green-100 transition-all duration-300">
-                        <FaEdit size={ 14 } className="block" />
+                      <Link
+                        href={`/admin/roles/2/${role.id}`}
+                        className="p-2 text-green-500 border border-green-500 rounded hover:bg-green-100 transition-all duration-300"
+                      >
+                        <FaEdit size={14} className="block" />
                       </Link>
-                      <a href="#" className="p-2 text-red-500 border border-red-500 rounded hover:bg-red-100 transition-all duration-300" onClick={ () => handleDelete( role.id ) }>
-                        <FaTrash size={ 14 } className="block" />
+                      <a
+                        href="#"
+                        className="p-2 text-red-500 border border-red-500 rounded hover:bg-red-100 transition-all duration-300"
+                        onClick={() => handleDelete(role.id)}
+                      >
+                        <FaTrash size={14} className="block" />
                       </a>
                     </div>
                   </td>
