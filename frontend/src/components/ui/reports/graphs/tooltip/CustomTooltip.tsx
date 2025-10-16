@@ -55,14 +55,14 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
         </div>
         <button
           style={{
+            display: "inline-block",
             marginTop: "0.25rem",
-            padding: "0.25rem 0.5rem",
             background: "transparent",
-            border: "1px solid var(--color-text)",
-            borderRadius: "0.25rem",
             cursor: "pointer",
             fontSize: "0.75rem",
-            color: "var(--color-text)",
+            fontWeight: 500,
+            color: "#00bcd4",
+            textDecoration: "underline",
           }}
           onClick={handleViewClick}
         >

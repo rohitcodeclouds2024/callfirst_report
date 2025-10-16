@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import Pagination from "@/components/form/Pagination";
 import { TrackerData } from "@/types/trackerData";
-import { FaPhoneAlt, FaDownload } from "react-icons/fa";
-import { IoArrowBackCircleSharp } from "react-icons/io5";
+import { FaPhoneAlt, FaDownload, FaCloudDownloadAlt } from "react-icons/fa";
+import { IoArrowBackCircleSharp, IoChevronBack } from "react-icons/io5";
 
 interface UploadedData {
   id: number;
@@ -80,44 +80,36 @@ export default function TrackerUploadReport({ clientList, clientIdFromUrl }) {
 
   return (
     <div className="uploaded_data_report mb-12">
-      <h3 className="text-2xl font-semibold mb-4">
-        <button
-          onClick={backToTracker}
-          type="button"
-          className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
-        >
-          <IoArrowBackCircleSharp />
+      <div className="flex items-center gap-4 mb-6">
+        <button onClick={ backToTracker } type="button" className="p-1 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300">
+          <IoChevronBack size={ 24 } className="block" />
         </button>
-        Uploaded Data Report
-      </h3>
+        <h3 className="text-2xl font-semibold">Uploaded Data Report</h3>
+      </div>
       {/* Display LgTracker summary */}
       {lgData && (
-        <div className="mb-4 p-4 bg-surface rounded shadow-sm grid grid-cols-6 gap-4 text-sm">
-          <div>
+        <div className="mb-4 p-4 bg-surface rounded shadow-sm flex items-center gap-4 text-sm">
+          <div className="grow">
             <strong>Client Name:</strong> {lgData.client_name}
           </div>
-          <div>
+          <div className="grow">
             <strong>No of Dials:</strong> {lgData.no_of_dials}
           </div>
-          <div>
+          <div className="grow">
             <strong>No of Contacts:</strong> {lgData.no_of_contacts}
           </div>
-          <div>
+          <div className="grow">
             <strong>Gross Transfer:</strong> {lgData.gross_transfer}
           </div>
-          <div>
+          <div className="grow">
             <strong>Net Transfer:</strong> {lgData.net_transfer}
           </div>
-          <div>
+          <div className="grow">
             <strong>Date:</strong> {lgData.date}
           </div>
-          <button
-            type="button"
-            className="px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
-            onClick={handleUploadDownload}
-          >
-            <FaDownload />
-            {"Download"}
+          <button type="button" className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300" onClick={ handleUploadDownload }>
+            <FaCloudDownloadAlt className="block" size={ 20 } />
+            <span className="block">Download</span>
           </button>
         </div>
       )}
