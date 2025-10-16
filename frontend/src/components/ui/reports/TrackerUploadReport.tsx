@@ -81,8 +81,13 @@ export default function TrackerUploadReport({ clientList, clientIdFromUrl }) {
   return (
     <div className="uploaded_data_report mb-12">
       <div className="flex items-center gap-4 mb-6">
-        <button onClick={ backToTracker } type="button" className="p-1 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300">
-          <IoChevronBack size={ 24 } className="block" />
+        <button
+          title="Back"
+          onClick={backToTracker}
+          type="button"
+          className="p-1 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
+        >
+          <IoChevronBack size={24} className="block" />
         </button>
         <h3 className="text-2xl font-semibold">Uploaded Data Report</h3>
       </div>
@@ -107,9 +112,14 @@ export default function TrackerUploadReport({ clientList, clientIdFromUrl }) {
           <div className="grow">
             <strong>Date:</strong> {lgData.date}
           </div>
-          <button type="button" className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300" onClick={ handleUploadDownload }>
-            <FaCloudDownloadAlt className="block" size={ 20 } />
-            <span className="block">Download</span>
+          <button
+            title="Download"
+            type="button"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
+            onClick={handleUploadDownload}
+          >
+            <FaCloudDownloadAlt className="block" size={20} />
+            {/* <span className="block">Download</span> */}
           </button>
         </div>
       )}

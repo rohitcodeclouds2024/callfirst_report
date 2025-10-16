@@ -3,7 +3,15 @@ import { apiClient } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import Card from "../card/Card";
-import { FaEye, FaEdit, FaTrash, FaDownload, FaFileDownload, FaCloudDownloadAlt, FaSpinner } from "react-icons/fa";
+import {
+  FaEye,
+  FaEdit,
+  FaTrash,
+  FaDownload,
+  FaFileDownload,
+  FaCloudDownloadAlt,
+  FaSpinner,
+} from "react-icons/fa";
 import Pagination from "@/components/form/Pagination";
 import { TrackerData } from "@/types/trackerData";
 import MySwal from "@/lib/swal";
@@ -194,9 +202,21 @@ export default function TrackerDataReport({ clientList }) {
           >
             {trackerLoading ? "Loading..." : "Fetch Tracker"}
           </button>
-          <button type="button" className="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300" disabled={ trackerLoading } onClick={ handleDownload }>
-            { trackerLoading ? <FaSpinner className="block animate-spin" size={ 24 } /> : <FaCloudDownloadAlt className="block" size={ 24 }  /> }
-            <span className="block md:hidden">{ trackerLoading ? "Preparing..." : "Download" }</span>
+          <button
+            title="Download"
+            type="button"
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
+            disabled={trackerLoading}
+            onClick={handleDownload}
+          >
+            {trackerLoading ? (
+              <FaSpinner className="block animate-spin" size={24} />
+            ) : (
+              <FaCloudDownloadAlt className="block" size={24} />
+            )}
+            <span className="block md:hidden">
+              {trackerLoading ? "Preparing..." : "Download"}
+            </span>
           </button>
         </form>
       </Card>
