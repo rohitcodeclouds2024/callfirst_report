@@ -67,22 +67,40 @@ html.dark input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
 .custom-select .select__control{
-	@apply min-h-fit bg-white dark:bg-background text-sm border-border hover:border-border rounded-md;
+	@apply min-h-fit bg-white dark:bg-background text-sm border-border hover:border-border rounded-md shadow-none cursor-pointer;
+}
+.custom-select .select__control.select__control--is-focused{
+	@apply border-primary;
 }
 .custom-select .select__control .select__value-container{
- @apply px-4 py-2 gap-2;
+	@apply px-4 py-1 gap-1;
 }
 .custom-select .select__control .select__value-container .select__multi-value{
-	@apply bg-background rounded border border-border m-0;
+	@apply bg-gray-200 dark:bg-surface rounded overflow-hidden m-0;
+}
+.custom-select .select__control .select__value-container .select__multi-value .select__multi-value__label{
+	@apply text-xs leading-none text-neutral p-2;
+}
+.custom-select .select__control .select__value-container .select__multi-value .select__multi-value__remove{
+	@apply p-1 rounded-s-none transition-all duration-300;
 }
 .custom-select .select__control .select__value-container .select__input-container{
-	@apply text-neutral p-0 m-0;
-}
-.custom-select .select__control .select__indicators{
-
+	@apply text-neutral px-0 py-2 m-0;
 }
 .custom-select .select__control .select__indicators .select__indicator{
-	@apply p-2 ;
+	@apply p-2 text-gray-500 dark:text-white;
+}
+.custom-select .select__control .select__indicators .select__indicator-separator{
+	@apply bg-gray-300 dark:bg-gray-500 my-3;
+}
+.custom-select .select__menu{
+	@apply text-sm bg-background rounded-t-none rounded-b-md shadow-lg m-0 mt-px overflow-hidden;
+}
+.custom-select .select__menu .select__menu-list{
+	@apply p-0;
+}
+.custom-select .select__menu .select__menu-list .select__option{
+	@apply bg-transparent px-4 py-2 hover:bg-primary hover:text-white transition-all duration-300 cursor-pointer;
 }
 @layer base {
 	body {
