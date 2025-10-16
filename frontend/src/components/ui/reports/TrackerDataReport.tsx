@@ -7,7 +7,7 @@ import { FaEye, FaEdit, FaTrash, FaDownload } from "react-icons/fa";
 import Pagination from "@/components/form/Pagination";
 import { TrackerData } from "@/types/trackerData";
 import MySwal from "@/lib/swal";
-import { formatDateMDY } from "@/lib/helperFunction";
+import { formatDateMDY, formatYMD } from "@/lib/helperFunction";
 
 export default function TrackerDataReport({ clientList }) {
   const router = useRouter();
@@ -58,7 +58,35 @@ export default function TrackerDataReport({ clientList }) {
   };
 
   useEffect(() => {
-    if (clientList.length > 0 && trackerClient === "") {
+    const sessionData = sessionStorage.getItem("trackerClient");
+
+    if (sessionData) {
+      const { clientId, xAxisLegend } = JSON.parse(sessionData);
+
+      setTrackerClient(clientId);
+      setAppliedClientId(clientId);
+
+      if (xAxisLegend.includes(" - ")) {
+        const [startStr, endStr] = xAxisLegend.split(" - ");
+
+        const startDate = new Date(startStr);
+        const endDate = new Date(endStr);
+
+        setTrackerStart(formatYMD(startDate));
+        setAppliedTrackerStart(formatYMD(startDate));
+        setTrackerEnd(formatYMD(endDate));
+        setAppliedTrackerEnd(formatYMD(endDate));
+      } else {
+        const date = new Date(xAxisLegend);
+
+        setTrackerStart(formatYMD(date));
+        setAppliedTrackerStart(formatYMD(date));
+        setTrackerEnd(formatYMD(date));
+        setAppliedTrackerEnd(formatYMD(date));
+      }
+
+      sessionStorage.removeItem("trackerClient");
+    } else if (clientList.length > 0 && trackerClient === "") {
       const firstValidClient = clientList.find(
         (client) => client.id !== 0 && client.id !== null
       );

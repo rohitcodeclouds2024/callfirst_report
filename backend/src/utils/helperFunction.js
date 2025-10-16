@@ -1,4 +1,5 @@
 export function formatDateRangeLabel(startDate, endDate, sameYear) {
+   sameYear = false;
    const startObj = new Date(startDate);
    const endObj = new Date(endDate);
 
@@ -17,6 +18,7 @@ export function formatDateRangeLabel(startDate, endDate, sameYear) {
 }
 
 export function groupData({ dateArray, dataMap, startDate, endDate, sameYear, field,sendas}) {
+   sameYear = false;
    const diffDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
    const groupedData = [];
 
