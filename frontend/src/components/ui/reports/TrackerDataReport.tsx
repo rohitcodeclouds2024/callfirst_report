@@ -195,7 +195,7 @@ export default function TrackerDataReport({ clientList }) {
             {trackerLoading ? "Loading..." : "Fetch Tracker"}
           </button>
           <button type="button" className="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300" disabled={ trackerLoading } onClick={ handleDownload }>
-            { trackerLoading ? <FaSpinner className="animate-spin" /> : <FaCloudDownloadAlt className="block" size={ 24 }  /> }
+            { trackerLoading ? <FaSpinner className="block animate-spin" size={ 24 } /> : <FaCloudDownloadAlt className="block" size={ 24 }  /> }
             <span className="block md:hidden">{ trackerLoading ? "Preparing..." : "Download" }</span>
           </button>
         </form>
