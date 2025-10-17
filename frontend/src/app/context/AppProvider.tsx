@@ -21,6 +21,7 @@ export interface AppContextType {
   clients: Client[];
   permissions: UserPermission[];
   permissionMap: string[];
+  rolesMap: string[];
   reloadClients: () => Promise<void>;
   reloadPermissions: () => Promise<void>;
 }
@@ -35,6 +36,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [clients, setClients] = useState<Client[]>([]);
   const [permissions, setPermissions] = useState<UserPermission[]>([]);
   const [permissionMap, setPermissionMap] = useState<string[]>([]);
+  const [rolesMap, setRolesMap] = useState<string[]>([]);
 
   // Fetch clients
   const fetchClients = async () => {
@@ -58,6 +60,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       // Create flat array of permission names (datamap)
       const names: string[] = perms.map((p) => p.name);
       setPermissionMap(names);
+      setRolesMap(rolesMap);
     } catch (err) {
       // toast.error("Failed to load permissions");
     }
@@ -77,6 +80,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         clients,
         permissions,
         permissionMap,
+        rolesMap,
         reloadClients: fetchClients,
         reloadPermissions: fetchPermissions,
       }}

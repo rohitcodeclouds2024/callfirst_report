@@ -303,7 +303,7 @@ export default async function registerUsersRoutes(fastify) {
 
       		const uniqueRolesMap = uniqueRoles.map((r) => r.name);
 
-      		return reply.send({ data: uniquePermissions, dataMap:uniquePermissionsMap, roles:roles,uniqueRolesMap:uniqueRolesMap });
+      		return reply.send({ data: uniquePermissions, dataMap:uniquePermissionsMap, roles:roles, rolesMap:uniqueRolesMap });
     	} catch (err) {
       		console.error("Error fetching permissions:", err);
       		return reply.status(500).send({ message: "Internal server error" });

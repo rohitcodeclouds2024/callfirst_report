@@ -7,6 +7,7 @@ import ConversionPercentage from "@/components/ui/reports/graphs/ConversionPerce
 import NumberContacts from "@/components/ui/reports/graphs/NumberContacts";
 import DialedNumber from "@/components/ui/reports/graphs/DialedNumber";
 import LeadUploadPieGraph from "@/components/ui/reports/graphs/LeadUploadPieGraph";
+import NetTransfer from "@/components/ui/reports/graphs/NetTransfer";
 
 export default function Dashboard() {
   const { clients } = useAppContext();
@@ -121,26 +122,37 @@ export default function Dashboard() {
         </div>
       </div>
       <div className="grid grid-cols-12 gap-6">
-        <ConversionPercentage
-          selectedClientId={appliedClientId}
-          dateFilter={appliedDateFilter}
-          customRange={appliedCustomRange}
-        />
-        <LeadUploadPieGraph
-          selectedClientId={appliedClientId}
-          dateFilter={appliedDateFilter}
-          customRange={appliedCustomRange}
-        />
-        <NumberContacts
-          selectedClientId={appliedClientId}
-          dateFilter={appliedDateFilter}
-          customRange={appliedCustomRange}
-        />
-        <DialedNumber
-          selectedClientId={appliedClientId}
-          dateFilter={appliedDateFilter}
-          customRange={appliedCustomRange}
-        />
+        <div className="col-span-12">
+          <NetTransfer
+            selectedClientId={appliedClientId}
+            dateFilter={appliedDateFilter}
+            customRange={appliedCustomRange}
+          />
+        </div>
+
+        <div className="col-span-12 grid grid-cols-12 gap-4">
+          <div className="col-span-12 md:col-span-4">
+            <ConversionPercentage
+              selectedClientId={appliedClientId}
+              dateFilter={appliedDateFilter}
+              customRange={appliedCustomRange}
+            />
+          </div>
+          <div className="col-span-12 md:col-span-4">
+            <NumberContacts
+              selectedClientId={appliedClientId}
+              dateFilter={appliedDateFilter}
+              customRange={appliedCustomRange}
+            />
+          </div>
+          <div className="col-span-12 md:col-span-4">
+            <DialedNumber
+              selectedClientId={appliedClientId}
+              dateFilter={appliedDateFilter}
+              customRange={appliedCustomRange}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

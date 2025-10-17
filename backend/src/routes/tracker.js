@@ -206,6 +206,44 @@ export default async function trackerRoutes(fastify) {
   		}
 	});
 
+	fastify.post("/netTransfer-data", async (request, reply) => {
+  		try {
+    		const { clientId, dateFilter, customRange } = request.body;
+    		if (!clientId) return reply.status(400).send({ message: "clientId is required" });
+
+    		const { startDate, endDate, dateArray } = getDateRangeNewLogic(dateFilter, customRange);
+    		const sameYear = new Date(startDate).getFullYear() === new Date(endDate).getFullYear();
+
+    		const trackerData = await LgTracker.findAll({
+      		where: {
+        			client_id: clientId,
+        			date: { [Op.between]: [startDate, endDate] },
+      		},
+      		order: [["date", "ASC"]],
+      		attributes: ["date", "net_transfer"],
+      		raw: true,
+    		});
+
+    		const dataMap = new Map(trackerData.map(d => [d.date.split("T")[0], { net_transfer: d.net_transfer }]));
+
+    		const groupedData = groupData({
+      		dateArray,
+      		dataMap,
+      		startDate,
+      		endDate,
+      		sameYear,
+      		field: "net_transfer",
+      		sendas: "value",
+    		});
+
+    		return reply.send(groupedData);
+  		} catch (error) {
+    		console.error("Error in /contacts-number:", error);
+    		return reply.status(500).send({ message: "Internal server error" });
+  		}
+	});
+
+
 	fastify.post("/contacts-number", async (request, reply) => {
   		try {
     		const { clientId, dateFilter, customRange } = request.body;
