@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { apiClient } from "@/lib/axios";
 import toast from "react-hot-toast";
 import { GraphProps } from "@/types/graphProps";
+import CustomTooltip from "./tooltip/CustomTooltip";
 
 interface DialedNumberData {
   name: string;
@@ -47,10 +48,7 @@ export default function DialedNumber({
   }, [selectedClientId, dateFilter, customRange]);
 
   return (
-    <Card
-      className="col-span-12 md:col-span-6"
-      title="Number of Dials"
-    >
+    <Card className="col-span-12 md:col-span-6" title="Number of Dials">
       <ResponsiveContainer width="100%" height={260}>
         <AreaChart
           data={numberOfDial}
@@ -76,6 +74,16 @@ export default function DialedNumber({
             }}
           />
           <Tooltip
+            content={
+              <CustomTooltip
+                selectedClientId={selectedClientId}
+                viewBtnColor="#8bc34a80"
+              />
+            }
+            cursor={{ fill: "transparent" }}
+            wrapperStyle={{ pointerEvents: "none" }}
+          />
+          {/* <Tooltip
             contentStyle={{
               fontSize: 14,
               backgroundColor: "var(--color-bg)",
@@ -84,7 +92,7 @@ export default function DialedNumber({
               borderRadius: "0.5rem",
               boxShadow: "0px 2px 4px 0px rgb(0 0 0 / 30%)",
             }}
-          />
+          /> */}
           <Area
             type="monotone"
             dataKey="dials"

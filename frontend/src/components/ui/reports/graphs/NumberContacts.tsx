@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { apiClient } from "@/lib/axios";
 import toast from "react-hot-toast";
 import { GraphProps } from "@/types/graphProps";
+import CustomTooltip from "./tooltip/CustomTooltip";
 
 interface NumberContactsData {
   name: string;
@@ -76,6 +77,16 @@ export default function NumberContacts({
             }}
           />
           <Tooltip
+            content={
+              <CustomTooltip
+                selectedClientId={selectedClientId}
+                viewBtnColor="#673ab7"
+              />
+            }
+            cursor={{ fill: "transparent" }}
+            wrapperStyle={{ pointerEvents: "none" }}
+          />
+          {/* <Tooltip
             contentStyle={{
               fontSize: 14,
               backgroundColor: "var(--color-bg)",
@@ -84,7 +95,7 @@ export default function NumberContacts({
               borderRadius: "0.5rem",
               boxShadow: "0px 2px 4px 0px rgb(0 0 0 / 30%)",
             }}
-          />
+          /> */}
           <Line
             type="monotone"
             dataKey="contacts"

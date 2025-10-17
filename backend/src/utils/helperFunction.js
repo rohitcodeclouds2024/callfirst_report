@@ -38,7 +38,7 @@ export function groupData({ dateArray, dataMap, startDate, endDate, sameYear, fi
    } else {
       dateArray.forEach(date => {
          groupedData.push({
-            name: new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+            name: new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric" ,...(sameYear ? {} : { year: "2-digit" }),}),
             [sendas]: dataMap.get(date)?.[field] || 0,
          });
       });

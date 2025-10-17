@@ -78,7 +78,12 @@ export default function ConversionPercentage({
             }}
           />
           <Tooltip
-            content={<CustomTooltip selectedClientId={selectedClientId} />}
+            content={
+              <CustomTooltip
+                selectedClientId={selectedClientId}
+                viewBtnColor="#00bcd4"
+              />
+            }
             cursor={{ fill: "transparent" }}
             wrapperStyle={{ pointerEvents: "none" }}
           />

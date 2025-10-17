@@ -6,6 +6,7 @@ interface CustomTooltipProps {
   label?: string;
   coordinate?: { x: number; y: number };
   selectedClientId?: number | string;
+  viewBtnColor?: string;
 }
 
 const CustomTooltip: React.FC<CustomTooltipProps> = ({
@@ -14,6 +15,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
   label,
   coordinate,
   selectedClientId,
+  viewBtnColor,
 }) => {
   const router = useRouter();
   if (active && payload && payload.length) {
@@ -61,7 +63,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
             cursor: "pointer",
             fontSize: "0.75rem",
             fontWeight: 500,
-            color: "#00bcd4",
+            color: viewBtnColor,
             textDecoration: "underline",
           }}
           onClick={handleViewClick}
