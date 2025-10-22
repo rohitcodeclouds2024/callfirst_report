@@ -15,31 +15,30 @@ import { apiClient } from "@/lib/axios";
 import toast from "react-hot-toast";
 import { GraphProps } from "@/types/graphProps";
 import CustomTooltip from "./tooltip/CustomTooltip";
-import ChartSettingsMenu from "./ChartSettingsMenu";
 
-interface NetTransferData {
+interface ConversionData {
   name: string;
-  value: number;
+  conversion: number;
 }
 
-export default function NetTransfer({
+export default function ConversionPercentage({
   selectedClientId,
   dateFilter,
   customRange,
 }: GraphProps) {
-  const [netTransferData, setNetTransferData] = useState<NetTransferData[]>([]);
+  const [conversionData, setConversionData] = useState<ConversionData[]>([]);
 
   useEffect(() => {
     if (!selectedClientId) return;
 
     const fetchConversion = async () => {
       try {
-        const res = await apiClient.post(`/netTransfer-data`, {
+        const res = await apiClient.post(`/conversion-percentage`, {
           clientId: selectedClientId,
           dateFilter,
           customRange,
         });
-        setNetTransferData(res.data);
+        setConversionData(res.data);
       } catch (err) {
         toast.error("Failed to fetch conversion data");
       }
@@ -48,32 +47,14 @@ export default function NetTransfer({
     fetchConversion();
   }, [selectedClientId, dateFilter, customRange]);
 
-  // console.log(netTransferData);
-
   return (
     <Card
       className="col-span-12 md:col-span-6 lg:col-span-8"
-      title={
-        <div className="flex justify-between items-center">
-          <span>Net Transfer</span>
-          <ChartSettingsMenu
-            options={[
-              {
-                label: "Download ",
-                url: `/download/netTransfer?clientId=${selectedClientId}&column=value`,
-              },
-              {
-                label: "View Report",
-                url: `/view/netTransfer?clientId=${selectedClientId}`,
-              },
-            ]}
-          />
-        </div>
-      }
+      title="Conversion Percentage"
     >
-      <ResponsiveContainer width="100%" height={310}>
+      <ResponsiveContainer width="100%" height={260}>
         <BarChart
-          data={netTransferData}
+          data={conversionData}
           margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
           className="text-primary"
         >
@@ -90,7 +71,7 @@ export default function NetTransfer({
             height={110}
           />
           <YAxis
-            tickFormatter={(value) => `${value}`}
+            tickFormatter={(value) => `${value}%`}
             tick={{
               fill: "var(--color-text)",
               fontSize: 10,
@@ -100,8 +81,7 @@ export default function NetTransfer({
             content={
               <CustomTooltip
                 selectedClientId={selectedClientId}
-                viewBtnColor="#6e83e2ff"
-                type="1"
+                viewBtnColor="#00bcd4"
               />
             }
             cursor={{ fill: "transparent" }}
@@ -119,7 +99,7 @@ export default function NetTransfer({
             }}
             cursor={{ fill: "transparent" }}
           /> */}
-          <Bar dataKey="value" fill="#6e83e2ff" radius={[8, 8, 0, 0]} />
+          <Bar dataKey="conversion" fill="#00bcd4" radius={[8, 8, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </Card>

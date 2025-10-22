@@ -8,6 +8,7 @@ import NumberContacts from "@/components/ui/reports/graphs/NumberContacts";
 import DialedNumber from "@/components/ui/reports/graphs/DialedNumber";
 import LeadUploadPieGraph from "@/components/ui/reports/graphs/LeadUploadPieGraph";
 import NetTransfer from "@/components/ui/reports/graphs/NetTransfer";
+import GrossTransfer from "@/components/ui/reports/graphs/GrossTransfer";
 
 export default function Dashboard() {
   const { clients } = useAppContext();
@@ -139,14 +140,14 @@ export default function Dashboard() {
             />
           </div>
           <div className="col-span-12 md:col-span-4">
-            <NumberContacts
+            <DialedNumber
               selectedClientId={appliedClientId}
               dateFilter={appliedDateFilter}
               customRange={appliedCustomRange}
             />
           </div>
           <div className="col-span-12 md:col-span-4">
-            <DialedNumber
+            <GrossTransfer
               selectedClientId={appliedClientId}
               dateFilter={appliedDateFilter}
               customRange={appliedCustomRange}

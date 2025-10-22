@@ -5,7 +5,8 @@ import { useParams, useRouter } from "next/navigation";
 import useApi from "@/lib/useApi";
 import { apiClient } from "@/lib/axios";
 import Card from "@/components/ui/card/Card";
-import Select from "react-select"
+import Select from "react-select";
+import toast from "react-hot-toast";
 
 interface User {
   id: number;
@@ -133,6 +134,7 @@ export default function UserFormPage() {
           revenue_per_transfer: formData.revenue_per_transfer,
         });
       }
+      toast.success("User details saved successfully!");
 
       router.push("/admin/users");
     } catch (err) {
@@ -276,16 +278,18 @@ export default function UserFormPage() {
             <Select
               isMulti
               name="role_id"
-              options={ roles.map( ( role ) => ( {
+              options={roles.map((role) => ({
                 value: role.id,
                 label: role.name,
-              } ) ) }
+              }))}
               className="custom-select"
               classNamePrefix="select"
-              value={ roles.filter( ( role ) => formData.role_id.includes( role.id ) ).map( ( role ) => ( { value: role.id, label: role.name } ) ) }
-              onChange={ ( selectedOptions ) => {
-                const values = selectedOptions.map( ( opt ) => opt.value );
-                setFormData( ( prev ) => ( { ...prev, role_id: values } ) );
+              value={roles
+                .filter((role) => formData.role_id.includes(role.id))
+                .map((role) => ({ value: role.id, label: role.name }))}
+              onChange={(selectedOptions) => {
+                const values = selectedOptions.map((opt) => opt.value);
+                setFormData((prev) => ({ ...prev, role_id: values }));
               }}
             />
           </div>

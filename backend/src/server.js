@@ -16,6 +16,7 @@ import registerVoiceRoutes from './routes/voice.js';
 import registerVoiceStatusRoutes from "./routes/voice-status.js";
 import trackerRoutes from "./routes/tracker.js";
 import uploadRoutes from "./routes/upload.js";
+import revenueRoutes from "./routes/revenue.js";
 import User from './models/user.js'; // Sequelize model
 import { twilioRestClient, TWILIO_FROM_NUMBER } from './lib/twilio.js';
 
@@ -66,6 +67,7 @@ async function build() {
 	await registerVoiceStatusRoutes(fastify);
 	await trackerRoutes(fastify);
 	await uploadRoutes(fastify);
+	await revenueRoutes(fastify);
 
 	fastify.get('/_ping', async () => ({ pong: true, ts: Date.now() }));
 	fastify.get('/health', async () => ({ status: 'ok' }));

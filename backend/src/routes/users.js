@@ -53,51 +53,66 @@ export default async function registerUsersRoutes(fastify) {
 		}
 	);
 
-	fastify.get(
-		'/users',
-		// If you want this endpoint protected, uncomment the line below:
-		{ preValidation: [fastify.authenticate] },
-		async (request, reply) => {
-			try {
-				const page = Math.max(1, Number(request.query.page) || 1);
-				const perPage = Math.max(1, Math.min(100, Number(request.query.perPage) || 20));
-				const keyword = (request.query.keyword || '').trim();
+  	fastify.get(
+    	"/users",
+    	{
+      		preValidation: [fastify.authenticate],
+    	},
+    	async (request, reply) => {
+	      	try {
+	        	const page = Math.max(1, Number(request.query.page) || 1);
+	        	const perPage = Math.max(1, Math.min(100, Number(request.query.perPage) || 20));
+	        	const keyword = (request.query.keyword || "").trim();
 
-				const where = {};
-				if (keyword) {
-					where[Op.or] = [
-						{ email: { [Op.like]: `%${keyword}%` } },
-						{ name: { [Op.like]: `%${keyword}%` } },
-						{ slug: { [Op.like]: `%${keyword}%` } },
-						{ twilio_identity: { [Op.like]: `%${keyword}%` } },
-					];
-				}
+	        	// Build WHERE condition for search
+	        	const where = {};
+	        	if (keyword) {
+	          		where[Op.or] = [
+	            		{ email: { [Op.like]: `%${keyword}%` } },
+	            		{ name: { [Op.like]: `%${keyword}%` } },
+	            		{ slug: { [Op.like]: `%${keyword}%` } },
+	            		{ twilio_identity: { [Op.like]: `%${keyword}%` } },
+	          		];
+	        	}
 
-				const offset = (page - 1) * perPage;
-				const { rows, count } = await User.findAndCountAll({
-					where,
-					limit: perPage,
-					offset,
-					order: [['id', 'ASC']],
-					attributes: { exclude: ['password'] },
-				});
+	        	// Pagination offset
+	        	const offset = (page - 1) * perPage;
 
-				return reply.send({
-					data: rows,
-					meta: {
-						page,
-						perPage,
-						total: count,
-						totalPages: Math.ceil(count / perPage),
-					},
-				});
-			} catch (err) {
-				fastify.log.error(err);
-				return reply.status(500).send({ error: 'list_failed' });
-			}
-		}
-	);
+	        	// Fetch users with count for pagination
+	        	const { rows, count } = await User.findAndCountAll({
+	          		where,
+	          		include: [
+		            	{
+		              		model: Role,
+		              		attributes: ["id", "name"],
+		              		through: { attributes: [] },
+		            	},
+		          	],
+		          	limit: perPage,
+	          		offset,
+	          		order: [["id", "ASC"]],
+	          		attributes: { exclude: ["password"] },
+	        	});
 
+	        	return reply.send({
+	          		success: true,
+	          		data: rows,
+	          		meta: {
+	            		page,
+	            		perPage,
+	            		total: count,
+	            		totalPages: Math.ceil(count / perPage),
+	          		},
+	        	});
+	     	} catch (err) {
+	        	fastify.log.error("Error fetching users:", err);
+	        	return reply.status(500).send({
+	          		success: false,
+	          		error: "An error occurred while fetching user list",
+	        	});
+	      	}
+	    }
+  	);
 
 	fastify.get(
     	"/users/:id",

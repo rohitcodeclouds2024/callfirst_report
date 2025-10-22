@@ -7,6 +7,7 @@ interface CustomTooltipProps {
   coordinate?: { x: number; y: number };
   selectedClientId?: number | string;
   viewBtnColor?: string;
+  type?: string;
 }
 
 const CustomTooltip: React.FC<CustomTooltipProps> = ({
@@ -16,6 +17,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
   coordinate,
   selectedClientId,
   viewBtnColor,
+  type,
 }) => {
   const router = useRouter();
   if (active && payload && payload.length) {
@@ -53,7 +55,10 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({
     return (
       <div style={style}>
         <div>
-          <strong>{`${value}%`}</strong>
+          <strong>
+            {value}
+            {Number(type) == 2 && "%"}
+          </strong>
         </div>
         <button
           style={{

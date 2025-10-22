@@ -78,6 +78,7 @@ export default function DialedNumber({
               <CustomTooltip
                 selectedClientId={selectedClientId}
                 viewBtnColor="#8bc34a80"
+                type="1"
               />
             }
             cursor={{ fill: "transparent" }}

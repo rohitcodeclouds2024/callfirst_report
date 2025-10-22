@@ -1,9 +1,9 @@
 "use client";
 
 import {
-  Bar,
-  BarChart,
   CartesianGrid,
+  Line,
+  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -53,7 +53,7 @@ export default function ConversionPercentage({
       title="Conversion Percentage"
     >
       <ResponsiveContainer width="100%" height={260}>
-        <BarChart
+        <LineChart
           data={conversionData}
           margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
           className="text-primary"
@@ -70,6 +70,7 @@ export default function ConversionPercentage({
             textAnchor="end"
             height={110}
           />
+
           <YAxis
             tickFormatter={(value) => `${value}%`}
             tick={{
@@ -81,14 +82,14 @@ export default function ConversionPercentage({
             content={
               <CustomTooltip
                 selectedClientId={selectedClientId}
-                viewBtnColor="#00bcd4"
+                viewBtnColor="#673ab7"
+                type="2"
               />
             }
             cursor={{ fill: "transparent" }}
             wrapperStyle={{ pointerEvents: "none" }}
           />
           {/* <Tooltip
-            formatter={(value) => `${value}%`}
             contentStyle={{
               fontSize: 14,
               backgroundColor: "var(--color-bg)",
@@ -97,10 +98,16 @@ export default function ConversionPercentage({
               borderRadius: "0.5rem",
               boxShadow: "0px 2px 4px 0px rgb(0 0 0 / 30%)",
             }}
-            cursor={{ fill: "transparent" }}
           /> */}
-          <Bar dataKey="conversion" fill="#00bcd4" radius={[8, 8, 0, 0]} />
-        </BarChart>
+          <Line
+            type="monotone"
+            dataKey="conversion"
+            stroke="#673ab7"
+            strokeWidth={2}
+            dot={{ r: 4 }}
+            activeDot={{ r: 6 }}
+          />
+        </LineChart>
       </ResponsiveContainer>
     </Card>
   );
