@@ -7,37 +7,57 @@ import { sequelize } from '../lib/db.js';
 
 import Revenue from "../models/revenue.js";
 import User from "../models/user.js";
+import RevenueOffer from "../models/revenueOffer.js";
 
 const include = [
-        {
-          model: User,
-          as: "client",
-          attributes: ["id", "name", "email"],
-          required: true,
-        },
-      ];
+   {
+      model: User,
+      as: "client", // matches Revenue.belongsTo(User, { as: 'client' })
+      attributes: ["id", "name", "email"],
+      required: true,
+   },
+   {
+      model: RevenueOffer,
+      as: "offers", // matches Revenue.hasMany(RevenueOffer, { as: 'offers' })
+      attributes: ["id", "offer_percentage", "start_date", "end_date"],
+   },
+];
 
 export default async function revenueRoutes(fastify, opts) {
 
    fastify.post("/revenue", async (req, reply) => {
       try {
-         const body = { ...req.body };
+         const { client_id, revenue_per_conversion, special_offer, offers } = req.body;
 
-         // Normalize date fields
-         if (!body.special_offer_begin_date || body.special_offer_begin_date === "Invalid date") {
-            body.special_offer_begin_date = null;
+         const existingRevenue = await Revenue.findOne({ where: { client_id } });
+
+         if (existingRevenue) {
+            return reply.status(400).send({
+               success: false,
+               message: "Revenue already exists for this client.",
+            });
          }
-         if (!body.special_offer_valid_till || body.special_offer_valid_till === "Invalid date") {
-            body.special_offer_valid_till = null;
+
+         const revenue = await Revenue.create({
+            client_id,
+            revenue_per_conversion,
+            special_offer,
+         });
+
+         if (special_offer && offers?.length) {
+            const offerData = offers.map((offer) => ({
+               revenue_id: revenue.id,
+               offer_percentage: offer.offer_percentage,
+               start_date: offer.start_date,
+               end_date: offer.end_date,
+            }));
+            await RevenueOffer.bulkCreate(offerData);
          }
 
-         // Create record
-         const revenue = await Revenue.create(body);
-
-         return reply.send({ success: true, data: revenue });
+         reply.send({ success: true, revenue });
       } catch (err) {
-         fastify.log.error("Revenue create error:", err);
-         return reply.status(500).send({ error: "create_failed" });
+         console.error(err);
+         reply.status(500).send({ error: "Failed to create revenue" });
       }
    });
 
@@ -53,16 +73,36 @@ export default async function revenueRoutes(fastify, opts) {
       }
    });
 
-   // Update
-   fastify.put("/revenue/:id", async (req, reply) => {
+   // PUT /revenue/:id ->update
+   fastify.put("/revenue/:id", async (req, res) => {
       try {
-         const revenue = await Revenue.findByPk(req.params.id);
-         if (!revenue) return reply.status(404).send({ error: "not_found" });
-         await revenue.update(req.body);
-         return reply.send({ success: true, data: revenue });
+         const id = req.params.id;
+         const { client_id, revenue_per_conversion, special_offer, offers } = req.body;
+
+         const revenue = await Revenue.findByPk(id);
+         if (!revenue) return res.status(404).send({ error: "Revenue not found" });
+
+         await revenue.update({ client_id, revenue_per_conversion, special_offer });
+
+         // Delete old offers
+         await RevenueOffer.destroy({ where: { revenue_id: id } });
+
+         // Add new offers
+         if (special_offer && offers?.length) {
+            for (const offer of offers) {
+               await RevenueOffer.create({
+                  revenue_id: id,
+                  offer_percentage: offer.offer_percentage,
+                  start_date: offer.start_date,
+                  end_date: offer.end_date,
+               });
+            }
+         }
+
+         res.send({ success: true, revenue });
       } catch (err) {
-         fastify.log.error(err);
-         return reply.status(500).send({ error: "update_failed" });
+         console.error(err);
+         res.status(500).send({ error: "Failed to update revenue" });
       }
    });
 

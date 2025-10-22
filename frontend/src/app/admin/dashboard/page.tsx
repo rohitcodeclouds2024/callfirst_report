@@ -4,9 +4,7 @@ import { apiClient } from "@/lib/axios";
 import React, { useEffect, useState } from "react";
 import { useAppContext } from "@/app/context/AppProvider";
 import ConversionPercentage from "@/components/ui/reports/graphs/ConversionPercentage";
-import NumberContacts from "@/components/ui/reports/graphs/NumberContacts";
 import DialedNumber from "@/components/ui/reports/graphs/DialedNumber";
-import LeadUploadPieGraph from "@/components/ui/reports/graphs/LeadUploadPieGraph";
 import NetTransfer from "@/components/ui/reports/graphs/NetTransfer";
 import GrossTransfer from "@/components/ui/reports/graphs/GrossTransfer";
 

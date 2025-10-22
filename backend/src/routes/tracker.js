@@ -450,7 +450,7 @@ export default async function trackerRoutes(fastify) {
 	      	}
 
 	      	if(count != gross_transfer){
-	      		return reply.status(400).send({ error: "Trying to attempt wrong file" });
+	      		return reply.status(400).send({ error: "Trying to attempt wrong file" ,count:count,gross_transfer:gross_transfer});
 	      	}
 
    			let tracker;

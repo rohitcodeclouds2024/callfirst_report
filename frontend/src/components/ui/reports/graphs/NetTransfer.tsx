@@ -57,16 +57,9 @@ export default function NetTransfer({
         <div className="flex justify-between items-center">
           <span>Net Transfer</span>
           <ChartSettingsMenu
-            options={[
-              {
-                label: "Download ",
-                url: `/download/netTransfer?clientId=${selectedClientId}&column=value`,
-              },
-              {
-                label: "View Report",
-                url: `/view/netTransfer?clientId=${selectedClientId}`,
-              },
-            ]}
+            selectedClientId={selectedClientId}
+            dateFilter={dateFilter}
+            customRange={customRange}
           />
         </div>
       }

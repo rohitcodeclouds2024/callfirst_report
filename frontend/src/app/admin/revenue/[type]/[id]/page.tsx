@@ -6,22 +6,22 @@ import { apiClient } from "@/lib/axios";
 import Card from "@/components/ui/card/Card";
 import Select from "react-select";
 import { toast } from "react-hot-toast";
+import { FaTimes, FaPlus } from "react-icons/fa";
 
 interface Client {
   id: number;
   name: string;
 }
-
+interface RevenueOffer {
+  offer_percentage: number;
+  start_date: string;
+  end_date: string;
+}
 interface RevenueData {
   client_id: number;
   revenue_per_conversion: number;
   special_offer: boolean;
-  special_offer_revenue: number;
-  special_offer_begin_date: string;
-  special_offer_valid_till: string;
-  client?: {
-    name: string;
-  };
+  offers: RevenueOffer[];
 }
 
 export default function RevenueFormPage() {
@@ -37,18 +37,13 @@ export default function RevenueFormPage() {
     client_id: 0,
     revenue_per_conversion: 0,
     special_offer: false,
-    special_offer_revenue: 0,
-    special_offer_begin_date: "",
-    special_offer_valid_till: "",
+    offers: [{ offer_percentage: 10, start_date: "", end_date: "" }], // default
   });
 
   useEffect(() => {
     fetchClients();
-    if (type === 2 || type === 3) {
-      fetchRevenue();
-    } else {
-      setLoading(false);
-    }
+    if (type === 2 || type === 3) fetchRevenue();
+    else setLoading(false);
   }, [id, type]);
 
   const fetchClients = async () => {
@@ -56,7 +51,7 @@ export default function RevenueFormPage() {
       const { data } = await apiClient.get("/clients");
       setClients(data.data || []);
     } catch (err) {
-      console.error("Failed to fetch clients", err);
+      console.error(err);
     }
   };
 
@@ -67,91 +62,129 @@ export default function RevenueFormPage() {
         client_id: data.client_id,
         revenue_per_conversion: data.revenue_per_conversion,
         special_offer: data.special_offer,
-        special_offer_revenue: data.special_offer_revenue,
-        special_offer_begin_date: data.special_offer_begin_date || "",
-        special_offer_valid_till: data.special_offer_valid_till || "",
-        client: data.client ? { name: data.client.name } : undefined,
+        offers: data.offers?.length
+          ? data.offers
+          : [{ offer_percentage: 10, start_date: "", end_date: "" }],
       });
     } catch (err) {
-      console.error("Failed to fetch revenue record", err);
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const target = e.target;
-    const { name, value } = target;
-
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]:
-        target instanceof HTMLInputElement && target.type === "checkbox"
-          ? target.checked
-          : value,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleOfferChange = (
+    index: number,
+    field: string,
+    value: string | number
+  ) => {
+    const updatedOffers = [...formData.offers];
+    updatedOffers[index][field] = value;
+    setFormData((prev) => ({ ...prev, offers: updatedOffers }));
+  };
+
+  const addOffer = () => {
+    setFormData((prev) => ({
+      ...prev,
+      offers: [
+        ...prev.offers,
+        { offer_percentage: 10, start_date: "", end_date: "" },
+      ],
+    }));
+  };
+
+  const removeOffer = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      offers: prev.offers.filter((_, i) => i !== index),
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.client_id) {
+      toast.error("Please select a client");
+      return;
+    }
 
-    try {
-      if (type === 1) {
-        await apiClient.post("/revenue", formData);
-      } else if (type === 2) {
-        await apiClient.put(`/revenue/${id}`, formData);
+    if (
+      !formData.revenue_per_conversion ||
+      formData.revenue_per_conversion <= 0
+    ) {
+      toast.error("Please enter a valid revenue per conversion");
+      return;
+    }
+    if (formData.special_offer) {
+      if (!formData.offers || formData.offers.length === 0) {
+        toast.error("Please add at least one offer");
+        return;
       }
+
+      formData.offers.forEach((offer, index) => {
+        if (!offer.offer_percentage || offer.offer_percentage <= 0) {
+          toast.error(`Offer ${index + 1}: Enter a valid offer percentage`);
+          throw new Error("Validation failed");
+        }
+
+        if (!offer.start_date) {
+          toast.error(`Offer ${index + 1}: Start date is required`);
+          throw new Error("Validation failed");
+        }
+
+        if (!offer.end_date) {
+          toast.error(`Offer ${index + 1}: End date is required`);
+          throw new Error("Validation failed");
+        }
+
+        if (new Date(offer.end_date) < new Date(offer.start_date)) {
+          toast.error(
+            `Offer ${index + 1}: End date cannot be before start date`
+          );
+          throw new Error("Validation failed");
+        }
+      });
+
+      const offers = formData.offers.map((o) => ({
+        start: new Date(o.start_date),
+        end: new Date(o.end_date),
+      }));
+
+      for (let i = 0; i < offers.length; i++) {
+        for (let j = i + 1; j < offers.length; j++) {
+          const a = offers[i];
+          const b = offers[j];
+
+          // Check if ranges overlap
+          if (a.start <= b.end && b.start <= a.end) {
+            toast.error(
+              `Offer ${i + 1} and Offer ${j + 1} have overlapping dates`
+            );
+            throw new Error("Validation failed");
+          }
+        }
+      }
+    }
+    try {
+      if (type === 1) await apiClient.post("/revenue", formData);
+      else if (type === 2) await apiClient.put(`/revenue/${id}`, formData);
 
       toast.success("Revenue details saved successfully!");
       router.push("/admin/revenue");
     } catch (err) {
-      console.error("Failed to save revenue", err);
-      alert("Something went wrong!");
+      console.error(err);
+      toast.error("Revenue already exists for this client");
     }
   };
 
   if (loading) return <div className="p-6">Loading...</div>;
-
-  if (type === 3 && formData) {
-    return (
-      <div className="user-details-wrapper">
-        <h3 className="text-2xl font-semibold mb-4">User Details</h3>
-        <Card>
-          <ul className="flex flex-col gap-4">
-            <li>
-              <strong>Clients Name:</strong> {formData.client?.name}
-            </li>
-            <li>
-              <strong>Revenue per Conversion:</strong>{" "}
-              {formData.revenue_per_conversion}
-            </li>
-            <li>
-              <strong>Special Offer:</strong>{" "}
-              {formData.special_offer ? "Enabled" : "Disabled"}
-            </li>
-            {formData.special_offer && (
-              <>
-                <li>
-                  <strong>Special Offer Revenue:</strong>{" "}
-                  {formData.special_offer_revenue}
-                </li>
-                <li>
-                  <strong>Offer Start Date:</strong>{" "}
-                  {formData.special_offer_begin_date}
-                </li>
-                <li>
-                  <strong>Offer Valid Till:</strong>{" "}
-                  {formData.special_offer_valid_till}
-                </li>
-              </>
-            )}
-          </ul>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="user-wrapper">
@@ -161,17 +194,11 @@ export default function RevenueFormPage() {
 
       <Card>
         <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-6">
-          {/* Client */}
+          {/* First Row: Client & Revenue per Conversion */}
           <div className="col-span-12 md:col-span-6">
             <label className="block text-sm font-medium mb-2">Client</label>
             <Select
-              name="client_id"
-              options={clients.map((client) => ({
-                value: client.id,
-                label: client.name,
-              }))}
-              className="custom-select"
-              classNamePrefix="select"
+              options={clients.map((c) => ({ value: c.id, label: c.name }))}
               value={
                 clients
                   .filter((c) => c.id === formData.client_id)
@@ -185,8 +212,6 @@ export default function RevenueFormPage() {
               }
             />
           </div>
-
-          {/* Revenue per Conversion */}
           <div className="col-span-12 md:col-span-6">
             <label className="block text-sm font-medium mb-2">
               Revenue per Conversion
@@ -196,76 +221,104 @@ export default function RevenueFormPage() {
               name="revenue_per_conversion"
               value={formData.revenue_per_conversion}
               onChange={handleChange}
-              placeholder="Enter revenue per conversion"
-              className="w-full px-4 py-3 border border-border rounded-md focus:outline-none focus:border-primary"
-              required
+              className="w-full px-4 py-3 border border-border rounded-md"
             />
           </div>
 
-          {/* Special Offer Toggle */}
-          <div className="col-span-12 md:col-span-6 flex items-center gap-3">
+          {/* Second Row: Special Offer Toggle */}
+          <div className="col-span-12 flex items-center gap-3">
             <input
               type="checkbox"
               name="special_offer"
               checked={formData.special_offer}
               onChange={handleChange}
-              id="special_offer"
             />
-            <label htmlFor="special_offer" className="text-sm font-medium">
-              Enable Special Offer
-            </label>
+            <label className="text-sm font-medium">Enable Special Offer</label>
           </div>
 
+          {/* Third Row: Multiple Offers */}
           {formData.special_offer && (
-            <>
-              <br />
-              <div className="col-span-12 md:col-span-6">
-                <label className="block text-sm font-medium mb-2">
-                  Special Offer Revenue
-                </label>
-                <input
-                  type="number"
-                  name="special_offer_revenue"
-                  value={formData.special_offer_revenue}
-                  onChange={handleChange}
-                  placeholder="Enter special offer revenue"
-                  className="w-full px-4 py-3 border border-border rounded-md focus:outline-none focus:border-primary"
-                />
-              </div>
+            <div className="col-span-12 space-y-4 mt-2">
+              {formData.offers.map((offer, index) => (
+                <div
+                  key={index}
+                  className="relative border border-border rounded-md p-4 grid grid-cols-12 gap-4 items-end bg-white shadow-sm"
+                >
+                  {/* Remove Button in Top-Right */}
+                  <button
+                    title="Remove Offer"
+                    type="button"
+                    onClick={() => removeOffer(index)}
+                    className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                  >
+                    <FaTimes />
+                  </button>
 
-              <div className="col-span-12 md:col-span-6">
-                <label className="block text-sm font-medium mb-2">
-                  Offer Start Date
-                </label>
-                <input
-                  type="date"
-                  name="special_offer_begin_date"
-                  value={formData.special_offer_begin_date}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-border rounded-md focus:outline-none focus:border-primary"
-                />
-              </div>
+                  {/* Offer % */}
+                  <div className="col-span-12 md:col-span-4">
+                    <label className="block text-sm font-medium mb-2">
+                      Offer %
+                    </label>
+                    <input
+                      type="number"
+                      value={offer.offer_percentage}
+                      onChange={(e) =>
+                        handleOfferChange(
+                          index,
+                          "offer_percentage",
+                          Number(e.target.value)
+                        )
+                      }
+                      className="w-full px-4 py-3 border border-border rounded-md"
+                    />
+                  </div>
 
-              <div className="col-span-12 md:col-span-6">
-                <label className="block text-sm font-medium mb-2">
-                  Offer Valid Till
-                </label>
-                <input
-                  type="date"
-                  name="special_offer_valid_till"
-                  value={formData.special_offer_valid_till}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-border rounded-md focus:outline-none focus:border-primary"
-                />
-              </div>
-            </>
+                  {/* Start Date */}
+                  <div className="col-span-12 md:col-span-4">
+                    <label className="block text-sm font-medium mb-2">
+                      Start Date
+                    </label>
+                    <input
+                      type="date"
+                      value={offer.start_date}
+                      onChange={(e) =>
+                        handleOfferChange(index, "start_date", e.target.value)
+                      }
+                      className="w-full px-4 py-3 border border-border rounded-md"
+                    />
+                  </div>
+
+                  {/* End Date */}
+                  <div className="col-span-12 md:col-span-4">
+                    <label className="block text-sm font-medium mb-2">
+                      End Date
+                    </label>
+                    <input
+                      type="date"
+                      value={offer.end_date}
+                      onChange={(e) =>
+                        handleOfferChange(index, "end_date", e.target.value)
+                      }
+                      className="w-full px-4 py-3 border border-border rounded-md"
+                    />
+                  </div>
+                </div>
+              ))}
+              <button
+                title="Add Offer"
+                type="button"
+                onClick={addOffer}
+                className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white font-medium rounded-md shadow hover:bg-green-600 transition-colors duration-200"
+              >
+                <FaPlus size={14} />
+              </button>
+            </div>
           )}
 
-          {/* Submit Button */}
           <div className="col-span-12 flex justify-end mt-4">
             <button
               type="submit"
-              className="px-6 py-2 bg-primary text-white border border-primary rounded-md hover:bg-transparent hover:text-primary transition-all duration-300"
+              className="px-6 py-2 bg-primary text-white rounded-md"
             >
               {type === 1 ? "Create Revenue" : "Update Revenue"}
             </button>

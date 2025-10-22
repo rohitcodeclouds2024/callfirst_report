@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment } from "react";
+import { Fragment, ReactNode } from "react";
 import {
   Menu,
   MenuButton,
@@ -8,13 +8,59 @@ import {
   MenuItems,
   Transition,
 } from "@headlessui/react";
-import { FaCog } from "react-icons/fa";
+import { FaCog, FaDownload } from "react-icons/fa";
+import { MdOutlinePreview } from "react-icons/md";
+import { formatDateRangeLabel, getDateRange } from "@/lib/helperFunction";
+import { useRouter } from "next/navigation";
 
-interface ChartSettingsMenuProps {
-  options: { label: string; url: string }[];
+interface Option {
+  id: number;
+  label: string;
+  icon: ReactNode;
+  onClick: () => void;
 }
 
-export default function ChartSettingsMenu({ options }: ChartSettingsMenuProps) {
+export default function ChartSettingsMenu({
+  selectedClientId,
+  dateFilter,
+  customRange,
+}) {
+  const router = useRouter();
+  const { startDate, endDate } = getDateRange(dateFilter, customRange);
+  const xlabel = formatDateRangeLabel(startDate, endDate, false);
+
+  const options: Option[] = [
+    {
+      id: 1,
+      label: "Download",
+      icon: <FaDownload className="inline-block mr-2" />,
+      onClick: () => {
+        const queryList = new URLSearchParams({
+          client_id: selectedClientId.toString(),
+          start_date: startDate.toString(),
+          end_date: endDate.toString(),
+        }).toString();
+
+        window.open(
+          `${process.env.NEXT_PUBLIC_ADMIN_BASE_URL}/report/tracker-download?${queryList}`,
+          "_blank"
+        );
+      },
+    },
+    {
+      id: 2,
+      label: "View Report",
+      icon: <MdOutlinePreview className="inline-block mr-2" />,
+      onClick: () => {
+        sessionStorage.setItem(
+          "trackerClient",
+          JSON.stringify({ clientId: selectedClientId, xAxisLegend: xlabel })
+        );
+        router.push("/admin/reports/tracker");
+      },
+    },
+  ];
+
   return (
     <Menu as="div" className="relative inline-block text-left">
       <MenuButton className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
@@ -33,18 +79,17 @@ export default function ChartSettingsMenu({ options }: ChartSettingsMenuProps) {
         <MenuItems className="absolute right-0 mt-2 w-44 origin-top-right divide-y divide-gray-100 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
           <div className="py-1">
             {options.map((option) => (
-              <MenuItem key={option.label}>
+              <MenuItem key={option.id}>
                 {({ active }) => (
-                  <a
-                    href={option.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    onClick={option.onClick}
                     className={`${
                       active ? "bg-gray-100 dark:bg-gray-700" : ""
-                    } block px-4 py-2 text-sm text-gray-700 dark:text-gray-200`}
+                    } flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200`}
                   >
+                    {option.icon}
                     {option.label}
-                  </a>
+                  </button>
                 )}
               </MenuItem>
             ))}

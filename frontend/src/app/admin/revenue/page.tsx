@@ -10,24 +10,34 @@ import { apiClient } from "../../../lib/axios";
 import MySwal from "@/lib/swal";
 import Link from "next/link";
 
-// Define Revenue type
+// Revenue Offer type
+interface RevenueOffer {
+  id: number;
+  offer_percentage: number;
+  start_date: string;
+  end_date: string;
+}
+
+// Revenue type
 interface Revenue {
   id: number;
   client_id: number;
   revenue_per_conversion: number;
   special_offer: boolean;
-  special_offer_revenue?: number | null;
-  special_offer_begin_date?: string | null;
-  special_offer_valid_till?: string | null;
   client?: {
+    id: number;
     name: string;
+    email: string;
   };
+  offers?: RevenueOffer[];
 }
 
-// Define meta type
+// Meta type
 interface Meta {
   total: number;
   totalPages: number;
+  page?: number;
+  perPage?: number;
 }
 
 export default function RevenueList() {
@@ -53,15 +63,18 @@ export default function RevenueList() {
     setLoading(true);
     try {
       const { data } = await apiClient.get<{
+        success: boolean;
         data: Revenue[];
         meta: Meta;
       }>("/revenue", {
         params: { page, keyword: searchTerm },
       });
 
-      setRevenues(data.data || []);
-      setTotalPages(data.meta?.totalPages || 1);
-      setTotal(data.meta?.total || 0);
+      if (data.success) {
+        setRevenues(data.data || []);
+        setTotalPages(data.meta?.totalPages || 1);
+        setTotal(data.meta?.total || 0);
+      }
     } catch (err) {
       console.error("Failed to fetch revenue data", err);
     } finally {
@@ -152,10 +165,10 @@ export default function RevenueList() {
         <div className="flex items-center gap-2">
           <Link
             href="/admin/revenue/1/0"
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white border border-primary rounded-md hover:text-primary hover:bg-transparent transition-all duration-300"
+            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white border border-green-600 rounded-md hover:bg-transparent hover:text-green-600 transition-all duration-300"
           >
             <FaPlus size={14} />
-            <span>Create Revenue</span>
+            <span>Add Revenue</span>
           </Link>
           {selected.length > 0 && (
             <button
@@ -186,10 +199,9 @@ export default function RevenueList() {
               </th>
               <th className="p-4 bg-surface">#</th>
               <th className="p-4 bg-surface">Client</th>
-              <th className="p-4 bg-surface">Revenue / Conversion</th>
+              <th className="p-4 bg-surface">Revenue per Conversion</th>
               <th className="p-4 bg-surface">Special Offer</th>
-              <th className="p-4 bg-surface">Offer Revenue</th>
-              <th className="p-4 bg-surface">Valid Dates</th>
+              <th className="p-4 bg-surface">Offer Details</th>
               <th className="p-4 bg-surface">Actions</th>
             </tr>
           </thead>
@@ -216,17 +228,25 @@ export default function RevenueList() {
                     ${rev.revenue_per_conversion.toFixed(2)}
                   </td>
                   <td className="px-4 py-3 bg-surface border-t border-border">
-                    {rev.special_offer ? "Enable" : "Not Enable"}
+                    {rev.special_offer ? "Enabled" : "Disabled"}
                   </td>
                   <td className="px-4 py-3 bg-surface border-t border-border">
-                    {rev.special_offer
-                      ? `$${rev.special_offer_revenue?.toFixed(2) || 0}`
-                      : "-"}
-                  </td>
-                  <td className="px-4 py-3 bg-surface border-t border-border">
-                    {rev.special_offer_begin_date
-                      ? `${rev.special_offer_begin_date} → ${rev.special_offer_valid_till}`
-                      : "-"}
+                    {rev.offers && rev.offers.length > 0 ? (
+                      <ul className="space-y-1">
+                        {rev.offers.map((offer) => (
+                          <li key={offer.id}>
+                            <span className="font-medium">
+                              {offer.offer_percentage}%{" "}
+                            </span>
+                            <span className="text-xs text-gray-500">
+                              ({offer.start_date} → {offer.end_date})
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      "-"
+                    )}
                   </td>
                   <td className="px-4 py-3 bg-surface border-t border-border">
                     <div className="flex gap-2">
