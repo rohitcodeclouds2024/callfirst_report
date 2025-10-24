@@ -13,7 +13,7 @@ import Link from "next/link";
 // Revenue Offer type
 interface RevenueOffer {
   id: number;
-  offer_percentage: number;
+  offer_rate: number;
   start_date: string;
   end_date: string;
 }
@@ -236,7 +236,7 @@ export default function RevenueList() {
                         {rev.offers.map((offer) => (
                           <li key={offer.id}>
                             <span className="font-medium">
-                              {offer.offer_percentage}%{" "}
+                              {offer.offer_rate}%{" "}
                             </span>
                             <span className="text-xs text-gray-500">
                               ({offer.start_date} → {offer.end_date})

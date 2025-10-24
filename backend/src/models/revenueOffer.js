@@ -7,7 +7,7 @@ export const RevenueOffer = sequelize.define(
   {
     id: { type: DataTypes.INTEGER.UNSIGNED, primaryKey: true, autoIncrement: true },
     revenue_id: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false },
-    offer_percentage: { type: DataTypes.FLOAT, allowNull: true },
+    offer_rate: { type: DataTypes.FLOAT, allowNull: true },
     start_date: { type: DataTypes.DATEONLY, allowNull: true },
     end_date: { type: DataTypes.DATEONLY, allowNull: true },
   },

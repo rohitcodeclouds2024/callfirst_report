@@ -14,6 +14,7 @@ import LgTracker from '../models/lgTracker.js';
 
 import { getDateRange,getDateRangeNewLogic } from "../utils/dateRange.js";
 import { formatDateRangeLabel,groupDataMultiple,formatDateMDY } from "../utils/helperFunction.js";
+import { processClientRevenueLogs } from "../utils/processClientRevenueLogs.js";
 
 const include = [
    {
@@ -25,7 +26,7 @@ const include = [
    {
       model: RevenueOffer,
       as: "offers", // matches Revenue.hasMany(RevenueOffer, { as: 'offers' })
-      attributes: ["id", "offer_percentage", "start_date", "end_date"],
+      attributes: ["id", "offer_rate", "start_date", "end_date"],
    },
 ];
 
@@ -53,12 +54,14 @@ export default async function revenueRoutes(fastify, opts) {
          if (special_offer && offers?.length) {
             const offerData = offers.map((offer) => ({
                revenue_id: revenue.id,
-               offer_percentage: offer.offer_percentage,
+               offer_rate: offer.offer_rate,
                start_date: offer.start_date,
                end_date: offer.end_date,
             }));
             await RevenueOffer.bulkCreate(offerData);
          }
+
+         await processClientRevenueLogs(client_id, 200);
 
          reply.send({ success: true, revenue });
       } catch (err) {
@@ -98,12 +101,14 @@ export default async function revenueRoutes(fastify, opts) {
             for (const offer of offers) {
                await RevenueOffer.create({
                   revenue_id: id,
-                  offer_percentage: offer.offer_percentage,
+                  offer_rate: offer.offer_rate,
                   start_date: offer.start_date,
                   end_date: offer.end_date,
                });
             }
          }
+
+         await processClientRevenueLogs(client_id, 200);
 
          res.send({ success: true, revenue });
       } catch (err) {

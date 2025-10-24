@@ -1,7 +1,10 @@
 import LgTracker from '../models/lgTracker.js';
 import UploadedData from "../models/uploadedData.js";
+import RevenueLog from "../models/revenueLog.js";
+import User from "../models/user.js";
 import { getDateRange,getDateRangeNewLogic } from "../utils/dateRange.js";
 import { formatDateRangeLabel,groupData,formatDateMDY } from "../utils/helperFunction.js";
+import { getConversionRate } from "../utils/getConversionRate.js";
 import bcrypt from 'bcrypt';
 import { Op } from "sequelize";
 import { sequelize } from '../lib/db.js';
@@ -54,15 +57,14 @@ export default async function trackerRoutes(fastify) {
      			perPage = 20,
    		} = req.body;
 
-   		if (!client_id) {
-     			return reply.status(400).send({ error: "Client ID is required" });
-   		}
-
    		const pageNum = Math.max(1, Number(page));
    		const limit = Math.max(1, Math.min(100, Number(perPage)));
    		const offset = (pageNum - 1) * limit;
 
-   		const where = { client_id };
+   		const where = {};
+   		if (client_id) {
+     			where.client_id = client_id;
+   		}
 
    		if (start_date && end_date) {
      			where.date = {
@@ -76,6 +78,14 @@ export default async function trackerRoutes(fastify) {
 
    		const { rows, count } = await LgTracker.findAndCountAll({
      			where,
+     			attributes: ['client_id', 'no_of_dials', 'no_of_contacts','gross_transfer','net_transfer','date','id'],
+	         include: [
+               {
+                 	model: User,
+                 	as: 'client',
+                 	attributes: ['name'],
+               },
+	         ],
      			order: [["id", "DESC"]],
      			limit,
      			offset,
@@ -456,6 +466,18 @@ export default async function trackerRoutes(fastify) {
    			let tracker;
 
    			if (Number(lg_tracker_id) === 0) {
+   				tracker = await LgTracker.findOne({
+  						where: {
+    						client_id: client_id,
+    						date: date,
+  						},
+					});
+
+					if (tracker) {
+  						return reply
+    						.status(404)
+    						.send({ error: "You cannot upload duplicate, please edit the existing upload for any changes." });
+					}
      				// --- Create new tracker ---
 		        	tracker = await LgTracker.create({
 		          	client_id,
@@ -501,6 +523,20 @@ export default async function trackerRoutes(fastify) {
           			lg_tracker_id: tracker.id,
         			}));
         			await UploadedData.bulkCreate(rowsWithTrackerId);
+
+        			const rate = await getConversionRate(date, client_id); 
+
+        			if(rate){
+        				const conversionCount = Number(net_transfer) || 0;
+
+						// Calculate total revenue
+						const totalRevenue = rate * conversionCount;
+
+						await RevenueLog.create({
+  							lg_tracker_id: tracker.id,
+  							revenue: totalRevenue,
+						});
+        			}
       		}
 
       		return reply.send({

@@ -6,4 +6,7 @@ export interface TrackerData {
   gross_transfer: number;
   net_transfer: number;
   date: string;
+  client?: {
+    name: string;
+  };
 }

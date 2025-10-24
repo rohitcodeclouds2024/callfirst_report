@@ -108,9 +108,9 @@ export default function TrackerDataReport({ clientList }) {
       appliedtrackerStart,
       appliedtrackerEnd
     );
-    if (trackerClient !== "") {
-      getTrackerData();
-    }
+    // if (trackerClient !== "") {
+    getTrackerData();
+    // }
   }, [currentPage, appliedClientId, appliedtrackerStart, appliedtrackerEnd]);
 
   const redirectUploadShow = (id: number) => {
@@ -228,6 +228,7 @@ export default function TrackerDataReport({ clientList }) {
             <thead className="uppercase">
               <tr>
                 <th className="p-4 bg-surface">#</th>
+                <th className="p-4 bg-surface">Client</th>
                 <th className="p-4 bg-surface">Date</th>
                 <th className="p-4 bg-surface">No. of Dials</th>
                 <th className="p-4 bg-surface">No. of Contacts</th>
@@ -242,6 +243,9 @@ export default function TrackerDataReport({ clientList }) {
                 <tr key={item.id}>
                   <td className="px-4 py-3 bg-surface border-t border-border">
                     {i + 1}
+                  </td>
+                  <td className="px-4 py-3 bg-surface border-t border-border">
+                    {item.client.name}
                   </td>
                   <td className="px-4 py-3 bg-surface border-t border-border">
                     {formatDateMDY(item.date)}

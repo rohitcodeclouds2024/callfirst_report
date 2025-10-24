@@ -7,13 +7,14 @@ import Card from "@/components/ui/card/Card";
 import Select from "react-select";
 import { toast } from "react-hot-toast";
 import { FaTimes, FaPlus } from "react-icons/fa";
+import LoaderButton from "@/components/ui/loader/LoaderButton";
 
 interface Client {
   id: number;
   name: string;
 }
 interface RevenueOffer {
-  offer_percentage: number;
+  offer_rate: number;
   start_date: string;
   end_date: string;
 }
@@ -32,12 +33,13 @@ export default function RevenueFormPage() {
 
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const [formData, setFormData] = useState<RevenueData>({
     client_id: 0,
     revenue_per_conversion: 0,
     special_offer: false,
-    offers: [{ offer_percentage: 10, start_date: "", end_date: "" }], // default
+    offers: [{ offer_rate: 10, start_date: "", end_date: "" }], // default
   });
 
   useEffect(() => {
@@ -64,7 +66,7 @@ export default function RevenueFormPage() {
         special_offer: data.special_offer,
         offers: data.offers?.length
           ? data.offers
-          : [{ offer_percentage: 10, start_date: "", end_date: "" }],
+          : [{ offer_rate: 10, start_date: "", end_date: "" }],
       });
     } catch (err) {
       console.error(err);
@@ -96,7 +98,7 @@ export default function RevenueFormPage() {
       ...prev,
       offers: [
         ...prev.offers,
-        { offer_percentage: 10, start_date: "", end_date: "" },
+        { offer_rate: 10, start_date: "", end_date: "" },
       ],
     }));
   };
@@ -129,7 +131,7 @@ export default function RevenueFormPage() {
       }
 
       formData.offers.forEach((offer, index) => {
-        if (!offer.offer_percentage || offer.offer_percentage <= 0) {
+        if (!offer.offer_rate || offer.offer_rate <= 0) {
           toast.error(`Offer ${index + 1}: Enter a valid offer percentage`);
           throw new Error("Validation failed");
         }
@@ -173,12 +175,15 @@ export default function RevenueFormPage() {
       }
     }
     try {
+      setIsUpdating(true);
       if (type === 1) await apiClient.post("/revenue", formData);
       else if (type === 2) await apiClient.put(`/revenue/${id}`, formData);
 
       toast.success("Revenue details saved successfully!");
+      setIsUpdating(false);
       router.push("/admin/revenue");
     } catch (err) {
+      setIsUpdating(false);
       console.error(err);
       toast.error("Revenue already exists for this client");
     }
@@ -261,11 +266,11 @@ export default function RevenueFormPage() {
                     </label>
                     <input
                       type="number"
-                      value={offer.offer_percentage}
+                      value={offer.offer_rate}
                       onChange={(e) =>
                         handleOfferChange(
                           index,
-                          "offer_percentage",
+                          "offer_rate",
                           Number(e.target.value)
                         )
                       }
@@ -316,12 +321,17 @@ export default function RevenueFormPage() {
           )}
 
           <div className="col-span-12 flex justify-end mt-4">
-            <button
-              type="submit"
-              className="px-6 py-2 bg-primary text-white rounded-md"
-            >
-              {type === 1 ? "Create Revenue" : "Update Revenue"}
-            </button>
+            {isUpdating ? (
+              // Show loader when updating
+              <LoaderButton type={type} />
+            ) : (
+              <button
+                type="submit"
+                className="px-6 py-2 bg-primary text-white rounded-md"
+              >
+                {type === 1 ? "Create Revenue" : "Update Revenue"}
+              </button>
+            )}
           </div>
         </form>
       </Card>
