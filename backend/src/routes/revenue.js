@@ -8,6 +8,12 @@ import { sequelize } from '../lib/db.js';
 import Revenue from "../models/revenue.js";
 import User from "../models/user.js";
 import RevenueOffer from "../models/revenueOffer.js";
+import RevenueLog from "../models/revenueLog.js";
+import LgTracker from '../models/lgTracker.js';
+
+
+import { getDateRange,getDateRangeNewLogic } from "../utils/dateRange.js";
+import { formatDateRangeLabel,groupDataMultiple,formatDateMDY } from "../utils/helperFunction.js";
 
 const include = [
    {
@@ -206,6 +212,131 @@ export default async function revenueRoutes(fastify, opts) {
          }
       }
    );
+
+   // get net-transfer, gross transfer and revenue together
+   fastify.post("/revenue-graph-data", async (request, reply) => {
+      try {
+         const { clientId, dateFilter, customRange } = request.body;
+
+         if (!clientId) return reply.status(400).send({ message: "clientId is required" });
+
+         const { startDate, endDate, dateArray } = getDateRangeNewLogic(dateFilter, customRange);
+         const sameYear = new Date(startDate).getFullYear() === new Date(endDate).getFullYear();
+
+         // Fetch tracker with revenue log
+         const trackerData = await LgTracker.findAll({
+            where: { client_id: clientId, date: { [Op.between]: [startDate, endDate] } },
+            attributes: ["date", "gross_transfer", "net_transfer"],
+            include: [
+               {
+                  model: RevenueLog,
+                  as: "revenueLog",
+                  attributes: ["revenue"],
+               },
+            ],
+            order: [["date", "ASC"]],
+         });
+
+         // console.error(trackerData,clientId,startDate,endDate);
+
+         // Map date → metrics
+         const dataMap = new Map(
+            trackerData.map((d) => [
+               d.date,
+               {
+                  gross_transfer: d.gross_transfer || 0,
+                  net_transfer: d.net_transfer || 0,
+                  revenue: d.revenueLog?.revenue || 0,
+               },
+            ])
+         );
+
+         // Group for graph
+         const groupedData = groupDataMultiple({
+            dateArray,
+            dataMap,
+            startDate,
+            endDate,
+            sameYear,
+            multiFields: ["gross_transfer", "net_transfer", "revenue"],
+         });
+
+         return reply.send(groupedData);
+      } catch (err) {
+         console.error(err);
+         reply.status(500).send({ error: "Failed to fetch revenue graph data" });
+      }
+   });
+
+   fastify.post("/report/revenue-data", async (req, reply) => {
+  try {
+    const {
+      client_id,
+      start_date,
+      end_date,
+      page = 1,
+      perPage = 20,
+    } = req.body;
+
+    if (!client_id) {
+      return reply.status(400).send({ error: "Client ID is required" });
+    }
+
+    const pageNum = Math.max(1, Number(page));
+    const limit = Math.max(1, Math.min(100, Number(perPage)));
+    const offset = (pageNum - 1) * limit;
+
+    const where = { client_id };
+    if (start_date && end_date) {
+      where.date = { [Op.between]: [new Date(start_date), new Date(end_date)] };
+    } else if (start_date) {
+      where.date = { [Op.gte]: new Date(start_date) };
+    } else if (end_date) {
+      where.date = { [Op.lte]: new Date(end_date) };
+    }
+
+    const { rows, count } = await LgTracker.findAndCountAll({
+      where,
+      order: [["date", "DESC"]],
+      limit,
+      offset,
+      include: [
+        {
+          model: RevenueLog,
+          as: "revenueLog",
+          attributes: ["revenue"],
+        },
+        {
+          model: User,
+          as: "client",
+          attributes: ["name"],
+        },
+      ],
+    });
+
+    const data = rows.map((row) => ({
+      id: row.id,
+      client_name: row.client?.name || `Client #${row.client_id}`,
+      date: row.date,
+      gross_transfer: row.gross_transfer || 0,
+      net_transfer: row.net_transfer || 0,
+      revenue: row.revenueLog?.revenue || 0,
+    }));
+
+    return reply.send({
+      data,
+      meta: {
+        page: pageNum,
+        perPage: limit,
+        total: count,
+        totalPages: Math.ceil(count / limit),
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    return reply.status(500).send({ error: "Failed to fetch revenue data" });
+  }
+});
 
 
 }

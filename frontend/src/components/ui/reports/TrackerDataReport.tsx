@@ -7,8 +7,6 @@ import {
   FaEye,
   FaEdit,
   FaTrash,
-  FaDownload,
-  FaFileDownload,
   FaCloudDownloadAlt,
   FaSpinner,
 } from "react-icons/fa";
@@ -32,14 +30,14 @@ export default function TrackerDataReport({ clientList }) {
   const [appliedtrackerStart, setAppliedTrackerStart] = useState("");
   const [appliedtrackerEnd, setAppliedTrackerEnd] = useState("");
 
-  console.log(appliedClientId);
+  // console.log(appliedClientId);
 
   const handleTrackerFetch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!trackerClient) {
-      toast.error("Please select a client");
-      return;
-    }
+    // if (!trackerClient) {
+    //   toast.error("Please select a client");
+    //   return;
+    // }
     setAppliedClientId(trackerClient);
     setAppliedTrackerStart(trackerStart);
     setAppliedTrackerEnd(trackerEnd);
@@ -72,13 +70,13 @@ export default function TrackerDataReport({ clientList }) {
     const sessionData = sessionStorage.getItem("trackerClient");
 
     if (sessionData) {
-      console.log(JSON.parse(sessionData));
+      // console.log(JSON.parse(sessionData));
       const { clientId, xAxisLegend } = JSON.parse(sessionData);
 
       setTrackerClient(clientId);
       setAppliedClientId(clientId);
 
-      console.log(clientId);
+      // console.log(clientId);
 
       if (xAxisLegend.includes(" - ")) {
         const [startStr, endStr] = xAxisLegend.split(" - ");
@@ -100,14 +98,6 @@ export default function TrackerDataReport({ clientList }) {
       }
 
       sessionStorage.removeItem("trackerClient");
-    } else if (clientList.length > 0 && trackerClient === "") {
-      const firstValidClient = clientList.find(
-        (client) => client.id !== 0 && client.id !== null
-      );
-      if (firstValidClient) {
-        setTrackerClient(firstValidClient.id);
-        setAppliedClientId(firstValidClient.id);
-      }
     }
   }, [clientList, trackerClient]);
 

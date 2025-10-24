@@ -46,6 +46,57 @@ export function groupData({ dateArray, dataMap, startDate, endDate, sameYear, fi
    return groupedData;
 }
 
+export function groupDataMultiple({ dateArray, dataMap, startDate, endDate, sameYear, multiFields = [] }) {
+   sameYear = false;
+   const diffDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+   const groupedData = [];
+
+   if (diffDays > 10) {
+      const maxPoints = 10;
+      const groupSize = Math.ceil(diffDays / maxPoints);
+
+      for (let i = 0; i < dateArray.length; i += groupSize) {
+         const groupDates = dateArray.slice(i, i + groupSize);
+
+         // Create an object for totals per field
+         const totals = {};
+         for (const field of multiFields) {
+            totals[field] = groupDates.reduce((sum, date) => {
+               return sum + (dataMap.get(date)?.[field] || 0);
+            }, 0);
+         }
+
+         groupedData.push({
+            name: formatDateRangeLabel(
+               groupDates[0],
+               groupDates[groupDates.length - 1],
+               sameYear
+            ),
+            ...totals, // spread all the field totals
+         });
+      }
+   } else {
+      dateArray.forEach((date) => {
+         const entry = {
+            name: new Date(date).toLocaleDateString("en-US", {
+               month: "short",
+               day: "numeric",
+               ...(sameYear ? {} : { year: "2-digit" }),
+            }),
+         };
+
+         for (const field of multiFields) {
+            entry[field] = dataMap.get(date)?.[field] || 0;
+         }
+
+         groupedData.push(entry);
+      });
+   }
+
+   return groupedData;
+}
+
+
 export function formatDateMDY(date) {
   const d = new Date(date);
   const month = String(d.getMonth() + 1).padStart(2, "0");

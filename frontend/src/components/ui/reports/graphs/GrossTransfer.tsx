@@ -1,14 +1,23 @@
 "use client";
 
-import { Pie, PieChart, ResponsiveContainer, Tooltip, Cell } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import Card from "@/components/ui/card/Card";
 import { useEffect, useState } from "react";
 import { apiClient } from "@/lib/axios";
 import toast from "react-hot-toast";
 import { GraphProps } from "@/types/graphProps";
+import CustomTooltip from "./tooltip/CustomTooltip";
+import ChartSettingsMenu from "./ChartSettingsMenu";
 
-interface LeadUploadData {
-  [key: string]: string | number;
+interface GrossTransferData {
   name: string;
   value: number;
 }
@@ -18,19 +27,21 @@ export default function GrossTransfer({
   dateFilter,
   customRange,
 }: GraphProps) {
-  const [leadUpload, setLeadUploadData] = useState<LeadUploadData[]>([]);
+  const [grossTransferData, setGrossTransferData] = useState<
+    GrossTransferData[]
+  >([]);
 
   useEffect(() => {
     if (!selectedClientId) return;
 
     const fetchConversion = async () => {
       try {
-        const res = await apiClient.post(`/uploads-report`, {
+        const res = await apiClient.post(`/grossTransfer-data`, {
           clientId: selectedClientId,
           dateFilter,
           customRange,
         });
-        setLeadUploadData(res.data);
+        setGrossTransferData(res.data);
       } catch (err) {
         toast.error("Failed to fetch conversion data");
       }
@@ -38,73 +49,73 @@ export default function GrossTransfer({
 
     fetchConversion();
   }, [selectedClientId, dateFilter, customRange]);
-  const COLORS = [
-    "#f44336",
-    "#3f51b5",
-    "#009688",
-    "#ff9800",
-    "#ff5722",
-    "#00bcd4",
-    "#673ab7",
-    "#9c27b0",
-  ];
+
+  // console.log(netTransferData);
+
   return (
     <Card
-      className="col-span-12 md:col-span-6 lg:col-span-4"
-      title="Gross Transfer"
+      className="col-span-12 md:col-span-6 lg:col-span-8"
+      title={
+        <div className="flex justify-between items-center">
+          <span>Gross Transfer</span>
+          <ChartSettingsMenu
+            selectedClientId={selectedClientId}
+            dateFilter={dateFilter}
+            customRange={customRange}
+          />
+        </div>
+      }
     >
       <ResponsiveContainer width="100%" height={260}>
-        <PieChart margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-          <Pie
-            data={leadUpload}
-            dataKey="value"
-            nameKey="name"
-            cx="50%"
-            innerRadius={80}
-            outerRadius={96}
-            fill="currentColor"
-            className="text-primary"
-            stroke="0"
-            label={({ x, y, value }) => (
-              <text
-                x={x}
-                y={y}
-                textAnchor={x > 150 ? "start" : "end"}
-                dominantBaseline="central"
-                fill="var(--color-text)"
-                dx={x > 150 ? 10 : -10}
-                style={{
-                  fontStyle: "italic",
-                  fontSize: 10,
-                }}
-              >
-                {String(value)}
-              </text>
-            )}
-            labelLine={{ stroke: "var(--color-text)" }}
-          >
-            {leadUpload.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
-            ))}
-          </Pie>
+        <BarChart
+          data={grossTransferData}
+          margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+          className="text-primary"
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="name"
+            tick={{
+              fill: "var(--color-text)",
+              fontStyle: "italic",
+              fontSize: 10,
+            }}
+            angle={-55}
+            textAnchor="end"
+            height={110}
+          />
+          <YAxis
+            tickFormatter={(value) => `${value}`}
+            tick={{
+              fill: "var(--color-text)",
+              fontSize: 10,
+            }}
+          />
           <Tooltip
-            formatter={(value, name, props) => [
-              `${value}`,
-              `${props.payload.name}`,
-            ]}
+            content={
+              <CustomTooltip
+                selectedClientId={selectedClientId}
+                viewBtnColor="#a7e6eeff"
+                type="1"
+              />
+            }
+            cursor={{ fill: "transparent" }}
+            wrapperStyle={{ pointerEvents: "none" }}
+          />
+          {/* <Tooltip
+            formatter={(value) => `${value}%`}
             contentStyle={{
               fontSize: 14,
               backgroundColor: "var(--color-bg)",
+              color: "var(--color-text)",
               border: 0,
               borderRadius: "0.5rem",
               boxShadow: "0px 2px 4px 0px rgb(0 0 0 / 30%)",
             }}
-            itemStyle={{ color: "var(--color-text)" }}
-          />
-        </PieChart>
+            cursor={{ fill: "transparent" }}
+          /> */}
+          <Bar dataKey="value" fill="#a7e6eeff" radius={[8, 8, 0, 0]} />
+        </BarChart>
       </ResponsiveContainer>
     </Card>
   );

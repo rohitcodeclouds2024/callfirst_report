@@ -19,7 +19,7 @@ const randomPhone = () => {
 export async function seedDummyTrackerAndUpload() {
   try {
     const startDate = new Date("2023-01-01");
-    const endDate = new Date("2025-10-10");
+    const endDate = new Date("2025-10-24");
 
     const trackers = [];
 
@@ -34,7 +34,7 @@ export async function seedDummyTrackerAndUpload() {
       const net_transfer = randomInt(10, gross_transfer);
 
       trackers.push({
-        client_id: randomInt(1, 10),
+        client_id: 1,
         no_of_dials,
         no_of_contacts,
         gross_transfer,
