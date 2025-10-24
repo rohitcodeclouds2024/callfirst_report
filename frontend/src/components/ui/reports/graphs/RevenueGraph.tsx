@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { apiClient } from "@/lib/axios";
 import toast from "react-hot-toast";
 import { GraphProps } from "@/types/graphProps";
-import CustomTooltip from "./tooltip/CustomTooltip";
+import CustomTooltipMultiple from "./tooltip/CustomTooltipMultiple";
 
 interface RevenueGraphData {
   name: string;
@@ -78,16 +78,11 @@ export default function RevenueGraph({
               fontSize: 10,
             }}
           />
-          {/* <Tooltip
-            content={
-              <CustomTooltip
-                selectedClientId={selectedClientId}
-                viewBtnColor="#673ab7"
-                type="1"
-              />
-            }
+          <Tooltip
+            content={<CustomTooltipMultiple />}
             cursor={{ fill: "transparent" }}
-          /> */}
+          />
+
           <Legend />
 
           {/* 3 Lines */}

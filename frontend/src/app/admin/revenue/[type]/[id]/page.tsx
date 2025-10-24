@@ -262,7 +262,7 @@ export default function RevenueFormPage() {
                   {/* Offer % */}
                   <div className="col-span-12 md:col-span-4">
                     <label className="block text-sm font-medium mb-2">
-                      Offer %
+                      Offer Rate
                     </label>
                     <input
                       type="number"
